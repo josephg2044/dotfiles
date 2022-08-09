@@ -1,0 +1,244 @@
+sw_volume: 100
+audio_device_state:1:pulse audio
+audio_device_state:1:my_fifo
+state: pause
+current: 215
+time: 170.215000
+random: 0
+repeat: 0
+single: 1
+consume: 1
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:Radiohead Albums [FLAC]/2001 - Amnesiac/01. Packt Like Sardines in a Crushd Tin Box.flac
+1:Radiohead Albums [FLAC]/2001 - Amnesiac/02. Pyramid Song.flac
+2:Radiohead Albums [FLAC]/2001 - Amnesiac/03. Pulk_Pull Revolving Doors.flac
+3:Radiohead Albums [FLAC]/2001 - Amnesiac/04. You And Whose Army_.flac
+4:Radiohead Albums [FLAC]/2001 - Amnesiac/07. Morning Bell_Amnesiac.flac
+5:Radiohead Albums [FLAC]/2001 - Amnesiac/08. Dollars & Cents.flac
+6:Radiohead Albums [FLAC]/2001 - Amnesiac/09. Hunting Bears.flac
+7:Radiohead Albums [FLAC]/2001 - Amnesiac/10. Like Spinning Plates.flac
+8:Radiohead Albums [FLAC]/2001 - Amnesiac/11. Life in a Glasshouse.flac
+9:Radiohead Albums [FLAC]/1993 - Pablo Honey/01. You.flac
+10:Radiohead Albums [FLAC]/1993 - Pablo Honey/02. Creep.flac
+11:Radiohead Albums [FLAC]/1993 - Pablo Honey/03. How Do You.flac
+12:Radiohead Albums [FLAC]/1993 - Pablo Honey/04. Stop Whispering.flac
+13:Radiohead Albums [FLAC]/1993 - Pablo Honey/05. Thinking About You.flac
+14:Radiohead Albums [FLAC]/1993 - Pablo Honey/06. Anyone Can Play Guitar.flac
+15:Radiohead Albums [FLAC]/1993 - Pablo Honey/07. Ripcord.flac
+16:Radiohead Albums [FLAC]/1993 - Pablo Honey/08. Vegetable.flac
+17:Radiohead Albums [FLAC]/1993 - Pablo Honey/09. Prove Yourself.flac
+18:Radiohead Albums [FLAC]/1993 - Pablo Honey/10. I Can't.flac
+19:Radiohead Albums [FLAC]/1993 - Pablo Honey/11. Lurgee.flac
+20:Radiohead Albums [FLAC]/1993 - Pablo Honey/12. Blow Out.flac
+21:Radiohead Albums [FLAC]/1995 - The Bends/01. Planet Telex.flac
+22:Radiohead Albums [FLAC]/1995 - The Bends/02. The Bends.flac
+23:Radiohead Albums [FLAC]/1995 - The Bends/03. High and Dry.flac
+24:Radiohead Albums [FLAC]/1995 - The Bends/04. Fake Plastic Trees.flac
+25:Radiohead Albums [FLAC]/1995 - The Bends/05. Bones.flac
+26:Radiohead Albums [FLAC]/1995 - The Bends/06. (Nice Dream).flac
+27:Radiohead Albums [FLAC]/1995 - The Bends/07. Just.flac
+28:Radiohead Albums [FLAC]/1995 - The Bends/09. Bullet Proof..I Wish I Was.flac
+29:Radiohead Albums [FLAC]/1995 - The Bends/10. Black Star.flac
+30:Radiohead Albums [FLAC]/1995 - The Bends/11. Sulk.flac
+31:Radiohead Albums [FLAC]/1995 - The Bends/12. Street Spirit (Fade Out).flac
+32:Radiohead Albums [FLAC]/1997 - OK Computer/01. Airbag.flac
+33:Radiohead Albums [FLAC]/1997 - OK Computer/02. Paranoid Android.flac
+34:Radiohead Albums [FLAC]/1997 - OK Computer/03. Subterranean Homesick Alien.flac
+35:Radiohead Albums [FLAC]/1997 - OK Computer/04. Exit Music (For A Film).flac
+36:Radiohead Albums [FLAC]/1997 - OK Computer/05. Let Down.flac
+37:Radiohead Albums [FLAC]/1997 - OK Computer/06. Karma Police.flac
+38:Radiohead Albums [FLAC]/1997 - OK Computer/07. Fitter Happier.flac
+39:Radiohead Albums [FLAC]/1997 - OK Computer/08. Electioneering.flac
+40:Radiohead Albums [FLAC]/1997 - OK Computer/09. Climbing Up The Walls.flac
+41:Radiohead Albums [FLAC]/1997 - OK Computer/10. No Surprises.flac
+42:Radiohead Albums [FLAC]/1997 - OK Computer/11. Lucky.flac
+43:Radiohead Albums [FLAC]/1997 - OK Computer/12. The Tourist.flac
+44:Radiohead Albums [FLAC]/2000 - Kid A/01. Everything In Its Right Place.flac
+45:Radiohead Albums [FLAC]/2000 - Kid A/02. Kid A.flac
+46:Radiohead Albums [FLAC]/2000 - Kid A/03. The National Anthem.flac
+47:Radiohead Albums [FLAC]/2000 - Kid A/04. How to Disappear Completely.flac
+48:Radiohead Albums [FLAC]/2000 - Kid A/05. Treefingers.flac
+49:Radiohead Albums [FLAC]/2000 - Kid A/06. Optimistic.flac
+50:Radiohead Albums [FLAC]/2000 - Kid A/07. In Limbo.flac
+51:Radiohead Albums [FLAC]/2000 - Kid A/08. Idioteque.flac
+52:Radiohead Albums [FLAC]/2000 - Kid A/09. Morning Bell.flac
+53:Radiohead Albums [FLAC]/2000 - Kid A/10. Motion Picture Soundtrack.flac
+54:Radiohead Albums [FLAC]/2001 - Amnesiac/01. Packt Like Sardines in a Crushd Tin Box.flac
+55:Radiohead Albums [FLAC]/2001 - Amnesiac/02. Pyramid Song.flac
+56:Radiohead Albums [FLAC]/2001 - Amnesiac/03. Pulk_Pull Revolving Doors.flac
+57:Radiohead Albums [FLAC]/2001 - Amnesiac/04. You And Whose Army_.flac
+58:Radiohead Albums [FLAC]/2001 - Amnesiac/05. I Might Be Wrong.flac
+59:Radiohead Albums [FLAC]/2001 - Amnesiac/06. Knives Out.flac
+60:Radiohead Albums [FLAC]/2001 - Amnesiac/07. Morning Bell_Amnesiac.flac
+61:Radiohead Albums [FLAC]/2001 - Amnesiac/08. Dollars & Cents.flac
+62:Radiohead Albums [FLAC]/2001 - Amnesiac/09. Hunting Bears.flac
+63:Radiohead Albums [FLAC]/2001 - Amnesiac/10. Like Spinning Plates.flac
+64:Radiohead Albums [FLAC]/2001 - Amnesiac/11. Life in a Glasshouse.flac
+65:Radiohead Albums [FLAC]/2003 - Hail to the Thief/01. 2 + 2 = 5 (The Lukewarm.).flac
+66:Radiohead Albums [FLAC]/2003 - Hail to the Thief/02. Sit Down. Stand up. (Snakes & Ladders.).flac
+67:Radiohead Albums [FLAC]/2003 - Hail to the Thief/03. Sail to the Moon. (Brush the Cobwebs Out of the Sky.).flac
+68:Radiohead Albums [FLAC]/2003 - Hail to the Thief/04. Backdrifts. (Honeymoon is Over.).flac
+69:Radiohead Albums [FLAC]/2003 - Hail to the Thief/05. Go to Sleep. (Little Man Being Erased.).flac
+70:Radiohead Albums [FLAC]/2003 - Hail to the Thief/06. Where I End and You Begin. (The Sky is Falling in.).flac
+71:Radiohead Albums [FLAC]/2003 - Hail to the Thief/07. We Suck Young Blood. (Your Time is up.).flac
+72:Radiohead Albums [FLAC]/2003 - Hail to the Thief/08. The Gloaming. (Softly Open Our Mouths in the Cold.).flac
+73:Radiohead Albums [FLAC]/2003 - Hail to the Thief/09. There There. (The Boney King of Nowhere.).flac
+74:Radiohead Albums [FLAC]/2003 - Hail to the Thief/10. I Will. (No Man's Land.).flac
+75:Radiohead Albums [FLAC]/2003 - Hail to the Thief/11. A Punchup at a Wedding. (No no no no no no no no.).flac
+76:Radiohead Albums [FLAC]/2003 - Hail to the Thief/12. Myxomatosis. (Judge, Jury & Executioner.).flac
+77:Radiohead Albums [FLAC]/2003 - Hail to the Thief/13. Scatterbrain. (As Dead as Leaves.).flac
+78:Radiohead Albums [FLAC]/2003 - Hail to the Thief/14. A Wolf at the Door. (It Girl. Rag Doll.).flac
+79:Radiohead Albums [FLAC]/2007 - In Rainbows/01. Mk1.flac
+80:Radiohead Albums [FLAC]/2007 - In Rainbows/02. 15 Step.flac
+81:Radiohead Albums [FLAC]/2007 - In Rainbows/03. Down is the New Up.flac
+82:Radiohead Albums [FLAC]/2007 - In Rainbows/04. Bodysnatchers.flac
+83:Radiohead Albums [FLAC]/2007 - In Rainbows/05. Nude.flac
+84:Radiohead Albums [FLAC]/2007 - In Rainbows/06. Go Slowly.flac
+85:Radiohead Albums [FLAC]/2007 - In Rainbows/07. Mk2.flac
+86:Radiohead Albums [FLAC]/2007 - In Rainbows/08. Weird Fishes_Arpeggi.flac
+87:Radiohead Albums [FLAC]/2007 - In Rainbows/09. All I Need.flac
+88:Radiohead Albums [FLAC]/2007 - In Rainbows/10. Last Flowers to the Hospital.flac
+89:Radiohead Albums [FLAC]/2007 - In Rainbows/11. Faust Arp.flac
+90:Radiohead Albums [FLAC]/2007 - In Rainbows/12. Up on the Ladder.flac
+91:Radiohead Albums [FLAC]/2007 - In Rainbows/13. Reckoner.flac
+92:Radiohead Albums [FLAC]/2007 - In Rainbows/14. Bangers and Mash.flac
+93:Radiohead Albums [FLAC]/2007 - In Rainbows/15. House Of Cards.flac
+94:Radiohead Albums [FLAC]/2007 - In Rainbows/16. 4 Minute Warning.flac
+95:Radiohead Albums [FLAC]/2007 - In Rainbows/17. Jigsaw Falling Into Place.flac
+96:Radiohead Albums [FLAC]/2007 - In Rainbows/18. Videotape.flac
+97:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/01. Just.Flac.flac
+98:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0001
+99:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/02. Paranoid Android.Flac.flac
+100:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0002
+101:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0003
+102:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/03. Karma Police.Flac.flac
+103:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0004
+104:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/04. Creep.Flac.flac
+105:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0005
+106:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/05. No Surprises.Flac.flac
+107:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/06. High And Dry.Flac.flac
+108:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0006
+109:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/07. My Iron Lung.Flac.flac
+110:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0007
+111:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0008
+112:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/08. There There.Flac.flac
+113:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/09. Lucky.Flac.flac
+114:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0009
+115:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/10. Fake Plastic Trees.Flac.flac
+116:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0010
+117:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/11. Idioteque.Flac.flac
+118:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0011
+119:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/12. Flac.flac
+120:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0012
+121:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/13. The Bends.Flac.flac
+122:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0013
+123:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/14. Pyramid Song.Flac.flac
+124:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0014
+125:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/15. Street Spirit (Fade Out).Flac.flac
+126:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0015
+127:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/Radiohead - Disc 1.cue/track0016
+128:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 1/16. Everything In Its Right Place.Flac.flac
+129:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/01. Airbag.Flac.flac
+130:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0001
+131:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/02. I Might Be Wrong.Flac.flac
+132:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0002
+133:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/03. Go To Sleep.Flac.flac
+134:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0003
+135:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/04. Let Down.Flac.flac
+136:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0004
+137:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/05. Planet Telex.Flac.flac
+138:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0005
+139:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/06. Exit Music(For A Film).Flac.flac
+140:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0006
+141:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/07. The National Anthem.Flac.flac
+142:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0007
+143:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/08. Knives Out.Flac.flac
+144:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0008
+145:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/09. Talk Show Host.Flac.flac
+146:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0009
+147:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0010
+148:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/10. You.Flac.flac
+149:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/11. Anyone Can Play Guitar.Flac.flac
+150:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0011
+151:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/12. How To Disappear Completely.Flac.flac
+152:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0012
+153:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/13. True Love Waits.Flac.flac
+154:Radiohead Albums [FLAC]/2008 - The Best Of/2008 - Disc 2/Radiohead - Disc 2.cue/track0013
+155:Radiohead Albums [FLAC]/2011 - The King Of Limbs/01. Bloom.flac
+156:Radiohead Albums [FLAC]/2011 - The King Of Limbs/02. Morning Mr. Magpie.flac
+157:Radiohead Albums [FLAC]/2011 - The King Of Limbs/03. Little By Little.flac
+158:Radiohead Albums [FLAC]/2011 - The King Of Limbs/04. Feral.flac
+159:Radiohead Albums [FLAC]/2011 - The King Of Limbs/05. Lotus Flower.flac
+160:Radiohead Albums [FLAC]/2011 - The King Of Limbs/06. Codex.flac
+161:Radiohead Albums [FLAC]/2011 - The King Of Limbs/07. Give Up The Ghost.flac
+162:Radiohead Albums [FLAC]/2011 - The King Of Limbs/08. Separator.flac
+163:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/01. Burn The Witch.flac
+164:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/02. Daydreaming.flac
+165:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/03. Decks Dark.flac
+166:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/04. Desert Island Disk.flac
+167:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/05. Ful Stop.flac
+168:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/06. Glass Eyes.flac
+169:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/07. Identikit.flac
+170:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/08. The Numbers.flac
+171:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/09. Present Tense.flac
+172:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/10. Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief.flac
+173:Radiohead Albums [FLAC]/2016 - A Moon Shaped Pool/11. True Love Waits.flac
+174:Radiohead Albums [FLAC]/1995 - The Bends/01. Planet Telex.flac
+175:Radiohead Albums [FLAC]/1995 - The Bends/02. The Bends.flac
+176:Radiohead Albums [FLAC]/1995 - The Bends/03. High and Dry.flac
+177:Radiohead Albums [FLAC]/1995 - The Bends/04. Fake Plastic Trees.flac
+178:Radiohead Albums [FLAC]/1995 - The Bends/05. Bones.flac
+179:Radiohead Albums [FLAC]/1995 - The Bends/06. (Nice Dream).flac
+180:Radiohead Albums [FLAC]/1995 - The Bends/07. Just.flac
+181:Radiohead Albums [FLAC]/1995 - The Bends/08. My Iron Lung.flac
+182:Radiohead Albums [FLAC]/1995 - The Bends/09. Bullet Proof..I Wish I Was.flac
+183:Radiohead Albums [FLAC]/1995 - The Bends/10. Black Star.flac
+184:Radiohead Albums [FLAC]/1995 - The Bends/11. Sulk.flac
+185:Radiohead Albums [FLAC]/1995 - The Bends/12. Street Spirit (Fade Out).flac
+186:Radiohead Albums [FLAC]/1995 - The Bends/01. Planet Telex.flac
+187:Radiohead Albums [FLAC]/1995 - The Bends/02. The Bends.flac
+188:Radiohead Albums [FLAC]/1995 - The Bends/03. High and Dry.flac
+189:Radiohead Albums [FLAC]/1995 - The Bends/04. Fake Plastic Trees.flac
+190:Radiohead Albums [FLAC]/1995 - The Bends/05. Bones.flac
+191:Radiohead Albums [FLAC]/1995 - The Bends/06. (Nice Dream).flac
+192:Radiohead Albums [FLAC]/1995 - The Bends/07. Just.flac
+193:Radiohead Albums [FLAC]/1995 - The Bends/08. My Iron Lung.flac
+194:Radiohead Albums [FLAC]/1995 - The Bends/09. Bullet Proof..I Wish I Was.flac
+195:Radiohead Albums [FLAC]/1995 - The Bends/10. Black Star.flac
+196:Radiohead Albums [FLAC]/1995 - The Bends/11. Sulk.flac
+197:Radiohead Albums [FLAC]/1995 - The Bends/12. Street Spirit (Fade Out).flac
+198:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/05 Mello.flac
+199:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/04 Near no Theme.flac
+200:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/01 4.flac
+201:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/04 Fingerbib.flac
+202:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/27 Misa no Uta.flac
+203:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/27 Misa no Uta.flac
+204:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/04 Near no Theme.flac
+205:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/01 4.flac
+206:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/04 Fingerbib.flac
+207:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/04 L no Theme.flac
+208:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/03 Light no Theme.flac
+209:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/04 L no Theme.flac
+210:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/05 Mello.flac
+211:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/04 Near no Theme.flac
+212:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/01 4.flac
+213:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/04 Fingerbib.flac
+214:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/03 Light no Theme.flac
+215:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1995 - ...I Care Because You Do/10 Alberto Balsalm.flac
+216:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/04 L no Theme.flac
+217:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/05 Mello.flac
+218:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/04 Near no Theme.flac
+219:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/01 4.flac
+220:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/04 Fingerbib.flac
+221:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/03 Light no Theme.flac
+222:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1995 - ...I Care Because You Do/10 Alberto Balsalm.flac
+223:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/04 L no Theme.flac
+224:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/05 Mello.flac
+225:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack III [2007]/04 Near no Theme.flac
+226:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/01 4.flac
+227:Richard D. James as Aphex Twin (Albums 1992 - 2019) [FLAC]/1996 -  Richard D. James Album/04 Fingerbib.flac
+228:Death Note [2005-2008] [Ultimate Collection] By Kira [SEV]/Original Soundtracks [2006-2007]/Death Note - Original Soundtrack [2006]/03 Light no Theme.flac
+playlist_end

@@ -1,0 +1,59 @@
+
+/* Dark theme. */
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
+configuration {
+    modi: "window,drun,ssh,calc";
+    font: "Hack Nerd Font 12";
+    fixed-num-lines: 				true;
+    display-drun: "run";
+    display-window: "win";
+    display-pass: "pass";
+    display-calc: "calc";
+}
+
+window {
+    border: 						1px;
+    padding: 						0;
+    width: 							20%;
+}
+
+textbox-prompt-colon {
+    expand: 						false;
+    str: 							" | ";
+    margin:							0px 4px 0px 0px;
+    text-color: 					inherit;
+}
+
+#entry {
+    spacing: 0;
+    text-color: @selected-normal-background;
+}
+
+#element.selected.normal {
+    background-color: @selected-normal-background;
+    text-color: @normal-background;
+}
+
+inputbar {
+    spacing:    					0px;
+    padding:    					5px;
+    children: 						[ prompt,textbox-prompt-colon,entry ];
+}
+
+mainbox {
+    border: 						1px;
+    border-color:                   @foreground;
+    padding: 						15;
+}
+
+listview {
+    lines:							10;
+    columns:						1;
+    fixed-height: 					0;
+    border: 						0px;
+    spacing: 						5px;
+    scrollbar: 						false;
+    padding: 						10px 5px 3px 5px;
+}
+
