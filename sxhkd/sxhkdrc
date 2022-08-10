@@ -8,7 +8,7 @@ super + Return
 
 # browser
 super + shift + Return
-	librewolf
+	chromium --force-dark-mode --enable-features=WebUIDarkMode
 
 # program launcher
 super + @space 
