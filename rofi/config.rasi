@@ -1,6 +1,6 @@
 
 /* Dark theme. */
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+@import "~/dotfiles/rofi/colors-rofi-dark.rasi"
 
 configuration {
     modi: "window,drun,ssh,calc";

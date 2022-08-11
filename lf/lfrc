@@ -136,6 +136,7 @@ map gD cd ~/downloads
 map gi cd ~/pictures
 map gv cd ~/videos
 map gc cd ~/.config
+map gC cd ~/dotfiles
 map gm cd /mnt
 map gs cd ~/.local/bin
 map gt cd ~/torrents
