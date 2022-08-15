@@ -1,14 +1,9 @@
 #!/bin/sh
 
 
-picom &
-.fehbg &
+fehbg &
 wal -R &
-xset s off &
 xset -dpms &
-xset s noblank &
 xset r rate 215 45 &
-xrandr --output DP-2 --mode 1920x1080 --rate 240 &
 setxkbmap us &
-bluetoothctl connect 7C:96:D2:38:E5:92
 
