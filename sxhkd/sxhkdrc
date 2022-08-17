@@ -27,6 +27,20 @@ super + p
 super + shift + s 
     $HOME/.config/rofi/applets/applets/screenshot.sh
 
+super + Up
+    amixer -D pulse sset Master 5%+
+
+super + Down
+    amixer -D pulse sset Master 5%-
+    
+super + Right
+    xbacklight -inc 10
+
+super + Left 
+    xbacklight -dec 10
+
+super + m 
+    amixer -D pulse sset Master 0
 # rofi calc
 super + n
     rofi -show calc 
@@ -56,14 +70,14 @@ super + m
 	bspc desktop -l next
 
 super + e
-    bspc config top_padding 	        55;\
+    bspc config top_padding 	        50;\
     bspc config left_padding            15;\
     bspc config right_padding           15;\
     bspc config bottom_padding          15
 
 
 super + shift + e
-    bspc config top_padding 	        40;\
+    bspc config top_padding 	        35;\
     bspc config left_padding            0;\
     bspc config right_padding           0;\
     bspc config bottom_padding          0
