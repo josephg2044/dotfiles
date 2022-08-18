@@ -39,7 +39,7 @@ super + Right
 super + Left 
     xbacklight -dec 10
 
-super + m 
+super + b 
     amixer -D pulse sset Master 0
 # rofi calc
 super + n

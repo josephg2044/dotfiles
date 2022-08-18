@@ -16,7 +16,6 @@ uptime=$(uptime -p | sed -e 's/up //g')
 shutdown=""
 reboot=""
 lock=""
-suspend=""
 logout=""
 
 # Confirmation
@@ -34,7 +33,7 @@ msg() {
 }
 
 # Variable passed to rofi
-options="$shutdown\n$reboot\n$lock\n$suspend\n$logout"
+options="$shutdown\n$reboot\n$lock\n$logout"
 
 chosen="$(echo -e "$options" | $rofi_command -p "UP - $uptime" -dmenu -selected-row 2)"
 case $chosen in
@@ -64,18 +63,6 @@ case $chosen in
 		elif [[ -f /usr/bin/betterlockscreen ]]; then
 			betterlockscreen -l
 		fi
-        ;;
-    $suspend)
-		ans=$(confirm_exit &)
-		if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
-			mpc -q pause
-			amixer set Master mute
-			systemctl suspend
-		elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
-			exit 0
-        else
-			msg
-        fi
         ;;
     $logout)
 		ans=$(confirm_exit &)

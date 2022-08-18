@@ -26,8 +26,11 @@ window {
     border-radius:                  0px;
     location:                       southeast;
 	width:							450px;
-    x-offset:                       -15px;
-    y-offset:                       -45px;
+    x-offset:                       -10px;
+    y-offset:                       -10px;
+    border:                         1px;
+    border-color:                   @foreground;
+
 }
 
 prompt {
@@ -88,11 +91,11 @@ element {
 element-text {
     background-color: 				inherit;
     text-color:       				inherit;
-	font:							"Hurmit Nerd Font Mono 32";
+	font:							"Iosevka Nerd Font Mono 35";
     expand:                         true;
     horizontal-align:               0.5;
     vertical-align:                 0.5;
-    margin:                         30px 10px 30px 10px;
+    margin:                         55px 10px 0px 10px;
 }
 
 element normal.urgent,
