@@ -25,8 +25,8 @@ window {
     transparency:                   "real";
     location:                       southeast;
 	width:							420px;
-    x-offset:                       -10;
-    y-offset:                       -10;
+    x-offset:                       -10px;
+    y-offset:                       -10px;
     border:                         1px;
     border-color:                   @foreground;
 }
@@ -38,6 +38,7 @@ prompt {
 	text-color: 					@accent;
     border:                  		2px 2px 2px 2px;
     border-radius:                  0px;
+    border-color:                   @accent;
 }
 
 textbox-prompt-colon {
@@ -63,7 +64,7 @@ inputbar {
 }
 
 listview {
-    columns:						4;
+    columns:						5;
     lines:							1;
     spacing:                        12px;
     cycle:                          true;
@@ -88,11 +89,11 @@ element {
 element-text {
     background-color: 				inherit;
     text-color:       				inherit;
-	font:							"feather 25";
+	font:							"feather 20";
     expand:                         true;
     horizontal-align:               0.5;
     vertical-align:                 0.5;
-    margin:                         30px 10px 0px 10px;
+    margin:                         5px 5px 5px 5px;
 }
 
 element normal.urgent,

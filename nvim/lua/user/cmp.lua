@@ -15,7 +15,8 @@ local check_backspace = function()
   return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
 end
 
---   פּ ﯟ   some other good icons
+--   פּ ﯟ   some other good kind_icons
+
 local kind_icons = {
   Text = "",
   Method = "m",
@@ -106,25 +107,25 @@ cmp.setup {
       vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
       -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
       vim_item.menu = ({
-        luasnip = "[Snippet]",
+        nvim_lsp = "[LSP]",
         buffer = "[Buffer]",
         cmdline= "[CMD]",
         path = "[Path]",
-        lsp = "[LSP]"
+        luasnip = "[Snippet]",
       })[entry.source.name]
       return vim_item
     end,
   },
   sources = {
-    { name = "nvimlsp" },
+    { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "cmdline"},
     { name = "buffer" },
     { name = "path" },
   },
   confirm_opts = {
-    behavior = cmp.ConfirmBehavior.Insert,
-    select = true,
+    behavior = cmp.ConfirmBehavior.Replace,
+    select = false,
   },
   window = {
     documentation = cmp.config.window.bordered()

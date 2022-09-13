@@ -89,11 +89,11 @@ element {
 element-text {
     background-color: 				inherit;
     text-color:       				inherit;
-	font:							"feather 25";
+	font:							"feather 20";
     expand:                         true;
     horizontal-align:               0.5;
     vertical-align:                 0.5;
-    margin:                         30px 10px 0px 10px;
+    margin:                         10px 10px 10px 10px;
 }
 
 element normal.urgent,

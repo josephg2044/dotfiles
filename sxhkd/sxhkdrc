@@ -8,13 +8,12 @@ super + Return
 
 # browser
 super + shift + Return
-	chromium --force-dark-mode --enable-features=WebUIDarkMode
+	librewolf
 
 # program launcher
 super + @space 
 	rofi -show drun
 
-# fuzzy finder in rofi
 super + i
     $HOME/.config/rofi/applets/applets/time.sh
 
@@ -45,6 +44,9 @@ super + b
 super + n
     rofi -show calc 
 
+super + c 
+    bspc node -g locked
+
 # rofi pass
 super + y
     rofi-pass
@@ -69,19 +71,6 @@ super + {_,shift + }w
 super + m
 	bspc desktop -l next
 
-super + e
-    bspc config top_padding 	        50;\
-    bspc config left_padding            15;\
-    bspc config right_padding           15;\
-    bspc config bottom_padding          15
-
-
-super + shift + e
-    bspc config top_padding 	        35;\
-    bspc config left_padding            0;\
-    bspc config right_padding           0;\
-    bspc config bottom_padding          0
-
 # swap the current node and the biggest window
 super + g
 	bspc node -s biggest.local.window
@@ -99,13 +88,8 @@ super + {t,shift + t,s,f}
 #
 
 # toggle polybar on and off
-super + 0
-	bspc config top_padding         15; \
-	pkill polybar
-
-super + 9 
-	bspc config top_padding         55; \
-	./.config/polybar/launch.sh
+super + e
+    polytoggle
 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}

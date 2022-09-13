@@ -69,6 +69,7 @@ alias fgrep='fgrep --color=auto'
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias rm="rm -vI"
+alias z="zathura --fork"
 
 alias ytdl='youtube-dl'
 alias ytdlm='youtube-dl -f bestaudio --extract-audio --audio-format flac --audio-quality 0'

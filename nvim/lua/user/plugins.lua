@@ -41,7 +41,11 @@ packer.init {
 -- Install your plugins here
 return packer.startup(function(use)
   -- My plugins here
+  use "folke/twilight.nvim"
+  use "folke/zen-mode.nvim"
+  use "junegunn/limelight.vim"
   use "wbthomason/packer.nvim" -- Have packer manage itself
+  use "ellisonleao/glow.nvim"
   use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
   use "chrisbra/colorizer"
   use "lukas-reineke/indent-blankline.nvim"
@@ -56,7 +60,9 @@ return packer.startup(function(use)
   use "hrsh7th/cmp-nvim-lsp"
   use "ntbbloodbath/doom-one.nvim"
   use "lunarvim/onedarker"
+  use "navarasu/onedark.nvim"
   use "Luxed/ayu-vim"
+  use "rmehri01/onenord.nvim"
   use "neovim/nvim-lspconfig" -- enable LSP
   use "williamboman/nvim-lsp-installer" -- simple to use language server nvim-lsp-installer
   use "nvim-telescope/telescope.nvim"

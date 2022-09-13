@@ -28,10 +28,10 @@ require 'nvim-tree'.setup { -- BEGIN_DEFAULT_OPTS
   respect_buf_cwd = false,
   view = {
     adaptive_size = false,
-    width = 20,
+    width = 25,
     height = 30,
     hide_root_folder = false,
-    side = "left",
+    side = "right",
     preserve_window_proportions = false,
     number = false,
     relativenumber = false,
@@ -44,10 +44,10 @@ require 'nvim-tree'.setup { -- BEGIN_DEFAULT_OPTS
     },
   },
   renderer = {
-    add_trailing = true,
+    add_trailing = false,
     group_empty = false,
     highlight_git = false,
-    highlight_opened_files = "none",
+    highlight_opened_files = "true",
     root_folder_modifier = ":~",
     indent_markers = {
       enable = true,
