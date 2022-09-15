@@ -3,8 +3,8 @@
 
 # SETTINGS {{{ ---
 
-active_text_color="#E7A09E" # 31a354 : green
-active_underline="True"
+active_text_color="#F84841" # 31a354 : green
+active_underline="false"
 active_underline_color="#E7A09E"
 inactive_text_color="#b7b8b9"
 inactive_underline="false"

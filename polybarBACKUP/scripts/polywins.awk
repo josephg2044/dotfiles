@@ -8,8 +8,10 @@ BEGIN {
 	inactive_right="%{F-}"
 	separator="%{F"inactive_text_color"}"separator"%{F-}"
 
-	active_left=active_left"%{+u}%{u"active_underline_color"}"
-	active_right="%{-u}"active_right
+	if (active_underline == "true") {
+		active_left=active_left"%{+u}%{u"active_underline_color"}"
+		active_right="%{-u}"active_right
+	}
 
 	if (inactive_underline == "true") {
 		inactive_left=inactive_left"%{+u}%{u"inactive_underline_color"}"
