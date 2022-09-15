@@ -1,0 +1,26 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn global dir
+
+PATH: 
+  /home/joseph/.local/bin:/home/joseph/.local/bin:/home/joseph/.local/bin:/home/joseph/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.8.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: EISDIR: illegal operation on a directory, read
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
