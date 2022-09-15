@@ -20,7 +20,7 @@ bspc rule -a mplayer2 state=floating
 bspc rule -a Screenkey manage=off
 bspc rule -a Zathura state=tiled 
 bspc rule -a Tk state=floating
-
+bspc rule -a Emacs state=monocle
 
 # Set the border colors.
 bspc config normal_border_color "#111111"
