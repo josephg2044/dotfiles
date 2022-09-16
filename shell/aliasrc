@@ -76,6 +76,13 @@ alias ytdlm='youtube-dl -f bestaudio --extract-audio --audio-format flac --audio
 alias ytdlp='youtube-dl -f "bestaudio/best" -ciw -o "%(title)s.%(ext)s" -v --extract-audio --audio-format mp3 --audio-quality 0  --yes-playlist'
 alias ncm='ncmpcpp'
 
+# trash cli
+alias tput='trash-put'
+alias empty='trash-empty'
+alias tlist='trash-list'
+alias trest='trash-restore'
+alias trm='trash-rm'
+
 alias t="touch"
 alias mkd="mkdir -pv"
 

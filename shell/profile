@@ -19,14 +19,12 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
 export AWT_TOOLKIT=MToolkit
-export GNUPGHOME="${XDG_DATA_HOME:-$HOME/.config}/gnupg"
 export JDK_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
 export _JAVA_AWT_WM_NONREPARENTING=1
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
-export GNUPGHOME="$HOME/.config/gnupg"
 export NPM_CONFIG_USERCONFIG="$HOME/.config/npm"
 export NPM_CONFIG_CACHE="$HOME/.cache/npm"
 export YARN_CACHE_FOLDER="$HOME/.local/yarn"

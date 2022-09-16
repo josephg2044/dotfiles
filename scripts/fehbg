@@ -1,2 +1,2 @@
 #!/bin/sh
-feh --bg-scale ~/dotfiles/wallpaper.jpg 
+feh --bg-scale ~/pictures/wallpapers/astronaut.jpg
