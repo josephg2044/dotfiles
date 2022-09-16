@@ -1,0 +1,9 @@
+[Default Applications]
+application/pdf=pdf.desktop
+text=text.desktop
+text/plain=text.desktop
+inode/directory=file.desktop
+application/vnd.comicbook-rar=pdf.desktop
+
+[Added Associations]
+application/x-wine-extension-ini=nvim.desktop;
