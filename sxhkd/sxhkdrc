@@ -8,7 +8,10 @@ super + Return
 
 # browser
 super + shift + Return
-	librewolf
+	librewolf -P default-release
+
+super + ctrl + Return 
+    librewolf -P school
 
 # program launcher
 super + @space 
