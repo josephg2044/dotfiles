@@ -10,7 +10,7 @@ super + Return
 super + shift + Return
 	librewolf -P default-release
 
-super + ctrl + Return 
+super + shift + p
     librewolf -P school
 
 # program launcher
