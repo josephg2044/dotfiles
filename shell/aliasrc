@@ -86,6 +86,10 @@ alias trm='trash-rm'
 alias t="touch"
 alias mkd="mkdir -pv"
 
+alias rrun="Rscript"
+alias py="python3"
+alias py2="python2"
+
 alias addup='git add -u'
 alias addall='git add .'
 alias branch='git branch'
