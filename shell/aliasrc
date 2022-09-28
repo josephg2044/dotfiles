@@ -71,6 +71,7 @@ alias mv="mv -iv"
 alias rm="rm -vI"
 alias z="zathura --fork"
 
+alias spac="sudo pacman"
 alias ytdl='youtube-dl'
 alias ytdlm='youtube-dl -f bestaudio --extract-audio --audio-format flac --audio-quality 0'
 alias ytdlp='youtube-dl -f "bestaudio/best" -ciw -o "%(title)s.%(ext)s" -v --extract-audio --audio-format mp3 --audio-quality 0  --yes-playlist'
