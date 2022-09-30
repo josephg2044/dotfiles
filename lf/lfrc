@@ -129,17 +129,24 @@ map dd trash
 map dr restore_trash
 
 # Movement
-map gd cd ~/documents
-map gp cd ~/programming
-map gP cd ~/pictures
-map gD cd ~/downloads
-map gi cd ~/pictures
+map gD cd ~/documents
+map gdm cd ~/documents/math
+map gdS cd ~/documents/school/
+map gdsr cd ~/documents/school/rs1 
+map gdsb cd ~/documents/school/bio9/
+map gdsa cd ~/documents/school/acompscif/
+map gdse cd ~/documents/school/english9/
+map gdsd cd ~/documents/school/jvdebate/
+map gdp cd ~/documents/programming/
+
+map gp cd ~/pictures
+map go cd ~/downloads
 map gv cd ~/videos
+map gV cd ~/VM/
 map gc cd ~/.config
 map gC cd ~/dotfiles
 map gm cd /mnt
 map gs cd ~/.local/bin
-map gt cd ~/torrents
 
 map <enter> shell
 map q quitcd

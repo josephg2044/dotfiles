@@ -10,7 +10,7 @@ bspc config top_padding 	       0
 bspc config left_padding           0
 bspc config right_padding          0
 bspc config bottom_padding         0
-bspc config border_width           1
+bspc config border_width           2
 
 bspc config split_ratio          0.55
 bspc config borderless_monocle   true
@@ -24,7 +24,7 @@ bspc rule -a Emacs state=tiled
 
 # Set the border colors.
 bspc config normal_border_color "#111111"
-bspc config active_border_color "#223232"
-bspc config focused_border_color "#223232"
+bspc config active_border_color "#333333"
+bspc config focused_border_color "#333333"
 sxhkd & 
 $HOME/.config/polybar/launch.sh

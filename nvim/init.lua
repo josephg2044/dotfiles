@@ -11,6 +11,7 @@ require "user.bufferline"
 require "user.lualine"
 require "user.indentline"
 require "user.toggleterm"
+-- Defaults
 require 'nvim-tree'.setup { -- BEGIN_DEFAULT_OPTS
   auto_reload_on_write = true,
   create_in_closed_folder = false,
