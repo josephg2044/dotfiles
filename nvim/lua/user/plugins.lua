@@ -61,7 +61,7 @@ return packer.startup(function(use)
   use "ntbbloodbath/doom-one.nvim"
   use "lunarvim/onedarker"
   use "navarasu/onedark.nvim"
-  use "Luxed/ayu-vim"
+  use "Shatur/neovim-ayu"
   use "rmehri01/onenord.nvim"
   use "neovim/nvim-lspconfig" -- enable LSP
   use "williamboman/nvim-lsp-installer" -- simple to use language server nvim-lsp-installer
@@ -74,6 +74,7 @@ return packer.startup(function(use)
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
   }
+  use 'josephg2044/everblushdark.nvim'
   use "akinsho/bufferline.nvim"
   use "moll/vim-bbye"
   use "p00f/nvim-ts-rainbow"

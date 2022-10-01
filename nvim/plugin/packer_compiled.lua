@@ -79,11 +79,6 @@ _G.packer_plugins = {
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
-  ["ayu-vim"] = {
-    loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/ayu-vim",
-    url = "https://github.com/Luxed/ayu-vim"
-  },
   ["bufferline.nvim"] = {
     loaded = true,
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/bufferline.nvim",
@@ -124,6 +119,11 @@ _G.packer_plugins = {
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/doom-one.nvim",
     url = "https://github.com/ntbbloodbath/doom-one.nvim"
   },
+  ["everblushdark.nvim"] = {
+    loaded = true,
+    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/everblushdark.nvim",
+    url = "https://github.com/josephg2044/everblushdark.nvim"
+  },
   ["friendly-snippets"] = {
     loaded = true,
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/friendly-snippets",
@@ -148,6 +148,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
+  },
+  ["neovim-ayu"] = {
+    loaded = true,
+    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/neovim-ayu",
+    url = "https://github.com/Shatur/neovim-ayu"
   },
   ["nvim-autopairs"] = {
     loaded = true,
