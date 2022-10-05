@@ -88,6 +88,8 @@ alias t="touch"
 alias mkd="mkdir -pv"
 alias topdf="soffice --headless --convert-to pdf"
 
+alias ff="fastfetch"
+
 alias rrun="Rscript"
 alias py="python3"
 alias py2="python2"
@@ -97,7 +99,7 @@ alias addall='git add .'
 alias branch='git branch'
 alias checkout='git checkout'
 alias clone='git clone'
-alias commit='git commit -m'
+alias commit='git commit'
 alias fetch='git fetch'
 alias pull='git pull origin'
 alias push='git push origin'

@@ -97,6 +97,46 @@ cmd trash ${{
   done
 }}
 
+cmd devour-launch ${{
+    devour-launch.sh $f
+}}
+
+cmd fzf_jump ${{
+    res="$(find . -maxdepth 2 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ] ; then
+        cmd="cd"
+    elif [ -f "$res" ] ; then
+        cmd="select"
+    else
+        exit 0
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd fzf_JUMP ${{
+    res="$(find . | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ] ; then
+        cmd="cd"
+    elif [ -f "$res" ] ; then
+        cmd="select"
+    else
+        exit 0
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd fzf_search ${{
+    res="$( \
+        RG_PREFIX="rg --column --line-number --no-heading --color=always \
+            --smart-case "
+        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+            fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+            --ansi --layout=reverse --header 'Search in files' \
+            | cut -d':' -f1
+    )"
+    [ ! -z "$res" ] && lf -remote "send $id select \"$res\""
+}}
+
 cmd restore_trash ${{
   trash-restore
 }}
@@ -110,8 +150,14 @@ map "'"
 map '"'
 map d
 
+map t devour-launch 
+
 map au unarchive
 map ae execute
+
+map <c-f> fzf_jump
+map <a-f> fzf_JUMP
+map <c-s> fzf_search
 
 # Basic Functions
 map . set hidden!

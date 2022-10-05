@@ -114,15 +114,10 @@ _G.packer_plugins = {
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/colorizer",
     url = "https://github.com/chrisbra/colorizer"
   },
-  ["doom-one.nvim"] = {
+  ["everblush.nvim"] = {
     loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/doom-one.nvim",
-    url = "https://github.com/ntbbloodbath/doom-one.nvim"
-  },
-  ["everblushdark.nvim"] = {
-    loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/everblushdark.nvim",
-    url = "https://github.com/josephg2044/everblushdark.nvim"
+    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/everblush.nvim",
+    url = "https://github.com/josephg2044/everblush.nvim"
   },
   ["friendly-snippets"] = {
     loaded = true,
@@ -189,20 +184,10 @@ _G.packer_plugins = {
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/nvim-ts-rainbow",
     url = "https://github.com/p00f/nvim-ts-rainbow"
   },
-  ["onedark.nvim"] = {
-    loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/onedark.nvim",
-    url = "https://github.com/navarasu/onedark.nvim"
-  },
   onedarker = {
     loaded = true,
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/onedarker",
     url = "https://github.com/lunarvim/onedarker"
-  },
-  ["onenord.nvim"] = {
-    loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/onenord.nvim",
-    url = "https://github.com/rmehri01/onenord.nvim"
   },
   ["packer.nvim"] = {
     loaded = true,
@@ -234,15 +219,15 @@ _G.packer_plugins = {
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/toggleterm.nvim",
     url = "https://github.com/akinsho/toggleterm.nvim"
   },
-  ["twilight.nvim"] = {
-    loaded = true,
-    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/twilight.nvim",
-    url = "https://github.com/folke/twilight.nvim"
-  },
   ["vim-bbye"] = {
     loaded = true,
     path = "/home/joseph/.local/share/nvim/site/pack/packer/start/vim-bbye",
     url = "https://github.com/moll/vim-bbye"
+  },
+  ["vim-markdown-composer"] = {
+    loaded = true,
+    path = "/home/joseph/.local/share/nvim/site/pack/packer/start/vim-markdown-composer",
+    url = "https://github.com/euclio/vim-markdown-composer"
   },
   ["zen-mode.nvim"] = {
     loaded = true,

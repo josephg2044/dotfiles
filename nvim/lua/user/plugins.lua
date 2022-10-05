@@ -41,7 +41,6 @@ packer.init {
 -- Install your plugins here
 return packer.startup(function(use)
   -- My plugins here
-  use "folke/twilight.nvim"
   use "folke/zen-mode.nvim"
   use "junegunn/limelight.vim"
   use "wbthomason/packer.nvim" -- Have packer manage itself
@@ -58,11 +57,8 @@ return packer.startup(function(use)
   use "L3MON4D3/LuaSnip" --snippet engine
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
   use "hrsh7th/cmp-nvim-lsp"
-  use "ntbbloodbath/doom-one.nvim"
   use "lunarvim/onedarker"
-  use "navarasu/onedark.nvim"
   use "Shatur/neovim-ayu"
-  use "rmehri01/onenord.nvim"
   use "neovim/nvim-lspconfig" -- enable LSP
   use "williamboman/nvim-lsp-installer" -- simple to use language server nvim-lsp-installer
   use "nvim-telescope/telescope.nvim"
@@ -74,8 +70,9 @@ return packer.startup(function(use)
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
   }
-  use 'josephg2044/everblushdark.nvim'
+  use 'josephg2044/everblush.nvim'
   use "akinsho/bufferline.nvim"
+  use "euclio/vim-markdown-composer"
   use "moll/vim-bbye"
   use "p00f/nvim-ts-rainbow"
   use "nvim-lualine/lualine.nvim"

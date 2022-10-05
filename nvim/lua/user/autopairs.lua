@@ -9,13 +9,11 @@ npairs.setup {
   ts_config = {
     lua = { "string", "source" },
     javascript = { "string", "template_string" },
-    java = true,
   },
   disable_filetype = { "TelescopePrompt", "spectre_panel" },
   fast_wrap = {
     map = "<M-e>",
     chars = { "{", "[", "(", '"', "'" },
-    pattern = [=[[%'%"%)%>%]%)%}%,]]=],
     offset = 0, -- Offset from pattern match
     end_key = "$",
     keys = "qwertyuiopzxcvbnmasdfghjkl",
