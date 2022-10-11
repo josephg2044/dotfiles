@@ -178,12 +178,26 @@ map dr restore_trash
 map gD cd ~/documents
 map gdm cd ~/documents/math
 map gdS cd ~/documents/school/
-map gdsr cd ~/documents/school/rs1 
-map gdsb cd ~/documents/school/bio9/
-map gdsa cd ~/documents/school/acompscif/
-map gdse cd ~/documents/school/english9/
+map gdsr cd ~/documents/school/2_rs1/
+map gdsb cd ~/documents/school/7_bio//
+map gdsa cd ~/documents/school/4_acompscif/
+map gdse cd ~/documents/school/5_english/
 map gdsd cd ~/documents/school/jvdebate/
 map gdp cd ~/documents/programming/
+
+map gL cd ~/.local
+map glb cd ~/.local/bin
+map gls cd ~/.local/share
+map gll cd ~/.local/lib
+
+map gR cd /
+map grb cd /boot
+map grm cd /mnt
+map grd cd /dev 
+map gre cd /etc
+map grs cd /sys
+map grt cd /tmp 
+map grv cd /var
 
 map gp cd ~/pictures
 map go cd ~/downloads
@@ -191,8 +205,6 @@ map gv cd ~/videos
 map gV cd ~/VM/
 map gc cd ~/.config
 map gC cd ~/dotfiles
-map gm cd /mnt
-map gs cd ~/.local/bin
 
 map <enter> shell
 map q quitcd

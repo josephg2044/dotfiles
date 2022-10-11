@@ -82,7 +82,7 @@ alias tput='trash-put'
 alias empty='trash-empty'
 alias tlist='trash-list'
 alias trest='trash-restore'
-alias trm='trash-rm'
+alias tr='trash'
 
 alias t="touch"
 alias mkd="mkdir -pv"

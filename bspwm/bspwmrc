@@ -22,6 +22,16 @@ bspc rule -a Zathura state=tiled
 bspc rule -a Tk state=floating
 bspc rule -a Emacs state=tiled
 
+# Calculate the center of the screen for a 600x400 scratchpad
+scratchpad_xy="1200x800"
+display_xy=$(xdpyinfo | grep -i dimensions | awk '{ print $2 }')
+half_display=$(echo $display_xy | tr 'x' ' ' | cut -f1 -d' ' | xargs -I _ echo _/2 | bc)
+half_scratchpad=$(echo $scratchpad_xy | tr 'x' ' ' | cut -f1 -d' ' | xargs -I _ echo _/2 | bc)
+offset=$(echo ${half_display}-${half_scratchpad} | bc)
+
+# rectangle=WidthxHeight+Xoffset+Yoffset
+bspc rule -a scpad sticky=on state=floating rectangle=${scratchpad_xy}+${offset}+60
+
 # Set the border colors.
 bspc config normal_border_color "#111111"
 bspc config active_border_color "#222222"

@@ -23,6 +23,12 @@ super + i
 super + o 
     $HOME/.config/rofi/applets/applets/mpd.sh
 
+super + v
+    setxkbmap es
+    
+super + shift + v
+    setxkbmap us
+
 super + p 
     $HOME/.config/rofi/applets/applets/powermenu.sh
 
@@ -50,6 +56,8 @@ super + n
 super + c 
     bspc node -g locked
 
+super + semicolon 
+    scpad
 # rofi pass
 super + y
     rofi-pass
