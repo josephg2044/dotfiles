@@ -87,6 +87,7 @@ alias tr='trash'
 alias t="touch"
 alias mkd="mkdir -pv"
 alias topdf="soffice --headless --convert-to pdf"
+alias jstris="devour librewolf -P default-release ~/Jstris.html"
 
 alias ff="fastfetch"
 
