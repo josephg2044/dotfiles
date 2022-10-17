@@ -2,15 +2,15 @@
 
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-bspc monitor -d 1 2 3 4 5 
+bspc monitor -d dir www doc mus sys com ac1 ac2 ac3 ac4 
 
 
 bspc config window_gap              0
-bspc config top_padding 	       0
-bspc config left_padding           0
-bspc config right_padding          0
-bspc config bottom_padding         0
-bspc config border_width           3
+bspc config top_padding 	       41
+bspc config left_padding           5
+bspc config right_padding          5
+bspc config bottom_padding         5
+bspc config border_width           1
 
 bspc config split_ratio          0.55
 bspc config borderless_monocle   true

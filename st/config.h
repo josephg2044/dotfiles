@@ -10,8 +10,8 @@
  * HasklugNerdFont
  * SauceCodeProNerdFont
  */
-static char *font = "SauceCodeProNerdFont:pixelsize=15:weight=90:antialias=true:autohint=true";
-static char *font2[] = { "SauceCodeProNerdFont:pixelsize=12:antialias=true:autohint=true" };
+static char *font = "HasklugNerdFont:pixelsize=15:weight=90:antialias=true:autohint=true";
+static char *font2[] = { "JoyPixels:pixelsize=14:antialias=true:autohint=true" };
 static int borderpx = 5;
 
 /*

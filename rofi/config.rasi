@@ -4,7 +4,7 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hack Nerd Font 12";
+    font: "Hack Nerd Font 10";
     fixed-num-lines: 				true;
     display-drun: "run";
     display-window: "win";
@@ -15,7 +15,7 @@ configuration {
 window {
     border: 						1px;
     padding: 						0;
-    width: 							20%;
+    width: 							10%;
 }
 
 textbox-prompt-colon {
@@ -44,11 +44,11 @@ inputbar {
 mainbox {
     border: 						1px;
     border-color:                   @foreground;
-    padding: 						15;
+    padding: 						7;
 }
 
 listview {
-    lines:							10;
+    lines:							5;
     columns:						1;
     fixed-height: 					0;
     border: 						0px;

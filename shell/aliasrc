@@ -89,8 +89,7 @@ alias mkd="mkdir -pv"
 alias topdf="soffice --headless --convert-to pdf"
 alias jstris="devour librewolf -P default-release ~/Jstris.html"
 
-alias ff="fastfetch"
-
+alias ff="fastfetch --structure OS:Kernel:Shell:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:Colors"
 alias rrun="Rscript"
 alias py="python3"
 alias py2="python2"
