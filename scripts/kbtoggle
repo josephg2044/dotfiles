@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ -f /tmp/espkb ]; then 
+    setxkbmap es 
+    rm /tmp/espkb 
+else 
+    setxkbmap us
+    touch /tmp/espkb 
+fi

@@ -18,17 +18,14 @@ super + @space
 	rofi -show drun
 
 super + i
-    $HOME/.config/rofi/applets/applets/time.sh
+    gaptoggle
 
 super + o 
     $HOME/.config/rofi/applets/applets/mpd.sh
 
 super + v
-    setxkbmap es
+    kbtoggle
 
-super + shift + v
-    setxkbmap us
-    
 super + p 
     $HOME/.config/rofi/applets/applets/powermenu.sh
 

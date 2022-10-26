@@ -18,7 +18,6 @@ window {
     padding: 						0;
     width: 							100%;
     children:                       [horibox];
-    fixed-height:                   1000px;
 }
 
 textbox-prompt-colon {

@@ -1,0 +1,7 @@
+#!/bin/sh
+systemctl restart iwd.service
+mullvad disconnect
+iwctl station wlan0 connect FCPSGuest
+mullvad disconnect
+librewolf 1.1.1.15
+

@@ -1,7 +1,4 @@
 @import "~/dotfiles/rofi/colors-rofi-dark.rasi"
-/*
-
-/* Dark theme. */
 
 configuration {
     modi: "window,drun,ssh,calc";
@@ -16,9 +13,10 @@ configuration {
 window {
     border: 						1px;
     padding: 						0;
-    width: 							10%;
+    border-color:                   @foreground;
+    width: 							30%;
     text-color:                     @foreground;
-    children:                       [inputbar]
+    children:                       [ inputbar, listview, entry];
 }
 
 textbox-prompt-colon {
@@ -42,6 +40,7 @@ inputbar {
     text-color:                     @foreground;
     spacing:    					0px;
     padding:    					5px;
+    children:                       [ textbox-prompt-colon ];
 }
 
 mainbox {
@@ -53,9 +52,8 @@ mainbox {
 listview {
     lines:							5;
     columns:						1;
-    fixed-height: 					0;
     border: 						0px;
     spacing: 						5px;
-    scrollbar: 						false;
+    scrollbar: 						true;
     padding: 						10px 5px 3px 5px;
 }
