@@ -15,7 +15,7 @@ case $(file --mime-type "$@" -bL) in
         devour zathura "$@"
         ;;
     image/png | image/jpeg)
-        devour sxiv "$@"
+        devour nsxiv "$@"
         ;;
    *) exit 1 ;;
 esac

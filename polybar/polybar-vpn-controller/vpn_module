@@ -133,7 +133,7 @@ vpn_location_menu() {
 	if hash rofi 2>/dev/null; then
 		## shellcheck throws errors here, but the globbing of $rofi_location is intentional
 		# shellcheck disable=SC2086
-		MENU="$(rofi $rofi_location -sep "\n" -dmenu -i -p "$rofi_menu_name" -input "$DIRNAME"/mullvad/menu)"
+		MENU="$(rofi -sep "\n" -dmenu -i -p "$rofi_menu_name" -input "$DIRNAME"/mullvad/menu)"
 
 		case "$MENU" in
 			*connect) 

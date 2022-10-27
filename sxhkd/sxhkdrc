@@ -17,11 +17,11 @@ super + shift + p
 super + @space 
 	rofi -show drun
 
-super + i
-    gaptoggle
+super + o
+    ~/.config/polybar/polybar-vpn-controller/vpn_module menu
 
-super + o 
-    $HOME/.config/rofi/applets/applets/mpd.sh
+super + i 
+    gaptoggle
 
 super + v
     kbtoggle
@@ -49,7 +49,7 @@ super + b
     
 # rofi calc
 super + n
-    rofi -show calc 
+    rofi -theme ~/.config/rofi/big.rasi -show calc 
 
 super + c 
     bspc node -g locked

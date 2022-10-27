@@ -34,7 +34,7 @@ case $chosen in
         ;;
     $area)
 		if [[ -f /usr/bin/scrot ]]; then
-			scrot -s 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)/screenshots ; viewnior $$(xdg-user-dir PICTURES)/screenshots/$f'
+			scrot -s --line mode=edge 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)/screenshots ; viewnior $$(xdg-user-dir PICTURES)/screenshots/$f'
 		else
 			msg
 		fi
