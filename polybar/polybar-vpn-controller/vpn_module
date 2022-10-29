@@ -55,7 +55,6 @@ COLOR_DISCONNECTED="#e57474"
 
 ## [Set rofi menu]. `man rofi` for help on location params.
 #important: keep the icons to a single character for the rofi menu to work as intended
-rofi_location="-location 3 -xoffset -530 -yoffset +30"
 rofi_menu_name="ﱾ VPN"
 
 
@@ -133,7 +132,7 @@ vpn_location_menu() {
 	if hash rofi 2>/dev/null; then
 		## shellcheck throws errors here, but the globbing of $rofi_location is intentional
 		# shellcheck disable=SC2086
-		MENU="$(rofi -sep "\n" -dmenu -i -p "$rofi_menu_name" -input "$DIRNAME"/mullvad/menu)"
+		MENU="$(rofi -sep -theme ~/.config/rofi/vpn.rasi "\n" -dmenu -i -p "$rofi_menu_name" -input "$DIRNAME"/mullvad/menu)"
 
 		case "$MENU" in
 			*connect) 

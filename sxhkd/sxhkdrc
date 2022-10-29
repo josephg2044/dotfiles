@@ -49,7 +49,7 @@ super + b
     
 # rofi calc
 super + n
-    rofi -theme ~/.config/rofi/big.rasi -show calc 
+    rofi -theme ~/.config/rofi/calc.rasi -show calc 
 
 super + c 
     bspc node -g locked
