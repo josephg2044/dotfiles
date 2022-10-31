@@ -23,17 +23,24 @@ super + o
 super + i 
     gaptoggle
 
+super + y
+    rofi-pass
+
 super + v
     kbtoggle
 
 super + p 
-    $HOME/.config/rofi/applets/applets/powermenu.sh
+    $HOME/.config/rofi/applets/powermenu.sh
 
 super + shift + s 
-    $HOME/.config/rofi/applets/applets/screenshot.sh
+    $HOME/.config/rofi/applets/screenshot.sh
 
 super + Up
     amixer -D pulse sset Master 5%+
+
+# lock gpg agent
+super + u
+    echo RELOADAGENT | gpg-connect-agent
 
 super + Down
     amixer -D pulse sset Master 5%-

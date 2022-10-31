@@ -27,7 +27,7 @@ chosen="$(echo -e "$options" | $rofi_command -p 'scrot' -dmenu -selected-row 1)"
 case $chosen in
     $screen)
 		if [[ -f /usr/bin/scrot ]]; then
-			sleep 1; scrot 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)/screenshots ; viewnior $$(xdg-user-dir PICTURES)/screenshots/$f'
+			sleep 1; scrot 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES)/screenshots ; nsxiv $$(xdg-user-dir PICTURES)/screenshots/$f'
 		else
 			msg
 		fi
