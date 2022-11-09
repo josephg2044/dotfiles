@@ -1,5 +1,0 @@
-#!/bin/sh
-mullvad disconnect
-iwctl station wlan0 connect Fios-N4PTw-5GHz2
-mullvad connect
-
