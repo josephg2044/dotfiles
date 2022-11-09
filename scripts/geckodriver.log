@@ -1,0 +1,12 @@
+1667962861755	geckodriver	INFO	Listening on 127.0.0.1:44623
+1667962861757	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "60617" "-no-remote" "-profile" "/tmp/rust_mozprofilebJTg8M"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1667962861998	Marionette	INFO	Marionette enabled
+1667962861999	Marionette	INFO	Listening on port 45567
+WebDriver BiDi listening on ws://127.0.0.1:60617
+1667962862118	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilebJTg8M/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:60617/devtools/browser/f36752ab-aa69-4a89-9567-275e37dabf0f
+1667962864697	Marionette	INFO	Stopped listening on port 45567
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed

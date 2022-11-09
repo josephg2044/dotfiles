@@ -1,8 +1,39 @@
 #!/bin/sh
-systemctl restart iwd.service
-mullvad disconnect
+
+wlan=$(iwctl station list)
+if [[ $wlan != *"wlan0"* ]]; then
+    systemctl restart iwd
+
+    while [[ $var != *"connected"* ]]
+    do
+        wlan=$(iwctl station list)
+        sleep 1
+    done
+fi
+
+vpn=$(mullvad status)
+while [[ $vpn != *"Disconnected"* ]]
+do
+    mullvad disconnect
+    sleep 1
+    vpn=$(mullvad status)
+done
+
 iwctl station wlan0 connect FCPSGuest
-mullvad disconnect
+wifi=$(iwctl station wlan0 get-networks)
+while [[ $wifi != *">"* ]]
+do
+    iwctl station wlan0 connect FCPSGuest
+    sleep 1
+    wifi=$(iwctl station wlan0 get-networks)
+done
 exec librewolf 1.1.1.15 && wait 2; mullvad disconnect
 mullvad connect
 
+vpn=$(mullvad status)
+while [[ $vpn != *"Connected"* ]]
+do
+    mullvad connect
+    sleep 1
+    vpn=$(mullvad status)
+done

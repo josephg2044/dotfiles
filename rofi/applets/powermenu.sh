@@ -44,7 +44,7 @@ run_rofi() {
 
 # Confirmation CMD
 confirm_cmd() {
-	rofi -theme-str 'window {location: center; anchor: center; fullscreen: false; width: 225px;}' \
+	rofi -theme-str 'window {location: center; anchor: center; fullscreen: false; width: 155px;}' \
 		-theme-str 'mainbox {orientation: vertical; children: [ "message", "listview" ];}' \
 		-theme-str 'listview {columns: 2; lines: 1;}' \
 		-theme-str 'element-text {horizontal-align: 0.5;}' \
@@ -77,7 +77,7 @@ run_cmd() {
 	elif [[ "$1" == '--opt2' ]]; then
 		confirm_run 'blurlock.sh' 'systemctl suspend'
 	elif [[ "$1" == '--opt3' ]]; then
-		confirm_run 'systemctl hibernate'
+		confirm_run 'blurlock.sh && systemctl hibernate'
 	elif [[ "$1" == '--opt4' ]]; then
 		confirm_run 'systemctl reboot'
 	elif [[ "$1" == '--opt5' ]]; then
