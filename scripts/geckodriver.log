@@ -1,0 +1,199 @@
+1668024674502	geckodriver	INFO	Listening on 127.0.0.1:58537
+1668024674506	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "43391" "-no-remote" "-profile" "/tmp/rust_mozprofileCxiPyE"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668024674739	Marionette	INFO	Marionette enabled
+1668024674740	Marionette	INFO	Listening on port 41091
+WebDriver BiDi listening on ws://127.0.0.1:43391
+1668024674858	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileCxiPyE/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:43391/devtools/browser/36c2b529-3d1d-43ee-8107-36ca49ac538c
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://ion.tjhsst.edu."
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://ion.tjhsst.edu."
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+console.error: (new TypeError("currentNode is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 66))
+TypeError: currentNode is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:66:20
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:242:32
+emit@resource://devtools/shared/event-emitter.js:186:18
+emit@resource://devtools/shared/event-emitter.js:330:18
+getMutations@resource://devtools/client/fronts/walker.js:311:10
+
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://www.google.com."
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1668025626247	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'loading'.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/rVlqs_C6MEoymNIgrpYBY2eJfhVJuMjEUeWab4z9yRM.js line 2 > eval line 1756 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/rVlqs_C6MEoymNIgrpYBY2eJfhVJuMjEUeWab4z9yRM.js line 2 > eval line 3219 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/rVlqs_C6MEoymNIgrpYBY2eJfhVJuMjEUeWab4z9yRM.js line 2 > eval line 5834 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pix.adrta.com/cdnf.js?v=22.110, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/rVlqs_C6MEoymNIgrpYBY2eJfhVJuMjEUeWab4z9yRM.js line 2 > eval line 4596 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/rVlqs_C6MEoymNIgrpYBY2eJfhVJuMjEUeWab4z9yRM.js line 2 > eval line 5805 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1668026187292	Marionette	INFO	Stopped listening on port 41091
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1668026219064	geckodriver	INFO	Listening on 127.0.0.1:47063
+1668026219068	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "36385" "-no-remote" "-profile" "/tmp/rust_mozprofile4sG4ly"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668026219302	Marionette	INFO	Marionette enabled
+1668026219305	Marionette	INFO	Listening on port 45557
+WebDriver BiDi listening on ws://127.0.0.1:36385
+1668026219426	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile4sG4ly/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:36385/devtools/browser/03e51943-b896-4206-9afd-74159a8a0be1
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://ion.tjhsst.edu."
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://ion.tjhsst.edu."
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript warning: https://ion.tjhsst.edu/static/js/vendor/backbone-min.js, line 3: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1668026548719	Marionette	INFO	Stopped listening on port 45557
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1668026554766	geckodriver::marionette	ERROR	Failed to close browser connection: Transport endpoint is not connected (os error 107)
+1668094873839	geckodriver	INFO	Listening on 127.0.0.1:53051
+1668094874354	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "55869" "-no-remote" "-profile" "/tmp/rust_mozprofile3WAuTV"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668094874682	Marionette	INFO	Marionette enabled
+1668094874684	Marionette	INFO	Listening on port 40173
+WebDriver BiDi listening on ws://127.0.0.1:55869
+1668094874819	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile3WAuTV/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:55869/devtools/browser/49da0d5f-170d-4278-a0e9-90b7547e831b
+console.error: Region.jsm: "Error fetching region" (new Error("TIMEOUT", "resource://gre/modules/Region.jsm", 768))
+console.error: Region.jsm: "Failed to fetch region" (new Error("TIMEOUT", "resource://gre/modules/Region.jsm", 420))
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+1668095165397	geckodriver	INFO	Listening on 127.0.0.1:37733
+1668095165402	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "58685" "-no-remote" "-profile" "/tmp/rust_mozprofile22epVe"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095165667	Marionette	INFO	Marionette enabled
+1668095165669	Marionette	INFO	Listening on port 40097
+WebDriver BiDi listening on ws://127.0.0.1:58685
+1668095165731	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 420))
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile22epVe/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:58685/devtools/browser/23d4709b-6fac-4df1-9221-aac84c406cdf
+1668095205797	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1668095219014	Marionette	INFO	Stopped listening on port 40097
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1668095227653	geckodriver	INFO	Listening on 127.0.0.1:56447
+1668095227655	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "35507" "-no-remote" "-profile" "/tmp/rust_mozprofileW4ukeG"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095227883	Marionette	INFO	Marionette enabled
+1668095227885	Marionette	INFO	Listening on port 42059
+WebDriver BiDi listening on ws://127.0.0.1:35507
+1668095228005	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 420))
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileW4ukeG/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:35507/devtools/browser/68ac182c-43ec-4656-a652-d40f6980abbb
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://1.1.1.15."
+1668095229175	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
+1668095229859	Marionette	INFO	Stopped listening on port 42059
+1668095239960	geckodriver	INFO	Listening on 127.0.0.1:45377
+1668095239962	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "60951" "-no-remote" "-profile" "/tmp/rust_mozprofileSBqzI4"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095240195	Marionette	INFO	Marionette enabled
+1668095240197	Marionette	INFO	Listening on port 44161
+WebDriver BiDi listening on ws://127.0.0.1:60951
+1668095240318	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileSBqzI4/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:60951/devtools/browser/335732b2-1f79-4d6e-959d-2810bcf6c994
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://1.1.1.15."
+1668095241566	Marionette	INFO	Stopped listening on port 44161
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed
+1668095298005	geckodriver	INFO	Listening on 127.0.0.1:48857
+1668095298007	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "58127" "-no-remote" "-profile" "/tmp/rust_mozprofileLd8rf8"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095298254	Marionette	INFO	Marionette enabled
+1668095298256	Marionette	INFO	Listening on port 37493
+WebDriver BiDi listening on ws://127.0.0.1:58127
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 420))
+1668095298373	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileLd8rf8/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:58127/devtools/browser/e3cfb69c-e8ab-40dd-8cc0-059f7a46670e
+1668095311802	geckodriver	INFO	Listening on 127.0.0.1:39001
+1668095311804	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "48961" "-no-remote" "-profile" "/tmp/rust_mozprofileETbF5e"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095312047	Marionette	INFO	Marionette enabled
+1668095312049	Marionette	INFO	Listening on port 35853
+WebDriver BiDi listening on ws://127.0.0.1:48961
+1668095312164	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileETbF5e/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:48961/devtools/browser/650794fb-528d-4bf9-8d11-d4b2d29bdb74
+1668095313512	Marionette	INFO	Stopped listening on port 37493
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://1.1.1.15."
+1668095313649	Marionette	INFO	Stopped listening on port 35853
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed
+1668095458942	geckodriver	INFO	Listening on 127.0.0.1:42257
+1668095458944	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "55081" "-no-remote" "-profile" "/tmp/rust_mozprofilewOd1lr"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095459176	Marionette	INFO	Marionette enabled
+1668095459178	Marionette	INFO	Listening on port 42853
+WebDriver BiDi listening on ws://127.0.0.1:55081
+1668095459299	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilewOd1lr/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:55081/devtools/browser/b0af5160-1a78-407d-a71e-dfe277ed5241
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://1.1.1.15."
+1668095460566	Marionette	INFO	Stopped listening on port 42853
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed
+1668095687530	geckodriver	INFO	Listening on 127.0.0.1:60885
+1668095687532	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "47773" "-no-remote" "-profile" "/tmp/rust_mozprofileOier9d"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095687761	Marionette	INFO	Marionette enabled
+1668095687763	Marionette	INFO	Listening on port 45163
+WebDriver BiDi listening on ws://127.0.0.1:47773
+1668095687885	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileOier9d/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:47773/devtools/browser/324ed889-3b10-4799-90ce-1b382eb41e65
+1668095691603	Marionette	INFO	Stopped listening on port 45163
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed
+1668095705098	geckodriver	INFO	Listening on 127.0.0.1:49799
+1668095705100	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "41563" "-no-remote" "-profile" "/tmp/rust_mozprofilecbHsGU"
+[GFX1-]: glxtest: VA-API test failed: failed to initialise VAAPI connection.
+1668095705332	Marionette	INFO	Marionette enabled
+1668095705334	Marionette	INFO	Listening on port 35605
+WebDriver BiDi listening on ws://127.0.0.1:41563
+1668095705457	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilecbHsGU/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:41563/devtools/browser/7389e557-01d6-404e-b259-ab09a480fa62
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://1.1.1.15."
+1668095706858	Marionette	INFO	Stopped listening on port 35605
+JavaScript error: resource://services-settings/Utils.jsm, line 239: TypeError: NetworkError: Network request failed
