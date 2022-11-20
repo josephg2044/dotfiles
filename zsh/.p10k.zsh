@@ -33,7 +33,6 @@
     # os_icon               # os identifier
     context                 # user@hostname
     dir                     # current directory
-    context
     vcs                     # git status
     prompt_char             # prompt symbol
   )
