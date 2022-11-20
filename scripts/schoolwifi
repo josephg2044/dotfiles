@@ -1,8 +1,0 @@
-#!/bin/sh
-systemctl restart iwd.service
-mullvad disconnect
-iwctl station wlan0 connect FCPSGuest
-mullvad disconnect
-exec librewolf 1.1.1.15 && wait 2; mullvad disconnect
-mullvad connect
-

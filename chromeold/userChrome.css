@@ -16,6 +16,8 @@
 
 /* ========================================================================= */
 
+/* Sidebar (Core) :: This file is for the sidebar implementation */
+  @import url("./extensions/sidebar.css");
 
 /*
   Extensions :: 
