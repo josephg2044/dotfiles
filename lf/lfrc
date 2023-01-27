@@ -182,7 +182,7 @@ map gdsr cd ~/documents/school/2_rs1/
 map gdsb cd ~/documents/school/7_bio//
 map gdsa cd ~/documents/school/4_acompscif/
 map gdse cd ~/documents/school/5_english/
-map gdsd cd ~/documents/school/jvdebate/
+map gdsd cd ~/documents/school/debate/
 map gdp cd ~/documents/programming/
 
 map gL cd ~/.local
