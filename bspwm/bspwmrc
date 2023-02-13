@@ -2,7 +2,7 @@
 
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-bspc monitor -d dir www doc mus sys com ac1 ac2 ac3 ac4 
+bspc monitor -d dir www doc sys mus com ac1 ac2 ac3 ac4 
 
 
 bspc config window_gap              0
