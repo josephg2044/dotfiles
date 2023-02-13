@@ -17,6 +17,7 @@ export XDG_PICTURES_DIR="$HOME/pictures/"
 export XDG_VIDEOS_DIR="$HOME/videos"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
+export PATH="$HOME/.emacs.d/bin:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
 export AWT_TOOLKIT=MToolkit
 export JDK_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
