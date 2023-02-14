@@ -9,6 +9,8 @@ set shell sh
 set shellopts '-eu'
 set ifs "\n"
 
+cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
+
 cmd tar ${{
     set -f
     mkdir $1
