@@ -98,6 +98,7 @@ alias py2="python2"
 
 alias addup='git add -u'
 alias addall='git add .'
+alias up="git add .; git commit -m 'asdf'; push"
 alias branch='git branch'
 alias checkout='git checkout'
 alias clone='git clone'
