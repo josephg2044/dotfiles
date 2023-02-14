@@ -21,7 +21,10 @@ super + o
     ~/.config/polybar/polybar-vpn-controller/vpn_module menu
 
 super + i 
-    gaptoggle
+    gapdec
+
+super + I
+    gapinc
 
 super + y
     rofi-pass

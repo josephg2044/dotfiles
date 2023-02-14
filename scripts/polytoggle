@@ -1,18 +1,12 @@
 #!/bin/sh
+
+top=$(bspc config top_padding)
 if [ -f /tmp/polybarhidden ]; then 
-    if [ -f /tmp/outergap ]; then 
-        bspc config top_padding 36 
-    else
-        bspc config top_padding 46
-    fi
+    bspc config top_padding $(expr $top + 36) 
     polybar-msg cmd show 
     rm /tmp/polybarhidden 
 else 
-    if [ -f /tmp/outergap ]; then 
-        bspc config top_padding 0 
-    else
-        bspc config top_padding 10
-    fi
+    bspc config top_padding $(expr $top - 36) 
     polybar-msg cmd hide 
     touch /tmp/polybarhidden 
 fi
