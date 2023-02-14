@@ -68,12 +68,12 @@ copy_shot () {
 
 # countdown
 shotarea () {
-	cd ${dir} && maim -u -f png -s -b 2 -c 0.35,0.55,0.85,0.25 -l | copy_shot
+	cd ${dir} && maim -u -m 10 -f png -s -b 1 -c 0.75,0.75,0.85,0.05 -l | copy_shot
     nsxiv $file
 }
 
 shotnow () {
-	cd ${dir} && sleep 0.1 && maim -u -f png | copy_shot
+	cd ${dir} && sleep 0.1 && maim -u -m 10 -f png | copy_shot
     nsxiv $file
 }
 

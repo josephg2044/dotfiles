@@ -5,7 +5,6 @@ map . set hidden!
 set previewer ~/.config/lf/preview
 set cleaner ~/.config/lf/cleaner
 
-set drawbox
 set shell sh 
 set shellopts '-eu'
 set ifs "\n"
@@ -80,8 +79,6 @@ cmd execute ${{
 	wine "$f"
 }}
 
-cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
-
 # Trash bindings
 cmd trash ${{
   files=$(printf "$fx" | tr '\n' ';')
@@ -141,6 +138,50 @@ cmd restore_trash ${{
   trash-restore
 }}
 
+# Unmap the default binding
+map r
+# Rename the file with a completely different name
+map rc push :rename<space>
+# Edit the current filename
+map ra ${{
+	# get 'basename' of the selection
+	filename="${f##*/}"
+	# quote it so we won't deal with quotes in the lf -remote command
+	filename="$(printf '%q' "$filename")"
+	filename="${filename// /<space>}"
+	lf -remote "send $id push :rename<space>$filename"
+}}
+
+# Edit filename before the extension
+map re ${{
+	# get 'basename' of the selection
+	filename="${f##*/}"
+	# quote it so we won't deal with quotes in the lf -remote command
+	filename="$(printf '%q' "$filename")"
+	filename="${filename// /<space>}"
+	lf -remote "send $id push :rename<space>$filename<a-b><c-b>"
+}}
+
+# y (select for copy) and P to paste soft-link
+# d (select for cut) and P to paste hard-link
+cmd link %{{
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    if [ "$#" -lt 1 ]; then
+        lf -remote "send $id echo no files to link"
+        exit 0
+    fi
+    case "$mode" in
+        # symbolically copy mode is indicating a soft link
+        copy) ln -sr -t . -- "$@";;
+        # while a move mode is indicating a hard link
+        move) ln -t . -- "$@";;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send clear"
+}}
+map P :link
 # Bindings
 # Remove some defaults
 map m
@@ -150,12 +191,14 @@ map "'"
 map '"'
 map d
 
-map t devour-launch 
+map t tag-toggle
+map o devour-launch
 
 map au unarchive
 map ae execute
 
 map <c-f> fzf_jump
+map F filter
 map <a-f> fzf_JUMP
 map <c-s> fzf_search
 
@@ -167,8 +210,11 @@ map x cut
 map y copy
 map <enter> open
 map R reload
-map mf mkfile
-map md mkdir
+map mkf mkfile
+map mkd mkdir
+map ms mark-save
+map ml mark-load
+map mr mark-remove
 map C clear
 
 map dd trash
@@ -215,7 +261,7 @@ map gs cd ~/sync
 
 map <enter> shell
 map q quitcd
-map o quit
+map Q quit
 cmd quitcd ${{
 	echo "1" > "$LF_TEMPDIR"/cdtolastdir
 	lf -remote "send $id quit"
