@@ -61,6 +61,9 @@ super + n
 super + c 
     bspc node -g locked
 
+super + x
+    bspc node -g sticky
+
 super + semicolon 
     scpad
 

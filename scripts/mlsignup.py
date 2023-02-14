@@ -9,7 +9,6 @@ def main():
 
     browser = webdriver.Firefox()
     browser.get("https://ion.tjhsst.edu")
-    time.sleep(0.5)
     # browser.find_element(By.NAME, 'username').send_keys(userinfo[0])
     # browser.find_element(By.NAME, 'password').send_keys(userinfo[])
 
