@@ -95,6 +95,8 @@ alias rrun="Rscript"
 alias py="python3"
 alias py36="/usr/bin/python3.6"
 alias py2="python2"
+alias rsy="rsync -aruzv --partial --checksum"
+alias rsyd-"rsync -aruvz --partial --checksum --delete"
 
 alias addup='git add -u'
 alias addall='git add .'
