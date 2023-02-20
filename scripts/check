@@ -1,0 +1,31 @@
+#!/bin/bash
+
+checkio () {
+    cat "$2/$3.in" | ./$1 > "$3.out"
+    if [ $(cat $3.out) = $(cat "$2/$3.out") ]; then
+        echo "test $3: success"
+    else
+        echo "test $3: failed"
+    fi
+    rm "$3.out"
+}
+
+test_dir=$2
+num=$(expr $(ls -1 $test_dir | wc -l) / 2)
+main=${1%.*}
+echo 'compiling...'
+g++ -o ${1%.*} $1 -g > /tmp/compilerrors >&1
+
+if [ $? -eq 1 ]; then
+	echo 'compiling error: '
+	cat /tmp/compilerrors
+	rm /tmp/compilerrors
+	exit
+fi
+echo 'compiled'
+rm /tmp/compilerrors
+echo
+echo 'executing...'
+for i in $(seq 1 $num); do 
+    checkio $main $test_dir $i
+done

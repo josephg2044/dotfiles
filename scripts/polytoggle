@@ -2,11 +2,11 @@
 
 top=$(bspc config top_padding)
 if [ -f /tmp/polybarhidden ]; then 
-    bspc config top_padding $(expr $top + 36) 
+    bspc config top_padding $(expr $top + 26) 
     polybar-msg cmd show 
     rm /tmp/polybarhidden 
 else 
-    bspc config top_padding $(expr $top - 36) 
+    bspc config top_padding $(expr $top - 26) 
     polybar-msg cmd hide 
     touch /tmp/polybarhidden 
 fi

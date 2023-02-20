@@ -6,4 +6,3 @@ bspc config top_padding            $(expr $top - 10)
 bspc config left_padding           $(expr $side - 10)
 bspc config right_padding          $(expr $side - 10)
 bspc config bottom_padding         $(expr $side - 10)
-touch /tmp/outergap 
