@@ -6,4 +6,4 @@ wal -R &
 xset -dpms &
 xset r rate 215 45 &
 setxkbmap us &
-
+setxkbmap -option caps:escape
