@@ -4,7 +4,7 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hasklug Nerd Font 9";
+    font: "Hack Nerd Font 7";
     fixed-num-lines: 				true;
     display-drun:"run";
     display-window: "";
@@ -35,7 +35,7 @@ textbox-prompt-colon {
 
 horibox {
     orientation: horizontal;
-    border:             6px;
+    border:             3px;
     children:   [ prompt, textbox-prompt-colon, entry, listview ];
 }
 
@@ -55,7 +55,7 @@ listview {
     layout:                         horizontal;
     lines:                          200;
     columns:						1;
-    fixed-height: 					70px;
+    fixed-height: 					20px;
     spacing: 						10px;
     scrollbar: 						false;
     padding: 						0px 0px 0px 0px;
