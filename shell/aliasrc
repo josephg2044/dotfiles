@@ -113,3 +113,4 @@ alias stat='git status'  # 'status' is protected name so using 'stat' instead
 alias tag='git tag'
 alias newtag='git tag -a'
 
+alias jark="jar -cf $2 karel2_c/* $1"
