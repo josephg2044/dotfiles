@@ -13,6 +13,7 @@ if [ -f "$1" ]; then
             *.cpp) g++ -o ${1%.*} $1; ./${1%.*} ;;
             *.c) gcc -o ${1%.*} $1; ./${1%.*}   ;;
             *.java) javac $1 ; java ${1%.*}     ;;
+        esac
     fi
 else
     echo "no code"
