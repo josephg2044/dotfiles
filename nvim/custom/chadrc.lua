@@ -17,6 +17,8 @@ M.ui = {
         yoru = {
             base_16 = {
                 base08 = "#e05f65",
+                base00 = "#0c0e0f", --  nvim bg
+                -- 121517
                 base09 = "#7199ee",
                 base0B = "#98bb6c",
                 base0D = "#31afef",

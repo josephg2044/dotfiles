@@ -1,0 +1,3 @@
+#!/bin/sh
+alias klc="javac -cp xercesImpl.jar:karel2_c.jar:."
+alias kl="java -cp xercesImpl.jar:karel2_c.jar:."

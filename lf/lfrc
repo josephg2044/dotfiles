@@ -1,3 +1,5 @@
+source ~/.config/lf/motions
+
 set ratios 1:2:3
 set icons true
 map . set hidden!
@@ -221,45 +223,6 @@ map C clear
 
 map dd trash
 map dr restore_trash
-
-# Movement
-map gD cd ~/documents
-map gdM cd ~/documents/math
-map gdmc cd ~/documents/math/calc
-map gdmo cd ~/documents/math/compmath/
-map gdml cd ~/documents/math/linearalg/
-map gdmm cd ~/documents/math/multivar/
-map gdS cd ~/documents/school/
-map gdB cd ~/documents/bio/
-map gdsr cd ~/documents/school/2_rs2/
-map gdsb cd ~/documents/school/7_bio//
-map gdsa cd ~/documents/school/4_acompscif/
-map gdse cd ~/documents/school/5_english/
-map gdsd cd ~/documents/school/debate/
-map gdsm cd ~/documents/school/math4&5/
-map gdp cd ~/documents/programming/
-
-map gL cd ~/.local
-map glb cd ~/.local/bin
-map gls cd ~/.local/share
-map gll cd ~/.local/lib
-
-map gR cd /
-map grb cd /boot
-map grm cd /mnt
-map grd cd /dev 
-map gre cd /etc
-map grs cd /sys
-map grt cd /tmp 
-map grv cd /var
-
-map gp cd ~/pictures
-map go cd ~/downloads
-map gv cd ~/videos
-map gV cd ~/VM/
-map gc cd ~/.config
-map gC cd ~/dotfiles
-map gs cd ~/sync
 
 map <enter> shell
 map q quitcd

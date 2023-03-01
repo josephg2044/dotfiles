@@ -96,8 +96,7 @@ alias py="python3"
 alias py36="/usr/bin/python3.6"
 alias py2="python2"
 alias rsy="rsync -aruzv --partial --checksum"
-alias rsyd="rsync -aruvz --partial --checksum --delete"
-alias mrsy="rsync -aruvz --partial --checksum --exclude ~/sync/documents/school/4_acompscif/TJHSST-ACS-/"
+alias rsyd="rsync -aruvz --partial --checksum --delete --backup --backup-dir=DELETED_FILES/"
 
 alias addup='git add -u'
 alias addall='git add .'
@@ -112,5 +111,3 @@ alias push='git push origin'
 alias stat='git status'  # 'status' is protected name so using 'stat' instead
 alias tag='git tag'
 alias newtag='git tag -a'
-
-alias jark="jar -cf $2 karel2_c/* $1"

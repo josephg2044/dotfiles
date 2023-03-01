@@ -7,6 +7,7 @@ fi
 
 # Created by newuser for 5.8.1
 source $HOME/.config/shell/aliasrc
+source $HOME/.config/shell/custom
 source $HOME/.config/shell/profile
 
 setopt appendhistory
