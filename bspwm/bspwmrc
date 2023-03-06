@@ -7,7 +7,7 @@ bspc monitor -d dir www doc sys mus com ac1 ac2 ac3 ac4
 bspc config pointer_motion_interval 4
 
 bspc config window_gap              -1
-bspc config top_padding 	       38
+bspc config top_padding 	       37
 bspc config left_padding           11
 bspc config right_padding          11
 bspc config bottom_padding         11
