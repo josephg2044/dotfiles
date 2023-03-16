@@ -24,6 +24,7 @@ bspc rule -a Tk state=floating
 bspc rule -a matplotlib state=floating
 bspc rule -a Emacs state=tiled
 
+
 # Calculate the center of the screen for a 600x400 scratchpad
 scratchpad_xy="1200x800"
 display_xy=$(xdpyinfo | grep -i dimensions | awk '{ print $2 }')
