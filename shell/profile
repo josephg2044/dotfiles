@@ -10,6 +10,7 @@ export XDG_DESKTOP_DIR="$HOME/"
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export XDG_DOCUMENTS_DIR="$HOME/documents/"
 export WINEPREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/wineprefixes/default"
+export MOZ_USE_XINPUT2=1
 export XDG_DOWNLOAD_DIR="$HOME/downloads/"
 export PASSWORD_STORE_DIR="$HOME/.local/share/password_store/"
 export XDG_MUSIC_DIR="$HOME/music/"

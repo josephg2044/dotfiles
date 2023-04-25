@@ -23,6 +23,7 @@ bspc rule -a Zathura state=tiled
 bspc rule -a Tk state=floating
 bspc rule -a matplotlib state=floating
 bspc rule -a Emacs state=tiled
+bspc rule -a Lab state=floating
 
 
 # Calculate the center of the screen for a 600x400 scratchpad
