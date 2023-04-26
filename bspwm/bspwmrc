@@ -44,5 +44,6 @@ bspc config focused_border_color "#BBBBCC"
 # bspc config focused_border_color "#2c2e2f"
 
 sxhkd & 
-$HOME/.config/polybar/launch.sh
+$HOME/.config/polybar/launch.sh &
+$HOME/.local/bin/startup & 
 rm /tmp/polybarhidden
