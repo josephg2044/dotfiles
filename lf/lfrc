@@ -145,9 +145,9 @@ cmd restore_trash ${{
 # Unmap the default binding
 map r
 # Rename the file with a completely different name
-map rc push :rename<space>
+map cc push :rename<space>
 # Edit the current filename
-map ra ${{
+map ce ${{
 	# get 'basename' of the selection
 	filename="${f##*/}"
 	# quote it so we won't deal with quotes in the lf -remote command
@@ -157,7 +157,7 @@ map ra ${{
 }}
 
 # Edit filename before the extension
-map re ${{
+map cw ${{
 	# get 'basename' of the selection
 	filename="${f##*/}"
 	# quote it so we won't deal with quotes in the lf -remote command
@@ -194,6 +194,7 @@ map n
 map "'"
 map '"'
 map d
+map c
 
 map t tag-toggle
 map o devour-launch
