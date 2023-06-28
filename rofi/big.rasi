@@ -4,9 +4,9 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hasklug Nerd Font 9";
+    font: "Hasklug Nerd Font 14";
     fixed-num-lines: 				true;
-    display-drun: "run";
+    display-drun: "";
     display-window: "win";
     display-pass: "pass";
     display-calc: "calc";
@@ -15,15 +15,13 @@ configuration {
 window {
     border: 						1px;
     padding: 						0;
-    width: 							30%;
-    y-offset:                       -346;
-    x-offset:                       -5px;
-    location:                       east;
+    width: 							20%;
+    location:                       center;
 }
 
 textbox-prompt-colon {
     expand: 						false;
-    str: 							" | ";
+    str: 							"";
     margin:							0px 4px 0px 0px;
     text-color: 					@foreground;
 }
@@ -52,11 +50,11 @@ inputbar {
 mainbox {
     border: 						1px;
     border-color:                   @foreground;
-    padding: 						7px;
+    padding: 						15px;
 }
 
 listview {
-    lines:							10;
+    lines:							5;
     columns:						1;
     fixed-height: 					0;
     border: 						0px;

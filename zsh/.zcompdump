@@ -1,4 +1,4 @@
-#files: 815	version: 5.9
+#files: 820	version: 5.9
 
 _comps=(
 '-' '_precommand'
@@ -1275,6 +1275,11 @@ _comps=(
 'traceroute' '_hosts'
 'transmission-remote' '_transmission'
 'trap' '_trap'
+'trash' '_trash'
+'trash-empty' '_trash-empty'
+'trash-list' '_trash-list'
+'trash-put' '_trash-put'
+'trash-restore' '_trash-restore'
 'tree' '_tree'
 'trial' '_twisted'
 'trove' '_openstack'
@@ -1673,7 +1678,8 @@ autoload -Uz _bat _bluetoothctl _bootctl _bspc _busctl \
             _qpdf _resolvectl _rg _sd_hosts_or_user_at_host _sd_machines \
             _sd_outputmodes _sd_unit_files _systemctl _systemd _systemd-analyze \
             _systemd-delta _systemd-inhibit _systemd-nspawn _systemd-path _systemd-run \
-            _systemd-tmpfiles _timedatectl _udevadm _yay _youtube-dl \
+            _systemd-tmpfiles _timedatectl _trash _trash-empty _trash-list \
+            _trash-put _trash-restore _udevadm _yay _youtube-dl \
             _zathura _cdr _all_labels _all_matches _alternative \
             _approximate _arg_compile _arguments _bash_completions _cache_invalid \
             _call_function _combination _complete _complete_debug _complete_help \

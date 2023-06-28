@@ -6,4 +6,3 @@ xset r rate 215 45 &
 setxkbmap us &
 setxkbmap -option caps:escape
 xinput --set-prop 13 'libinput Accel Profile Enabled' 0, 1
-xinput --set-prop 13 155 1.35 0 0 0 1.35 0 0 0 1
