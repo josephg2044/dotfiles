@@ -36,7 +36,10 @@ super + p
     $HOME/.config/rofi/applets/powermenu.sh
 
 super + shift + s 
-    $HOME/.config/rofi/applets/screenshot.sh
+    $HOME/.local/bin/shotarea.sh
+
+super + ctrl + s 
+    $HOME/.local/bin/shotnow.sh
 
 super + Up
     amixer -D pulse sset Master 5%+
@@ -81,6 +84,9 @@ super + Escape
 # quit/restart bspwm
 super + alt + {q,r}
 	bspc {quit,wm -r}
+
+super + r
+    ~/.local/bin/settings
 
 # close and kill
 super + {_,shift + }w

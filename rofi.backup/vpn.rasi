@@ -15,14 +15,14 @@ configuration {
 window {
     border: 						1px;
     padding: 						0;
-    width: 							20%;
-    y-offset:                       440px;
     x-offset:                       -5px;
+    width: 							12%;
     location:                       east;
 }
 
 textbox-prompt-colon {
     expand: 						false;
+    str: 							" | ";
     margin:							0px 4px 0px 0px;
     text-color: 					@foreground;
 }
@@ -55,7 +55,7 @@ mainbox {
 }
 
 listview {
-    lines:							5;
+    lines:							40;
     columns:						1;
     fixed-height: 					0;
     border: 						0px;
