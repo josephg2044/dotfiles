@@ -3,20 +3,15 @@
 @import "~/dotfiles/rofi/colors-rofi-dark.rasi"
 
 configuration {
-    modi: "window,drun,ssh,calc";
-    font: "Hack Nerd Font 7";
+    font: "Hack Nerd Font 10";
     fixed-num-lines: 				true;
-    display-drun: "run";
-    display-window: "win";
-    display-pass: "pass";
-    display-calc: "calc";
+    display-calc: "";
 }
 
 window {
-    border: 						1px;
+    border: 						0px;
     padding: 						0;
     width: 							20%;
-    y-offset:                       440px;
     x-offset:                       -5px;
     location:                       east;
 }
@@ -29,7 +24,7 @@ textbox-prompt-colon {
 
 #entry {
     spacing: 0;
-    text-color: @selected-active-background;
+    text-color: @foreground-alt;
 }
 
 element-text {
@@ -38,8 +33,8 @@ element-text {
 }
 
 #element.selected.normal {
-    background-color: @selected-active-background;
-    text-color: @normal-background;
+    background-color: @background;
+    text-color: @foreground-alt;
 }
 
 inputbar {
@@ -49,7 +44,6 @@ inputbar {
 }
 
 mainbox {
-    border: 						1px;
     border-color:                   @foreground;
     padding: 						7px;
 }

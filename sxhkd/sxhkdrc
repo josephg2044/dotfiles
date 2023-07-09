@@ -52,10 +52,10 @@ super + Down
     amixer -D pulse sset Master 5%-
     
 super + Right
-    xbacklight -inc 10
+    light -A 10
 
 super + Left 
-    xbacklight -dec 10
+    light -U 10
 
 super + b 
     amixer -D pulse sset Master 0

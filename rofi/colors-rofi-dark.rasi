@@ -21,14 +21,15 @@
     selected-urgent-foreground: @foreground;
 
     background-color: @background;
-    background: #101213;
-    foreground: #dadada;
+    background: #ffffff00;
+    foreground-alt: #d3e1e1;
+    foreground: #939191;
     border-color: @background;
     spacing: 2;
 }
 
 #window {
-    background-color: @background;
+    background-color: #10121388;
     border: 0;
     padding: 2.5ch;
 }
@@ -54,7 +55,7 @@
 
 #textbox-prompt-colon {
     expand: false;
-    str: ":";
+    str: "";
     margin: 0px 0.3em 0em 0em;
     text-color: @normal-foreground;
 }

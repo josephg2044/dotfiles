@@ -13,7 +13,7 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import                          "./colors/dark.rasi"
+@import                          "./dark.rasi"
 
 * {
     font: "JetBrains Mono Nerd Font 10";
@@ -135,8 +135,8 @@ element-text {
 
 element normal.normal,
 element alternate.normal {
-    background-color:            @background-alt;
-    text-color:                  @foreground;
+    background-color:            @transparent;
+    text-color:                  @foreground-alt;
 }
 element normal.urgent,
 element alternate.urgent,
@@ -151,6 +151,6 @@ element selected.urgent {
     text-color:                  @background;
 }
 element selected.normal {
-    background-color:            @selected;
-    text-color:                  @background;
+    background-color:            @transparent;
+    text-color:                  @foreground;
 }

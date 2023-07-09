@@ -4,16 +4,14 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hasklug Nerd Font 10";
+    font: "Hack Nerd Font 10";
     fixed-num-lines: 				true;
     display-drun: "";
-    display-window: "win";
-    display-pass: "pass";
-    display-calc: "calc";
 }
 
 window {
-    border: 						1px;
+    border: 						0px;
+    border-radius:                  0px;
     padding: 						0;
     width: 							13%;
     location:                       center;
@@ -27,8 +25,9 @@ textbox-prompt-colon {
 }
 
 #entry {
+    placeholder: "";
     spacing: 0;
-    text-color: @selected-active-background;
+    text-color: @foreground-alt;
 }
 
 element-text {
@@ -37,8 +36,8 @@ element-text {
 }
 
 #element.selected.normal {
-    background-color: @selected-active-background;
-    text-color: @normal-background;
+    background-color: @background;
+    text-color: @foreground-alt;
 }
 
 inputbar {
@@ -48,7 +47,7 @@ inputbar {
 }
 
 mainbox {
-    border: 						1px;
+    border: 						0px;
     border-color:                   @foreground;
     padding: 						15px;
 }
