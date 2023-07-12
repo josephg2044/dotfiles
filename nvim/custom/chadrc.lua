@@ -18,7 +18,7 @@ M.ui = {
             base_16 = {
                 base08 = "#e05f65",
                 base00 = "#0c0e0f", --  nvim bg
-                base01 = "#d3e1e1",
+                base01 = "#c3d1d1",
                 -- 121517
                 base09 = "#7199ee",
                 base0B = "#98bb6c",

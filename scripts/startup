@@ -1,6 +1,0 @@
-#!/bin/sh
-
-picom &
-settings &
-wal -R &
-optimus-manager-qt
