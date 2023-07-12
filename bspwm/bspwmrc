@@ -54,4 +54,4 @@ setxkbmap -option caps:escape &
 xset -dpms &
 xset r rate 215 45 &
 setxkbmap us & 
-$HOME/documents/scripts_config/extra
+$HOME/.local/bin/extra
