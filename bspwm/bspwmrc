@@ -45,7 +45,13 @@ bspc config focused_border_color "#b3c1c1"
 sxhkd &
 $HOME/.config/polybar/launch.sh &
 picom &
-$HOME/.local/bin/settings &
 wal -R &
 dunst &
-rm /tmp/polybarhidden
+rm /tmp/polybarhidden & 
+fehbg &
+# EXTRA CONFIG
+setxkbmap -option caps:escape &
+xset -dpms &
+xset r rate 215 45 &
+setxkbmap us & 
+$HOME/documents/scripts_config/extra
