@@ -46,9 +46,9 @@ CONNECTING="connecting"
 
 ## [Set colors] (set each variable to nothing for default color)
 # Icons glyphs should be given by most Nerd Fonts (https://www.nerdfonts.com/cheat-sheet)
-ICON_CONNECTED=""
-ICON_CONNECTING="ﯩ"
-ICON_DISCONNECTED=""
+ICON_CONNECTED=""
+ICON_CONNECTING=""
+ICON_DISCONNECTED=""
 COLOR_CONNECTED="#a5fb8f"
 COLOR_CONNECTING="#FAE3B0"
 COLOR_DISCONNECTED="#e57474"
@@ -109,10 +109,10 @@ vpn_report() {
 		fi		
 
 	elif [ "$VPN_STATUS" = "$CONNECTING" ]; then
-		echo "%{F$COLOR_CONNECTING}$ICON_CONNECTING Connecting...%{F-}"
+		echo "%{F$COLOR_CONNECTING}$ICON_CONNECTING"
 
 	else
-		echo "%{F$COLOR_DISCONNECTED}$ICON_DISCONNECTED No VPN%{F-}"
+		echo "%{F$COLOR_DISCONNECTED}$ICON_DISCONNECTED"
 	fi
 }
 

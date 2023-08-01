@@ -10,23 +10,28 @@ import os
 
 name_style = None  # options: upper, lower, None
 separator = " "  # What to separate workspaces with
-windowlist_prefix = ": "  # prefix before listing windows, default is ":"
+windowlist_prefix = " "  # prefix before listing windows, default is " "
 show = "window_class"
 forbidden_classes = "Polybar Conky Gmrun Pavucontrol".casefold().split(" ")
 hide_unpopulated_desktops = False
 iconize = True
 hide_name = True  # Controls whether to hide window names when an icon is present
 
-char_limit = 5
+char_limit = 10
 max_windows = 10
 add_spaces = "true"
 resize_increment = 16
 resize_offset = resize_increment / 2
 use_pywal = True
 
-override_names = False 
+override_names = [
+    "",
+    "",
+    "ﱣ"
+]  # Either a list containing the focused, populated and unfocused versions of workspace name, or False
+
 underline = False
-highlight_active_wps = True
+highlight_active_wps = False
 
 if len(sys.argv) <= 2:
     try:
@@ -34,8 +39,8 @@ if len(sys.argv) <= 2:
             raise TypeError
         with open(os.path.expanduser("~/.cache/wal/colors")) as colors:
             colors = tuple(map(lambda x: x[:-1], colors.readlines()))
-        active_text_color = colors[2]
-        active_underline = colors[2] if underline is not False else None
+        active_text_color = colors[1]
+        active_underline = colors[1] if underline is not False else None
         inactive_text_color = colors[7]
         inactive_underline = colors[7] if underline is not False else None
 
@@ -70,7 +75,7 @@ if len(sys.argv) <= 2:
         inactive_right = "%{-u}" + inactive_right
 
     on_click = " ".join(sys.argv[:2])
-    monitor = sys.argv[1]
+    monitor = sys.argv[0]
 
     printf = sys.stdout.write
 
@@ -92,7 +97,7 @@ if len(sys.argv) <= 2:
         "google-chrome": "",
         "cura": "",
         "darktable": "",
-        "ripcord": "ﭮ",
+        "discord": "ﭮ",
         "eclipse": "",
         "emacs": "",
         "eog": "",
@@ -120,12 +125,12 @@ if len(sys.argv) <= 2:
         "keybase": "",
         "kicad": "",
         "kitty": "",
-        "st-256color": "",
-        "st": "",
+        "st-256color": "",
+        "st": "",
         "libreoffice": "",
         "lua5.1": "",
         "mpv": "",
-        "zathura": "",
+        "mupdf": "",
         "mysql-workbench-bin": "",
         "nautilus": "",
         "nemo": "",
@@ -177,7 +182,7 @@ if hide_name:
             if not name.casefold().startswith("lunar client"):
                 return name[:char_limit]
             else:
-                return ""
+                return " "
 
 else:
 
@@ -235,10 +240,9 @@ def wid_to_name(wid, cache={}):
 
 def generate(workspaces, focused_desk, order):
     global classcache
-    global focused
-    # focused = os.popen(f"bspc query -N -m {mon_id} -n .focused").read()[
-    #     :-1
-    # ]  # ID of the currently focused window
+    focused = os.popen(f"bspc query -N -m {mon_id} -n .focused").read()[
+        :-1
+    ]  # ID of the currently focused window
     for workspace_id in order:
         if (
             len(workspaces[workspace_id][0]) < hide_unpopulated_desktops
@@ -258,10 +262,11 @@ def generate(workspaces, focused_desk, order):
             + ":}"
             + wps_inactive_left
             + separator
+            + (workspaces[workspace_id][1] if override_names is False else (override_names[1] if len(workspaces[workspace_id][0]) else override_names[0]))
             if workspace_id != focused_desk
             else wps_active_left
             + separator
-            + (workspaces[workspace_id][1] if override_names is False else override_names[0])
+            + (workspaces[workspace_id][1] if override_names is False else override_names[2])
         )
         if len(workspaces[workspace_id][0]) == 0:
             printf(separator + wps_active_right + "%{A}%{A}")
@@ -297,6 +302,7 @@ def generate(workspaces, focused_desk, order):
                     + ":}"
                 )
                 printf(active_left if focused in windows[win_class] else inactive_left)
+                printf(separator if i == 0 else "")
                 printf(
                     win_class.upper()
                     if name_style == "upper"
@@ -315,7 +321,6 @@ def generate(workspaces, focused_desk, order):
 
 def main():
     if len(sys.argv) <= 2:
-        global focused
         focused = ""
         command = os.popen(
             "bspc subscribe desktop_focus desktop_add desktop_rename desktop_remove desktop_swap node_add node_remove node_swap node_transfer node_focus"
@@ -381,7 +386,8 @@ def main():
                     update = update[5:].split(" ")
                     if update[0] == "focus":
                         # global focused
-                        focused = update[3]
+                        # focused = update[3]
+                        pass
                     elif update[0] == "add":
                         try:
                             workspaces[update[2]][0].append(update[4])
@@ -501,6 +507,7 @@ xdo hide "{window}" &
 pos="$(slop -b 2 -c 0.75,0.8,0.96.1 -f 0,%x,%y,%w,%h)"
 xdo show "{window}"
 bspc node "{window}" -t floating
+bspc node "{window}" -d focused
 wmctrl -ir "{window}" -e "$pos"
 xdo activate "{window}"'"""
     )

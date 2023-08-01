@@ -3,6 +3,10 @@
 #
 
 # terminal emulator
+#
+super + BackSpace
+    xbktoggle.sh
+
 super + Return
 	st
 
@@ -58,7 +62,7 @@ super + Left
     light -U 10
 
 super + b 
-    amixer -D pulse sset Master 0
+    pactl -- set-sink-volume alsa_output.pci-0000_00_1f.3.analog-stereo 0%
     
 # rofi calc
 super + n

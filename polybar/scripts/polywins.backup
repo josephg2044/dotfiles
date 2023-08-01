@@ -19,7 +19,7 @@ hide_name = True  # Controls whether to hide window names when an icon is presen
 
 char_limit = 5
 max_windows = 10
-add_spaces = "false"
+add_spaces = "true"
 resize_increment = 16
 resize_offset = resize_increment / 2
 use_pywal = True
@@ -258,7 +258,6 @@ def generate(workspaces, focused_desk, order):
             + ":}"
             + wps_inactive_left
             + separator
-            + (workspaces[workspace_id][1] if override_names is False else override_names[1])
             if workspace_id != focused_desk
             else wps_active_left
             + separator
@@ -298,7 +297,6 @@ def generate(workspaces, focused_desk, order):
                     + ":}"
                 )
                 printf(active_left if focused in windows[win_class] else inactive_left)
-                printf(separator if i == 0 else "")
                 printf(
                     win_class.upper()
                     if name_style == "upper"
