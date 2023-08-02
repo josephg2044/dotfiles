@@ -1,0 +1,38 @@
+#!/bin/bash
+VPN_CONNECT="mullvad connect"
+VPN_DISCONNECT="mullvad disconnect"
+VPN_GET_STATUS="mullvad status"
+VPN_RELAY_SET_LOCATION="mullvad relay set location"
+
+VPN_STATUS="$($VPN_GET_STATUS | grep -Eio 'connected|connecting|disconnected' \
+	| tr '[:upper:]' '[:lower:]')"
+rofi_menu_name="VPN"
+DIRNAME="$(dirname "$(realpath "$0")")"
+mapfile -t VPN_LOCATIONS < "$DIRNAME"/mullvad/locations
+mapfile -t VPN_CODES < "$DIRNAME"/mullvad/codes
+
+if hash rofi 2>/dev/null; then
+    ## shellcheck throws errors here, but the globbing of $rofi_location is intentional
+    # shellcheck disable=SC2086
+    MENU="$(rofi -sep -theme ~/.config/rofi/vpn.rasi "\n" -dmenu -i -p "$rofi_menu_name" -input "$DIRNAME"/mullvad/menu)"
+
+    if [ "$MENU" = "DISCONNECT" ]; then 
+        mullvad disconnect
+    elif [ "$MENU" = "" ]; then
+        break
+    else
+        ## shellcheck throws errors here, but the globbing of $VPN_RELAY_SET_LOCATION is intentional
+        # shellcheck disable=SC2086
+        for i in "${!VPN_LOCATIONS[@]}"; do
+            if [ "${MENU}" = "${VPN_LOCATIONS[$i]}" ]; then
+                $VPN_RELAY_SET_LOCATION ${VPN_CODES[$i]};
+            fi
+        done
+
+        if [ "$VPN_STATUS" = "$CONNECTED" ]; then
+            return
+        else
+            $VPN_CONNECT
+        fi
+    fi
+fi

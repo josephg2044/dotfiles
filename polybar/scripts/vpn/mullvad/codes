@@ -3,7 +3,6 @@ al tia
 au
 au adl
 au bne
-au cbr
 au mel
 au per
 au syd
@@ -16,9 +15,14 @@ br sao
 bg
 bg sof
 ca
+ca yyc
 ca mtr
 ca tor
 ca van
+co
+co bog
+hr
+hr zag
 cz
 cz prg
 dk
@@ -31,6 +35,7 @@ fr
 fr mrs
 fr par
 de
+de ber
 de dus
 de fra
 gr
@@ -75,11 +80,12 @@ sg
 sg sin
 sk
 sk bts
+za
+za jnb
 es
 es mad
 se
 se got
-se hel
 se mma
 se sto
 ch
@@ -87,6 +93,8 @@ ch zrh
 gb
 gb lon
 gb mnc
+ua
+ua iev
 ae
 ae dxb
 us

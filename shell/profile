@@ -31,6 +31,7 @@ export NPM_CONFIG_USERCONFIG="$HOME/.config/npm"
 export NPM_CONFIG_CACHE="$HOME/.cache/npm"
 export YARN_CACHE_FOLDER="$HOME/.local/yarn"
 export _GL_SHADER_DISK_CACHE_PATH="HOME/.cache/nv"
+export QT_QPA_PLATFORMTHEME="qt5ct"
 
 export LF_ICONS="\
 tw=:\

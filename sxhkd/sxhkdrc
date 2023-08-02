@@ -22,7 +22,7 @@ super + @space
 	rofi -show drun
 
 super + o
-    ~/.config/polybar/polybar-vpn-controller/vpn_module menu
+    ~/.config/polybar/scripts/vpn/vpn_menu
 
 super + i 
     gapdec
@@ -43,27 +43,34 @@ super + shift + s
     $HOME/.local/bin/shotarea.sh
 
 super + ctrl + s 
-    $HOME/.local/bin/shotnow.sh
+    $HOME/.local/bin/shotscreen.sh
 
 super + Up
     amixer -D pulse sset Master 5%+
 
-# lock gpg agent
-super + u
-    echo RELOADAGENT | gpg-connect-agent
-
 super + Down
     amixer -D pulse sset Master 5%-
     
+super + b
+    amixer -D pulse set Master 1+ toggle
+
+super + B
+    amixer set Capture toggle
+ 
+super + shift + Down
+    light -A 10
+
+super + shift + Up
+    light -U 10
+
+
 super + Right
     light -A 10
 
 super + Left 
     light -U 10
 
-super + b 
-    pactl -- set-sink-volume alsa_output.pci-0000_00_1f.3.analog-stereo 0%
-    
+   
 # rofi calc
 super + n
     rofi -theme ~/.config/rofi/calc.rasi -show calc 

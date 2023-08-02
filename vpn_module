@@ -82,7 +82,7 @@ vpn_report() {
 		if [ "$@" ]; then
 			if [ "$1" == "mullvad" ]; then
 			# use mullvad status to read location
-				report="$($VPN_GET_STATUS | sed -n 's/.*in //p')"
+				report="$($VPN_GET_STATUS | grep -o -P '(?<=-).*?(?=-)' | sed -n 1p)"
 
 			elif [ "$1" == "other-vpn" ]; then
 			# use a generic check to see if VPN provides location in its status command.
@@ -102,7 +102,7 @@ vpn_report() {
 				report=$(ip_address_lookup)
 			fi
 
-			echo "%{F$COLOR_CONNECTED}$ICON_CONNECTED%{F-} $report"
+			echo "%{F$COLOR_CONNECTED}$ICON_CONNECTED%{F-} %{F#939191}$report%{F-}"
 
 		else
 			echo "You need to provide a status method."

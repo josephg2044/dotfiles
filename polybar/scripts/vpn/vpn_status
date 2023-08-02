@@ -1,0 +1,26 @@
+#!/bin/bash
+VPN_GET_STATUS="mullvad status"
+VPN_STATUS="$($VPN_GET_STATUS | grep -Eio 'connected|connecting|disconnected' \
+	| tr '[:upper:]' '[:lower:]')"
+CONNECTED="connected"
+CONNECTING="connecting"
+ICON_CONNECTED=""
+ICON_CONNECTING=""
+ICON_DISCONNECTED=""
+COLOR_CONNECTED="#a5fb8f"
+COLOR_CONNECTING="#FAE3B0"
+COLOR_DISCONNECTED="#e57474"
+DIRNAME="$(dirname "$(realpath "$0")")"
+mapfile -t VPN_LOCATIONS < "$DIRNAME"/mullvad/locations
+mapfile -t VPN_CODES < "$DIRNAME"/mullvad/codes
+
+if [ "$VPN_STATUS" = "$CONNECTED"  ]; then
+    report="$($VPN_GET_STATUS | grep -o -P '(?<=-).*?(?=-)' | sed -n 1p)"
+    echo "%{F$COLOR_CONNECTED}$ICON_CONNECTED%{F-} %{F#939191}$report%{F-}"
+
+elif [ "$VPN_STATUS" = "$CONNECTING" ]; then
+    echo "%{F$COLOR_CONNECTING}$ICON_CONNECTING"
+
+else
+    echo "%{F$COLOR_DISCONNECTED}$ICON_DISCONNECTED"
+fi
