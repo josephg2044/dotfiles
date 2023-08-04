@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Increment, decrement, or mute the volume and send a notification
+# of the current volume level.
+
+notif () {
+    backlight=$(light)
+    dunstify -a "changebacklight" -r 9993 -h int:value:"$backlight" -I "/home/joseph/.local/share/icons/backlight-$1.svg" "${backlight}" -t 1000
+}
+
+case $1 in
+up)
+    light -A 10
+	;;
+down)
+    light -U 10
+	;;
+esac
+notif $1
