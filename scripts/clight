@@ -5,7 +5,7 @@
 
 notif () {
     backlight=$(light)
-    dunstify -a "changebacklight" -r 9993 -h int:value:"$backlight" -I "/home/joseph/.local/share/icons/backlight-$1.svg" "${backlight}" -t 1000
+    dunstify -a "changebacklight" -r 9993 -h int:value:"$backlight" -I "/home/joseph/.local/share/dunst_icons/backlight-$1.svg" "${backlight}" -t 1000
 }
 
 case $1 in
