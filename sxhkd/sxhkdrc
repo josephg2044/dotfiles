@@ -4,8 +4,6 @@
 
 # terminal emulator
 #
-super + BackSpace
-    xbktoggle.sh
 
 super + Return
 	st
@@ -30,9 +28,6 @@ super + i
 super + I
     gapinc
 
-super + y
-    rofi-pass
-
 super + v
     kbtoggle
 
@@ -46,31 +41,23 @@ super + ctrl + s
     $HOME/.local/bin/shotscreen.sh
 
 super + Up
-    amixer -D pulse sset Master 5%+
+    ~/.local/bin/cvol up
 
 super + Down
-    amixer -D pulse sset Master 5%-
+    ~/.local/bin/cvol down
     
 super + b
-    amixer -D pulse set Master 1+ toggle
+    ~/.local/bin/cvol mute
 
 super + B
-    amixer set Capture toggle
+    ~/.local/bin/mic-tog
  
-super + shift + Down
-    light -A 10
-
 super + shift + Up
-    light -U 10
+    clight up
 
+super + shift + Down
+    clight down
 
-super + Right
-    light -A 10
-
-super + Left 
-    light -U 10
-
-   
 # rofi calc
 super + n
     rofi -theme ~/.config/rofi/calc.rasi -show calc 
@@ -179,3 +166,14 @@ super + alt + ctrl + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+super + y 
+    bspc node $(bspc query -N -n) -n $(bspc query -N -n .leaf.\!window)
+
+super + shift + u
+    for win in `bspc query -N -n .leaf.\!window`; do bspc node $win -k ; done;
+#
+# # Insert receptacle
+super + u; {h,j,k,l}
+    bspc node --presel-dir {west,south,north,east} -i
+
