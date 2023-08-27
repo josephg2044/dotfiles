@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if echo $(amixer get Capture) | grep -q "off"; then
+if echo $(amixer -D pulse get Capture) | grep -q "off"; then
     echo "  " # Muted Icon (Install Some icon pack like feather, nerd-fonts)
 else
     echo "  " # Unmuted Icon (Install Some icon pack like feather, nerd-fonts)

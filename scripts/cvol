@@ -1,14 +1,14 @@
 #!/bin/sh
 
 notif () {
-    volume=$(awk -F"[][]" '/Left:/ { print $2 }' <(amixer sget Master))
+    volume=$(awk -F"[][]" '/Left:/ { print $2 }' <(amixer -D pulse get Master))
     dunstify -a "changevolume" -r 9993 -h int:value:"$volume" -I "/home/joseph/.local/share/dunst_icons/volume-$1.svg" "${volume}" -t 1000
 }
 
 case $1 in
 up)
     amixer -D pulse set Master 5%+
-    if echo $(amixer get Master) | grep -q "off"; then
+    if echo $(amixer -D pulse get Master) | grep -q "off"; then
         notif "mute"
 
     else
@@ -17,7 +17,7 @@ up)
 	;;
 down)
     amixer -D pulse set Master 5%-
-    if echo $(amixer get Master) | grep -q "off"; then
+    if echo $(amixer -D pulse get Master) | grep -q "off"; then
         notif "mute"
     else
         notif "down"
@@ -25,10 +25,10 @@ down)
 	;;
 mute)
 	amixer -D pulse set Master 1+ toggle
-	if echo $(amixer get Master) | grep -q "off"; then
+	if echo $(amixer -D pulse get Master) | grep -q "off"; then
 		dunstify -a "changevolume" -t 2000 -r 9993  -I "/home/joseph/.local/share/dunst_icons/volume-mute.svg" "" -t 1000
 	else
-        volume=$(awk -F"[][]" '/Left:/ { print $2 }' <(amixer sget Master))
+        volume=$(awk -F"[][]" '/Left:/ { print $2 }' <(amixer -D pulse get Master))
         notif "up"
 	fi
 	;;

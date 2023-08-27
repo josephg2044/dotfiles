@@ -1,0 +1,10 @@
+#!/bin/sh
+
+versionspath=~/.trash
+
+folderpath="$1"
+filepath="$2"
+
+outpath=$(dirname "$versionspath/$filepath")
+mkdir -p "$outpath"
+mv -f "$folderpath/$filepath" "$versionspath/$filepath"
