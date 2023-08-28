@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Syncthing
+Exec=/usr/bin/librewolf -P default-release --new-window 127.0.0.1:8384
