@@ -3,7 +3,7 @@
 @import "~/dotfiles/rofi/colors-rofi-dark.rasi"
 
 configuration {
-    font: "Hack Nerd Font 10";
+    font: "Iosevka Nerd Font 11";
     fixed-num-lines: 				true;
     display-calc: "";
 }

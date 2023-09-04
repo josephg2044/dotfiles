@@ -4,7 +4,7 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hack Nerd Font 10";
+    font: "Iosevka Nerd Font 11";
     fixed-num-lines: 				true;
     display-drun: "run";
     display-window: "win";

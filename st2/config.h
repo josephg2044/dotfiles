@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "InconsolataNerdFont :pixelsize=16:weight=200:antialias=true:autohint=true";
+static char *font = "IosevkaNerdFont :pixelsize=16:weight=100:antialias=true:autohint=true";
 static char *font2[] = { "JetBrainsMono Nerd Font :pixelsize=20:antialias=true:autohint=true" };
 static int borderpx = 5;
 
