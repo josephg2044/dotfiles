@@ -21,7 +21,7 @@ unsetopt BEEP
 
 # completions
 autoload -Uz compinit
-compinit
+compinit -d ~/.cache/zsh/zcompdump-${ZSH_VERSION}
 # zstyle ':completion:*' menu select
 # zmodload zsh/complist
 # _comp_options+=(globdots)		# Include hidden files.
