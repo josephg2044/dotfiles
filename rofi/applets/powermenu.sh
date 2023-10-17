@@ -71,11 +71,11 @@ confirm_run () {
 # Execute Command
 run_cmd() {
 	if [[ "$1" == '--opt1' ]]; then
-		i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str="%I:%M:%S %p" --date-str="%D" --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread
+		i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str=%I:%M:%S --date-str=%D --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread
 	elif [[ "$1" == '--opt2' ]]; then
-		confirm_run 'i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str="%I:%M:%S %p" --date-str="%D" --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread' 'systemctl suspend'
+		confirm_run 'i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str=%I:%M:%S --date-str=%D --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread' 'systemctl suspend'
 	elif [[ "$1" == '--opt3' ]]; then
-		confirm_run 'i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str="%I:%M:%S %p" --date-str="%D" --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread' 'systemctl hibernate'
+		confirm_run 'i3lock -c c3d1d1 -k --radius 300 --ring-width 1 --ring-color=c3d1d1 --inside-color=c3d1d1 --line-uses-inside --keyhl-color=0c0e0f --separator-color=0c0e0f --insidever-color=c3d1d1 --ringver-color=0c0e0f --verif-color=c3d1d1 --insidewrong-color=c3d1d1 --ringwrong-color=0c0e0f --wrong-color=c3d1d1 --time-str=%I:%M:%S --date-str=%D --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --redraw-thread' 'systemctl hibernate'
 	elif [[ "$1" == '--opt4' ]]; then
 		confirm_run 'systemctl reboot'
 	elif [[ "$1" == '--opt5' ]]; then
