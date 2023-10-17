@@ -1,11 +1,12 @@
 return {
     ["mfussenegger/nvim-jdtls"] = {
+        root_dir = function() return vim.fs.dirname(vim.fs.find({ '.gradlew', '.gitignore', 'mvnw', 'build.grade.kts' }, { upward = true })[1]) .. "\\" end,
         cmd = {
-        --
-        "java", -- Or the absolute path '/path/to/java11_or_newer/bin/java'
-        "~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_VERSION_NUMBER.jar",
-        "-configuration", "/path/to/jdtls_install_location/config_SYSTEM",
-        "-data", "/home/joseph/.local/share/nvim/java"
+            --
+            "java", -- Or the absolute path '/path/to/java11_or_newer/bin/java'
+            "~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_VERSION_NUMBER.jar",
+            "-configuration", "/path/to/jdtls_install_location/config_SYSTEM",
+            "-data", "/home/joseph/.local/share/nvim/java"
         },
         settings = {
             java = {
@@ -45,4 +46,26 @@ return {
             require "custom.plugins.lspconfig"
         end,
     },
+    ["hrsh7th/nvim-cmp"] = {
+        dependencies = {
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",
+            "saadparwaiz1/cmp_luasnip",
+            "hrsh7th/cmp-nvim-lua",
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-cmdline",
+        },
+        event = "InsertEnter",
+        config = function()
+            cmp.setup({
+                sources = {
+                    { name = "nvim_lsp" },
+                    { name = "buffer" },
+                    { name = "path" },
+                    { name = "luasnip" },
+                    { name = "nvim_lua" },
+                }
+            })
+        end
+    }
 }
