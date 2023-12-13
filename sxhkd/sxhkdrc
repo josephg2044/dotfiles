@@ -28,6 +28,13 @@ super + i
 super + I
     gapinc
 
+super + d
+	bspc node $1 --flag sticky=on; bspc node $1 --flag hidden=on
+
+super + shift + d
+    $HOME/.local/bin/minmenu.sh
+
+
 super + v
     kbtoggle
 

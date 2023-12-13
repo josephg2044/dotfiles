@@ -99,10 +99,15 @@ alias rrun="Rscript"
 alias py="python3"
 alias py36="/usr/bin/python3.6"
 alias py2="python2"
-alias g++="g++ -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion --pedantic-errors"
+alias g20="g++ -std=c++20 -Wshadow -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion --pedantic-errors"
+alias g23="g++ -std=c++23 -Wshadow -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion --pedantic-errors"
+alias g17="g++ -std=c++17 -Wshadow -Wall -Weffc++ -Wextra -Wconversion -Wsign-conversion --pedantic-errors"
 alias rsy="rsync -aruzv --partial --checksum"
 alias rsyd="rsync -aruvz --partial --checksum --delete --backup --backup-dir=DELETED_FILES/"
 alias con="nmcli device wifi connect"
+
+alias lpdshort="lp -o sides=two-sided-short-edge -o BindEdge=Top"
+alias lpdlong="lp -o sides=two-sided-long-edge -o BindEdge=Left"
 
 alias addup='git add -u'
 alias addall='git add .'
