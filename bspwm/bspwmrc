@@ -3,8 +3,9 @@
 pgrep -x sxhkd > /dev/null || sxhkd &
 
 # WM CONFIG
-bspc monitor -d dir www doc sys mus com ac1 ac2 ac3 ac4 
-
+# bspc monitor DP-2 dir www doc sys mus com ac1 ac2 ac3 ac4 
+bspc monitor DP-2 -d 1 2 3 4 5
+bspc monitor DP-0 -d 6 7 8 9 0
 
 bspc config window_gap             -1
 bspc config top_padding 	       29

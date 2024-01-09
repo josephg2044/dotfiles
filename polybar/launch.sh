@@ -10,6 +10,11 @@ while pgrep -x polybar >/dev/null; do sleep 1; done
 
 # Launch
 polybar main_bar &
+polybar vert &
+
+if [[ $(xrandr -q | grep "DP-0 connected")]]; then
+    polybar vert &
+fi
 
 echo "Bar launched..."
 sleep 1

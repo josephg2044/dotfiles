@@ -7,7 +7,7 @@
  */
 static char *font = "IosevkaNerdFont :pixelsize=16:weight=100:antialias=true:autohint=true";
 static char *font2[] = { "JetBrainsMono Nerd Font :pixelsize=20:antialias=true:autohint=true" };
-static int borderpx = 5;
+static int borderpx = 10;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -262,8 +262,8 @@ static Shortcut shortcuts[] = {
   { ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
   { ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
   { XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
-  { MODKEY,              XK_comma,       zoom,           {.f = +1} },
-  { MODKEY,              XK_period,        zoom,           {.f = -1} },
+  { MODKEY,              XK_comma,       zoom,           {.f = +2} },
+  { MODKEY,              XK_period,        zoom,           {.f = -2} },
   { MODKEY,               XK_g,        zoomreset,      {.f =  0} },
   { ControlMask | ShiftMask,               XK_C,           clipcopy,       {.i =  0} },
   { ShiftMask,            XK_Insert,      clippaste,      {.i =  0} },

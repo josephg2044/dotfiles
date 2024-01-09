@@ -17,7 +17,7 @@ super + shift + p
 
 # program launcher
 super + @space 
-	rofi -show drun
+	rofi -show drun -m -1
 
 super + o
     ~/.config/polybar/scripts/vpn/vpn_menu
@@ -67,7 +67,7 @@ super + shift + Down
 
 # rofi calc
 super + n
-    rofi -theme ~/.config/rofi/calc.rasi -show calc 
+    rofi -theme ~/.config/rofi/calc.rasi -show calc -m -1
 
 super + c 
     bspc node -g locked
@@ -131,7 +131,10 @@ super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
 super + Tab
-    bspc desktop -f last
+    bspc desktop -f last.local
+
+super + backslash
+    bspc monitor -f next
 
 #
 # preselect
