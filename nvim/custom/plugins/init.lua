@@ -67,5 +67,7 @@ return {
                 }
             })
         end
-    }
+    },
+    ["tpope/vim-surround"] = {},
+    ["tpope/vim-commentary"] = {}
 }
