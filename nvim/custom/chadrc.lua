@@ -13,6 +13,11 @@ M.ui = {
   -- hl = highlights
     hl_add = {},
     hl_override = {},
+    statusline = {
+        theme = "vscode_colored",
+        separator_style = "block"
+
+    },
     changed_themes = {
         yoru = {
             base_16 = {
@@ -47,6 +52,8 @@ M.ui = {
     theme = "yoru", -- default theme
     transparency = false,
 }
+
+M.ui.extended_integrations = {"trouble", "alpha", "dap"}
 
 -- chadrc
 M.plugins = require "custom.plugins"
