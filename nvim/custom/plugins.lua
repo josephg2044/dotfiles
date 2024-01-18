@@ -1,32 +1,74 @@
 local plugins = {
     {
+        "NvChad/nvterm",
+        enabled = false
+    },
+
+    {
+        "nvimtree/nvimtree.lua",
+        enabled = false,
+    },
+
+    {
+        "nvim-tree/nvim-web-devicons",
+        enabled = false,
+    },
+
+    {
+        "folke/which-key.nvim",
+        enaled = false,
+    },
+
+    {
         "mfussenegger/nvim-jdtls",
-        root_dir = function() return vim.fs.dirname(vim.fs.find({ '.gradlew', '.gitignore', 'mvnw', 'build.grade.kts' }, { upward = true })[1]) .. "\\" end,
+        root_dir = function()
+            return vim.fs.dirname(vim.fs.find({ '.gradlew', '.gitignore', 'mvnw', 'build.grade.kts' },
+                { upward = true })[1]) .. "\\"
+        end,
         settings = {
             java = {
-                signatureHelp = {enabled = true},
-                import = {enabled = true},
-                rename = {enabled = true}
+                signatureHelp = { enabled = true },
+                import = { enabled = true },
+                rename = { enabled = true }
             }
         },
         init_options = {
             bundles = {}
         }
     },
-    -- ["NvChad/ui"] = {
-        -- overrides_options = overrides.ui,
-    -- },
+
+    {
+        "nvim-treesitter/nvim-treesitter",
+        opts = {
+            ensure_installed = {
+                -- defaults
+                "lua",
+
+                "html",
+                "css",
+                "javascript",
+                "typescript",
+                "json",
+
+                "c",
+                "cpp",
+                "java",
+                "python",
+            },
+        },
+    },
+
     {
         "williamboman/mason.nvim",
         override_options = {
             ensure_installed = {
-            "pyright",
-            "clangd",
-            "clang-format",
-            "cpp-tools",
-            "java-debug-adapter",
-            "google-java-format",
-            "jdtls"
+                "pyright",
+                "clangd",
+                "clang-format",
+                "cpp-tools",
+                "java-debug-adapter",
+                "google-java-format",
+                "jdtls"
             },
         },
     },
