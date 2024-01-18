@@ -126,6 +126,19 @@ cmd fzf_JUMP ${{
     lf -remote "send $id $cmd \"$res\""
 }}
 
+cmd chmod ${{
+  printf "| "
+  read ans
+
+  for file in "$fx"
+  do
+    chmod $ans $file
+  done
+
+  lf -remote 'send reload'
+}}
+
+
 cmd fzf_search ${{
     res="$( \
         RG_PREFIX="rg --column --line-number --no-heading --color=always \
@@ -185,6 +198,9 @@ cmd link %{{
     rm ~/.local/share/lf/files
     lf -remote "send clear"
 }}
+
+cmd dragon %ripdrag -a -x $fx
+
 map P :link
 # Bindings
 # Remove some defaults
@@ -196,8 +212,10 @@ map '"'
 map d
 map c
 
+map ch chmod
 map t tag-toggle
 map o devour-launch
+map r dragon
 
 map au unarchive
 map ae execute
