@@ -73,7 +73,7 @@ local plugins = {
         opts = {
             handlers = {},
             ensure_installed = {
-                "cpp-tools",
+                "codelldb",
             }
         },
     },
@@ -96,6 +96,10 @@ local plugins = {
                 dapui.close()
             end
         end
+    },
+
+    {
+        "compiler.nvim"
     }
 }
 return plugins
