@@ -41,13 +41,19 @@ M.dap = {
             "Start or continue the debugger",
         },
         ["<leader>di"] = {
-            "<cmd> DapStepInto"
+            "<cmd> DapStepInto <CR>"
         },
         ["<leader>do"] = {
-            "<cmd> DapStepOut"
+            "<cmd> DapStepOut <CR>"
         },
         ["<leader>dv"] = {
-            "<cmd> DapStepOver"
+            "<cmd> DapStepOver <CR>"
+        },
+        ["<leader>j"] = {
+            "<cmd> !javac % <CR>"
+        },
+        ["<leader>c"] = {
+            "<cmd> !g++ % -o main -g<CR>"
         }
     }
 }
