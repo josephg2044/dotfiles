@@ -1,15 +1,18 @@
 source ~/.config/lf/motions
 
-set ratios 1:2:3
+#settings
+set ratios 2:3
+set info size:time
 set icons true
-map . set hidden!
 
 set previewer ~/.config/lf/preview
 set cleaner ~/.config/lf/cleaner
 
-set shell sh 
+set shell zsh
 set shellopts '-eu'
 set ifs "\n"
+
+#functions
 
 cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
 
@@ -61,6 +64,10 @@ cmd mkdir ${{
   mkdir $ans
 }}
 
+cmd on-select &{{
+    lf -remote "send $id set statfmt \"$(exa -ld --color=always "$f")\""
+}}
+
 cmd mkfile ${{
   printf "File Name: "
   read ans
@@ -103,7 +110,7 @@ cmd devour-launch ${{
 }}
 
 cmd fzf_jump ${{
-    res="$(find . -maxdepth 2 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
     if [ -d "$res" ] ; then
         cmd="cd"
     elif [ -f "$res" ] ; then
@@ -115,6 +122,18 @@ cmd fzf_jump ${{
 }}
 
 cmd fzf_JUMP ${{
+    res="$(find . -maxdepth 2 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ] ; then
+        cmd="cd"
+    elif [ -f "$res" ] ; then
+        cmd="select"
+    else
+        exit 0
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd fzf_recur ${{
     res="$(find . | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
     if [ -d "$res" ] ; then
         cmd="cd"
@@ -125,6 +144,8 @@ cmd fzf_JUMP ${{
     fi
     lf -remote "send $id $cmd \"$res\""
 }}
+
+
 
 cmd chmod ${{
   printf "| "
@@ -155,6 +176,38 @@ cmd restore_trash ${{
   trash-restore
 }}
 
+
+# git stuff
+cmd git_branch ${{
+    git branch | fzf | xargs git checkout
+    pwd_shell=$(pwd | sed 's/\\/\\\\/g;s/"/\\"/g')
+    lf -remote "send $id updir"
+    lf -remote "send $id cd \"$pwd_shell\""
+}}
+map Gb :git_branch
+map Gp ${{clear; git pull --rebase || true; echo "press ENTER"; read ENTER}}
+map Gs ${{clear; git status; echo "press ENTER"; read ENTER}}
+map Gl ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit}}
+
+cmd on-cd &{{
+	# display repository status in your prompt
+	if [ -d .git ] || [ -f .git ]; then
+		branch=$(git branch --show-current 2>/dev/null) || true
+		remote=$(git config --get branch.$branch.remote 2>/dev/null) || true
+		url=$(git remote get-url $remote 2>/dev/null) || true
+		fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%w\033[0m\033[33;1m [GIT BRANCH:> $branch >> $url]\033[0m"
+	elif [ -d .hg ]; then
+		hg=$(hg branch 2>/dev/null) || true
+		fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%w\033[0m\033[33;1m [HG BRANCH:> $hg]\033[0m"
+	elif [ -d .svn ]; then
+		svn=$(svn info 2>/dev/null | awk '/^URL: /{print $2}') || true
+		fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%w\033[0m\033[33;1m [SVN URL:> $svn]\033[0m"
+	else
+		fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%d\033[0m\033[1m%f\033[0m"
+	fi
+	lf -remote "send $id set promptfmt \"$fmt\""
+}}
+
 # Unmap the default binding
 map r
 # Rename the file with a completely different name
@@ -179,8 +232,6 @@ map cw ${{
 	lf -remote "send $id push :rename<space>$filename<a-b><c-b>"
 }}
 
-# y (select for copy) and P to paste soft-link
-# d (select for cut) and P to paste hard-link
 cmd link %{{
     set -- $(cat ~/.local/share/lf/files)
     mode="$1"
@@ -202,8 +253,6 @@ cmd link %{{
 cmd dragon %ripdrag -a -x $fx
 
 map P :link
-# Bindings
-# Remove some defaults
 map m
 map o
 map n
@@ -211,6 +260,7 @@ map "'"
 map '"'
 map d
 map c
+map G
 
 map ch chmod
 map t tag-toggle
@@ -220,8 +270,9 @@ map r dragon
 map au unarchive
 map ae execute
 
-map <c-f> fzf_jump
-map F filter
+map f fzf_jump
+map F fzf_JUMP
+map <c-f> Filter
 map <a-f> fzf_JUMP
 map <c-s> fzf_search
 
@@ -231,6 +282,7 @@ map DD delete
 map p paste
 map x cut
 map y copy
+map Y cmd-yank
 map <enter> open
 map R reload
 map mkf mkfile

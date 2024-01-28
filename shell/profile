@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# set title to directory
+# echo -ne "\033]0;$(pwd | sed -e "s@$HOME@~@g")\007"
+
 export EDITOR="nvim"
 export TERMINAL="st"
 export BROWSER="librewolf"

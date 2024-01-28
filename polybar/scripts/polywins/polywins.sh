@@ -3,13 +3,13 @@
 
 # SETTINGS {{{ ---
 
-active_text_color="#E7A09E" # 31a354 : green
-active_underline="True"
+active_text_color="#FFFFFF" # 31a354 : green
+active_underline="False"
 active_underline_color="#E7A09E"
 inactive_text_color="#b7b8b9"
 inactive_underline="false"
 inactive_underline_color="#F1EF7D"
-separator="·"
+separator=" "
 show="window_class" # options: window_title, window_class, window_classname
 char_limit=20 # useful with window_title
 max_windows=15 # maximum number of displayed windows
