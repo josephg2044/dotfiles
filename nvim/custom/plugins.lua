@@ -10,13 +10,15 @@ local plugins = {
     },
 
     {
-        "nvim-tree/nvim-web-devicons",
-        enabled = false,
+        "folke/which-key.nvim",
+        enaled = false,
     },
 
     {
-        "folke/which-key.nvim",
-        enaled = false,
+        "vijaymarupudi/nvim-fzf",
+          window_on_create = function()
+            vim.cmd("set winhl=Normal:Normal")
+        end
     },
 
     {
@@ -66,6 +68,7 @@ local plugins = {
                 "clangd",
                 "clang-format",
                 "cpp-tools",
+                "html-lsp",
                 "java-debug-adapter",
                 "google-java-format",
                 "jdtls"

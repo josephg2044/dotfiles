@@ -114,6 +114,7 @@ alias g17="g++ -std=c++17 -Wshadow -Wall -Weffc++ -Wextra -Wconversion -Wsign-co
 alias cm="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 alias rsy="rsync -aruzv --partial --checksum"
 alias rsyd="rsync -aruvz --partial --checksum --delete --backup --backup-dir=DELETED_FILES/"
+alias rsjgeor="rsync -rtzvP ~/documents/07_code/projects/personal-website/ root@jgeor.com:/var/www/jgeor"
 alias con="nmcli device wifi connect"
 
 alias lpdshort="lp -o sides=two-sided-short-edge -o BindEdge=Top"
