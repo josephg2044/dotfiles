@@ -142,9 +142,5 @@ local plugins = {
             end
         end
     },
-
-    {
-        "compiler.nvim"
-    }
 }
-return plugins
+return ""

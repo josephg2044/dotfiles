@@ -1,4 +1,4 @@
 [Desktop Entry]
 Type=Application
-Name=Image viewer
+Name=Video Player
 Exec=/usr/bin/mpv -a %f

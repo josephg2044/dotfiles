@@ -51,3 +51,15 @@ source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 source ~/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+# customize prompt
+function xtitle () {
+    builtin print -n -- "\e]0;$@\a"
+}
+
+function precmd () {
+    xtitle "$(print -P '%~')"
+}
+function preexec () {
+	xtitle "$(print -P '\[$1\] %~')"
+}

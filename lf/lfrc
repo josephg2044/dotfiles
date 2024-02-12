@@ -57,6 +57,10 @@ cmd bulk-rename ${{
     lf -remote "send $id unselect"
 }}
 
+cmd yank-dirname $dirname -- "$f" | head -c-1 | xclip -i -selection clipboard
+cmd yank-path $printf '%s' "$fx" | xclip -i -selection clipboard
+cmd yank-basename $basename -a -- $fx | head -c-1 | xclip -i -selection clipboard
+
 # Custom Functions
 cmd mkdir ${{
   printf "Directory Name: "
@@ -191,6 +195,7 @@ map Gl ${{clear; git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%C
 
 cmd on-cd &{{
 	# display repository status in your prompt
+	printf "\033]0;[lf] ${PWD/#$HOME/~}\007" > /dev/tty
 	if [ -d .git ] || [ -f .git ]; then
 		branch=$(git branch --show-current 2>/dev/null) || true
 		remote=$(git config --get branch.$branch.remote 2>/dev/null) || true
@@ -283,6 +288,9 @@ map p paste
 map x cut
 map y copy
 map Y cmd-yank
+map bo yank-dirname
+map bi yank-path
+map B yank-basename
 map <enter> open
 map R reload
 map mkf mkfile
