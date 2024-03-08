@@ -127,6 +127,13 @@ super + {_,shift + }{1-9,0}
 super + Tab
     bspc desktop -f last.local
 
+super + bracket{left,right}
+    bspc desktop -f {prev,next}
+
+super + brace{left,right}
+    bspc desktop -f {prev.occupied,next.occupied}
+
+
 super + backslash
     bspc monitor -f next
 

@@ -1,9 +1,5 @@
 local plugins = {
-    {
-        "NvChad/nvterm",
-        enabled = false
-    },
-
+    -- overrides
     {
         "nvimtree/nvimtree.lua",
         enabled = false,
@@ -11,14 +7,7 @@ local plugins = {
 
     {
         "folke/which-key.nvim",
-        enaled = false,
-    },
-
-    {
-        "vijaymarupudi/nvim-fzf",
-          window_on_create = function()
-            vim.cmd("set winhl=Normal:Normal")
-        end
+        enabled = false,
     },
 
     {
@@ -82,6 +71,8 @@ local plugins = {
             require "custom.configs.lspconfig"
         end,
     },
+
+    -- new plugins
     {
         "kylechui/nvim-surround",
         version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -143,4 +134,4 @@ local plugins = {
         end
     },
 }
-return ""
+return plugins

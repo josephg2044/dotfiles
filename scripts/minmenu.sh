@@ -10,4 +10,4 @@ for wid in "${ids[@]}"; do
 done
 
 id_index="$(<<< "$options" rofi -dmenu -i -format i -p "")"
-bspc node "${ids[${id_index}]}" -g hidden=off -f; bspc node "${ids[${id_index}]}" -g sticky=off -f
+bspc node "${ids[${id_index}]}" -g hidden=off -f; bspc node "${ids[${id_index}]}" -g sticky=false -f

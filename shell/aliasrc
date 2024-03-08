@@ -91,6 +91,7 @@ alias ytdl='youtube-dl'
 alias ytdlm='youtube-dl -f bestaudio --extract-audio --audio-format flac --audio-quality 0'
 alias ytdlp='youtube-dl -f "bestaudio/best" -ciw -o "%(title)s.%(ext)s" -v --extract-audio --audio-format mp3 --audio-quality 0  --yes-playlist'
 alias ncm='ncmpcpp'
+alias tt='typiskt'
 
 # trash cli
 alias tput='trash-put'
