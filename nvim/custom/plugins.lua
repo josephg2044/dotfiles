@@ -55,12 +55,15 @@ local plugins = {
             ensure_installed = {
                 "pyright",
                 "clangd",
-                "clang-format",
                 "cpp-tools",
-                "html-lsp",
                 "java-debug-adapter",
                 "google-java-format",
-                "jdtls"
+                "jdtls",
+                "texlab",
+                "biome",
+                "emmet-language-server",
+                "typescript-lanugage-server",
+                "ruff",
             },
         },
     },
@@ -133,5 +136,6 @@ local plugins = {
             end
         end
     },
+    { "nvim-neotest/nvim-nio" },
 }
 return plugins
