@@ -16,7 +16,6 @@ M.ui = {
     statusline = {
         theme = "vscode_colored",
         separator_style = "block"
-
     },
     changed_themes = {
         yoru = {
@@ -51,6 +50,7 @@ M.ui = {
     theme_toggle = { "yoru", "one_light" },
     theme = "yoru", -- default theme
     transparency = false,
+    cmp = {style = "atom"}
 }
 
 M.ui.extended_integrations = {"trouble", "alpha", "dap"}

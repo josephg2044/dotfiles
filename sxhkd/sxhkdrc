@@ -2,10 +2,8 @@
 super + Escape
 	pkill -USR1 -x sxhkd
 
-
-# quit/restart bspwm
-super + alt + {q,r}
-	bspc {quit,wm -r}
+super + shift + Escape
+    bspc wm -r
 
 # terminal emulator
 super + Return
@@ -15,30 +13,24 @@ super + Return
 super + shift + Return
 	librewolf -P default-release
 
-super + P
+super + shift + p
     librewolf -P school
 
 # rofi menus
 super + @space 
 	rofi -show drun -m -1
 
-super + o
-    ~/.config/polybar/scripts/vpn/vpn_menu
+super + shift + @space
+    $HOME/.local/bin/rofi-menu-selector.sh
 
-super + shift + d
-    $HOME/.local/bin/minmenu.sh
+super + n 
+    rofi -theme ~/.config/rofi/calc.rasi -show calc -modi calc -no-show-match -no-sort -calc-command "echo -n '{result}' | xclip -selection clipboard"
 
-super + a
-    rofi-wall.sh
-
-super + p
+super + q
     $HOME/.config/rofi/applets/powermenu.sh
 
-super + n
-    rofi -theme ~/.config/rofi/calc.rasi -show calc -m -1
-
 # toggle polybar on and off
-super + e
+super + p
     polytoggle
 
 # inc/dec gap size
@@ -48,14 +40,18 @@ super + i
 super + I
     gapinc
 
+# minimize window
 super + d
 	bspc node $1 --flag sticky=on; bspc node $1 --flag hidden=on
+
+super + shift + d 
+    $HOME/.local/bin/minmenu.sh
 
 # screenshots
 super + shift + s 
     $HOME/.local/bin/shotarea.sh
 
-super + ctrl + s 
+super + ctrl + f
     $HOME/.local/bin/shotscreen.sh
 
 # inc/dec volume
@@ -81,10 +77,10 @@ super + shift + Down
     clight down
 
 # window properties
-super + c 
+super + x
     bspc node -g locked
 
-super + x
+super + X
     bspc node -g sticky
 
 # window states
@@ -99,10 +95,6 @@ super + alt + {h,j,k,l}
 # scratchpad
 super + semicolon 
     scpad
-
-# reload settings
-super + r
-    ~/.local/bin/settings
 
 # close and kill
 super + {_,shift + }w
@@ -160,13 +152,29 @@ super + ctrl + shift + space
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
-super + y 
-    bspc node $(bspc query -N -n) -n $(bspc query -N -n .leaf.\!window)
+
+#
+# receptacle
+super + u; {h,j,k,l}
+    bspc node --presel-dir {west,south,north,east} -i
 
 super + shift + u
     for win in `bspc query -N -n .leaf.\!window`; do bspc node $win -k ; done;
-#
-# # Insert receptacle
-super + u; {h,j,k,l}
-    bspc node --presel-dir {west,south,north,east} -i
+
+super + y 
+    bspc node $(bspc query -N -n) -n $(bspc query -N -n .leaf.\!window)
+
+# bsptab-rs binds
+super + v
+    bsptab-rs create focused
+super + V
+    bsptab-rs embed focused
+super + e; {h,j,k,l}
+    bsptab-rs create focused {west,south,north,east}
+super + E; {h,j,k,l}
+    bsptab-rs transfer focused {west,south,north,east}
+super + r
+    bsptab-rs detach focused
+super + shift + r
+    bsptab-rs detach --all focused
 

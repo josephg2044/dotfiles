@@ -6,14 +6,14 @@ configuration {
     modi: "window,drun,ssh,calc";
     font: "Iosvmata 11";
     fixed-num-lines: 				true;
-    display-drun: "";
+    display-dmenu: "";
 }
 
 window {
     border: 						0px;
     border-radius:                  0px;
     padding: 						0;
-    width: 							250px;
+    width: 							100px;
     location:                       center;
 }
 

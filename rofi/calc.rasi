@@ -3,9 +3,8 @@
 @import "~/dotfiles/rofi/colors-rofi-dark.rasi"
 
 configuration {
-    font: "Iosevka Nerd Font 11";
+    font: "Iosvmata 11";
     fixed-num-lines: 				true;
-    display-calc: "";
 }
 
 window {
@@ -40,7 +39,7 @@ element-text {
 inputbar {
     spacing:    					0px;
     padding:    					5px;
-    children: 						[ prompt,textbox-prompt-colon,entry ];
+    children: 						[ entry ];
 }
 
 mainbox {

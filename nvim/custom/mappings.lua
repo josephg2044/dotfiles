@@ -1,5 +1,7 @@
 local M = {}
 
+
+
 M.general = {
     n = {
         [";"] = { ":", "enter command mode", opts = { nowait = true } },
@@ -9,10 +11,37 @@ M.general = {
         ["<C-Right>"] = { ":vertical resize +2<CR>", opts = { noremap = true, silent = true } },
         ["<A-j>"] = { "<Esc>:m .+1<CR>==gi", opts = { noremap = true, silent = true } },
         ["<A-k>"] = { "<Esc>:m .-2<CR>==gi", opts = { noremap = true, silent = true } },
+        ["<C-d>"] = { "<C-d>zz" },
+        ["<C-u>"] = { "<C-u>zz" },
+        ["n"] = { "nzzzv" },
+        ["N"] = { "Nzzzv" },
+        ["<leader>cc"] = {
+            "<cmd>!g++ % -o main -g<CR>"
+        },
+        ["<leader>cl"] = {
+            "<cmd>!echo $(latexmk -pdf main.tex) > compile.out; latexmk -c<CR>"
+        },
+    },
+    i = {
+        ["<Tab>"] = { function()
+            local luasnip = require("luasnip")
+            if luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            else
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+            end
+        end, opts = { silent = true }},
+        ["<S-Tab>"] = { function() require("luasnip").expand() end, opts = { silent = true} },
+        ["<C-K>"] = { function() require("luasnip").jump(1) end, opts = {noremap = true, silent = true} },
+        ["<C-J>"] = { function() require("luasnip").jump(-1) end, opts = {noremap = true, silent = true} },
+        ["<C-k>"] = { function() require("luasnip").change_choice(-1)  end, opts = {noremap = true, silent = true} },
+        ["<C-j>"] = { function() require("luasnip").change_choice(1)  end, opts = {noremap = true, silent = true} }
+
     },
     v = {
-         ["<"] = { "<gv", opts = { noremap = true, silent = true } },
-         [">"] = { ">gv", opts = { noremap = true, silent = true } },
+        ["<"] = { "<gv", opts = { noremap = true, silent = true } },
+        [">"] = { ">gv", opts = { noremap = true, silent = true } },
+        ["y"] = { "ygv<esc>", norempa = true },
     },
     x = {
         ["J"] = { ":move '>+1<CR>gv-gv", opts = { noremap = true, silent = true } },
@@ -26,7 +55,7 @@ M.general = {
         ["<C-j>"] = { "<C-\\><C-N><C-w>j", opts = { silent = true } },
         ["<C-k>"] = { "<C-\\><C-N><C-w>k", opts = { silent = true } },
         ["<C-l>"] = { "<C-\\><C-N><C-w>l", opts = { silent = true } },
-    }
+    },
 }
 
 M.dap = {
@@ -52,9 +81,6 @@ M.dap = {
         ["<leader>j"] = {
             "<cmd> !javac % <CR>"
         },
-        ["<leader>c"] = {
-            "<cmd> !g++ % -o main -g<CR>"
-        }
     }
 }
 
