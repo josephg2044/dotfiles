@@ -54,7 +54,6 @@ rm /tmp/polybarhidden &
 # EXTRA CONFIG
 # xset r rate 215 45 &
 # setxkbmap us & 
-nitrogen --restore &
-./$HOME/joseph/.fehbg &
+$HOME/.fehbg &
 $HOME/.config/polybar/launch.sh &
 xsetroot -cursor_name left_ptr

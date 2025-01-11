@@ -3,7 +3,8 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 
-local servers = { "clangd", "pylsp", "bashls", "jdtls", "texlab", "biome", "emmet_language_server", "ts_ls", }
+local servers = { "clangd", "bashls", "jdtls", "texlab", "biome", "emmet_language_server", "ts_ls", "pylsp"}
+
 
 for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
@@ -24,3 +25,17 @@ lspconfig.biome.setup {
             or lspconfig.util.find_git_ancestor(fname)
     end,
 }
+
+-- lspconfig.pylsp.setup {
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+--     settings = {
+--         pylsp = {
+--             plugins = {
+--                 pylint = { enabled = "false" },
+--                 pyflakes = { enabled = "false" },
+--                 pycodestyle = { enabled = "false" },
+--             }
+--         }
+--     },
+-- }
