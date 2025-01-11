@@ -51,7 +51,7 @@ super + shift + d
 super + shift + s 
     $HOME/.local/bin/shotarea.sh
 
-super + ctrl + f
+super + ctrl + s
     $HOME/.local/bin/shotscreen.sh
 
 # inc/dec volume
