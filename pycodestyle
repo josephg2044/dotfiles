@@ -1,0 +1,5 @@
+[pycodestyle]
+count = False
+ignore = E702, E401, E402, E701, 
+max-line-length = 160
+statistics = True
