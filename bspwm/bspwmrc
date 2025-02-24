@@ -14,13 +14,14 @@ bspc config right_padding          21
 bspc config bottom_padding         21
 bspc config border_width           1
 
-bspc config pointer_motion_interval 4
+bspc config pointer_motion_interval 16
 bspc config split_ratio          0.55
 bspc config borderless_monocle   true
 bspc config single_monocle       false
 bspc config gapless_monocle      true 
 
 bspc rule -a mplayer2 state=floating
+bspc rule -a ripdrag state=fullscreen
 bspc rule -a Screenkey manage=off
 bspc rule -a Zathura state=tiled 
 bspc rule -a Tk state=floating

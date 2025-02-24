@@ -1,5 +1,5 @@
 :root {
-	--tab-active-bg-color: #555;
+	--tab-active-bg-color: #557;
 	--tab-inactive-bg-color: #222;
 	--tab-active-fg-fallback-color: #fff;		/* color of text in an active tab without a container */
 	--tab-inactive-fg-fallback-color: #fff;		/* color of text in an inactive tab without a container */

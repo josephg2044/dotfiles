@@ -255,7 +255,15 @@ cmd link %{{
     lf -remote "send clear"
 }}
 
-cmd dragon %ripdrag -a -x $fx
+cmd blobdrop_gui %{{
+    files="${fx//$'\n'/ }"
+    eval "blobdrop -f gui -tcb $files"
+}}
+cmd blobdrop_nogui %{{
+    files="${fx//$'\n'/ }"
+    eval "blobdrop -tcb $files"
+}}
+
 
 map P :link
 map m
@@ -270,7 +278,8 @@ map G
 map ch chmod
 map t tag-toggle
 map o devour-launch
-map r dragon
+map r blobdrop_gui
+map R blobdrop_nogui
 
 map au unarchive
 map ae execute
@@ -292,7 +301,7 @@ map bo yank-dirname
 map bi yank-path
 map B yank-basename
 map <enter> open
-map R reload
+map <c-r> reload
 map mkf mkfile
 map mkd mkdir
 map ms mark-save
