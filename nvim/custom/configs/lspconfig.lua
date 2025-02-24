@@ -3,7 +3,7 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 
-local servers = { "clangd", "bashls", "jdtls", "texlab", "biome", "emmet_language_server", "ts_ls", "pylsp"}
+local servers = { "clangd", "bashls", "jdtls", "texlab", "biome", "emmet_language_server", "ts_ls", "pylsp", "cmake"}
 
 
 for _, lsp in ipairs(servers) do
@@ -14,7 +14,7 @@ for _, lsp in ipairs(servers) do
 end
 
 lspconfig.emmet_language_server.setup {
-    filetypes = { "css", "eruby", "html", "htmldjango", "javascriptreact", "less", "pug", "sass", "scss", "typescriptreact", "htmlangular", "javascript" },
+    filetypes = { "css", "eruby", "html", "htmldjango", "javascriptreact", "less", "pug", "sass", "scss", "typescriptreact", "htmlangular", "javascript", },
 }
 
 lspconfig.biome.setup {
