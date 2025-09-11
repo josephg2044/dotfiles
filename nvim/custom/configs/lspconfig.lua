@@ -3,7 +3,7 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 
-local servers = { "clangd", "bashls", "jdtls", "texlab", "biome", "emmet_language_server", "ts_ls", "pylsp", "cmake"}
+local servers = { "clangd", "bashls", "jdtls", "biome", "emmet_language_server", "ts_ls", "pylsp", "cmake"}
 
 
 for _, lsp in ipairs(servers) do

@@ -2,11 +2,12 @@ local plugins = {
     -- overrides
     {
         "rafamadriz/friendly-snippets",
-        config = function()
-            require("luasnip.loaders.from_vscode").lazy_load {
-                exclude = { "tex" },
-            }
-        end
+        enabled = false
+        -- config = function()
+        --     require("luasnip.loaders.from_vscode").load {
+        --         exclude = { "latex" },
+        --     }
+        -- end
     },
     {
         "nvim-tree/nvim-tree.lua",
@@ -241,5 +242,23 @@ local plugins = {
             })
         end
     },
+    {
+        'nvim-orgmode/orgmode',
+        event = 'VeryLazy',
+        ft = { 'org' },
+        config = function()
+            require('orgmode').setup({
+                org_agenda_files = '~/orgfiles/**/*',
+                org_default_notes_file = '~/orgfiles/refile.org',
+            })
+        end,
+    },
+    {
+        "let-def/texpresso.vim",
+        event = 'VeryLazy',
+        config = function()
+            require('texpresso').attach()
+        end
+    }
 }
 return plugins

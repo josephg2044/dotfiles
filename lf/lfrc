@@ -257,11 +257,11 @@ cmd link %{{
 
 cmd blobdrop_gui %{{
     files="${fx//$'\n'/ }"
-    eval "blobdrop -f gui -tcb $files"
+    eval "blobdrop -f gui -tcb '$files'"
 }}
 cmd blobdrop_nogui %{{
     files="${fx//$'\n'/ }"
-    eval "blobdrop -tcb $files"
+    eval "blobdrop -tcb '$files'"
 }}
 
 

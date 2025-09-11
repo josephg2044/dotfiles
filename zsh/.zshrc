@@ -21,7 +21,13 @@ unsetopt BEEP
 
 # completions
 autoload -Uz compinit
-compinit -d ~/.cache/zsh/zcompdump-${ZSH_VERSION}
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+    compinit
+else
+    compinit -C
+fi
+# autoload -Uz compinit
+# compinit -d ~/.cache/zsh/zcompdump-${ZSH_VERSION}
 # zstyle ':completion:*' menu select
 # zmodload zsh/complist
 # _comp_options+=(globdots)		# Include hidden files.
