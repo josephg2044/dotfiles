@@ -52,32 +52,14 @@ local plugins = {
         "nvim-telescope/telescope.nvim",
         opts = function()
             local conf = require "plugins.configs.telescope"
-            conf.defaults.layout_config.height = 0.99
-            conf.defaults.layout_config.width = 0.99
+            conf.defaults.layout_config.height = 1.0
+            conf.defaults.layout_config.width = 1.0
         end
     },
 
     {
         "folke/which-key.nvim",
         enabled = false,
-    },
-
-    {
-        "mfussenegger/nvim-jdtls",
-        root_dir = function()
-            return vim.fs.dirname(vim.fs.find({ '.gradlew', '.gitignore', 'mvnw', 'build.grade.kts' },
-                { upward = true })[1]) .. "\\"
-        end,
-        settings = {
-            java = {
-                signatureHelp = { enabled = true },
-                import = { enabled = true },
-                rename = { enabled = true }
-            }
-        },
-        init_options = {
-            bundles = {}
-        }
     },
 
     {
@@ -99,7 +81,6 @@ local plugins = {
 
                 "c",
                 "cpp",
-                "java",
                 "python",
             },
             disable = { "latex" }
@@ -113,9 +94,6 @@ local plugins = {
                 "pyright",
                 "clangd",
                 "cpp-tools",
-                "java-debug-adapter",
-                "google-java-format",
-                "jdtls",
                 "texlab",
                 "biome",
                 "emmet-language-server",
@@ -135,7 +113,6 @@ local plugins = {
     -- new plugins
     {
         "kylechui/nvim-surround",
-        version = "*", -- Use for stability; omit to use `main` branch for the latest features
         event = "VeryLazy",
         config = function()
             require("nvim-surround").setup({

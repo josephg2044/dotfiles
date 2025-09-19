@@ -113,7 +113,7 @@ cmd devour-launch ${{
     devour-launch.sh $f
 }}
 
-cmd fzf_jump ${{
+cmd fzf_jump1 ${{
     res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
     if [ -d "$res" ] ; then
         cmd="cd"
@@ -125,8 +125,8 @@ cmd fzf_jump ${{
     lf -remote "send $id $cmd \"$res\""
 }}
 
-cmd fzf_JUMP ${{
-    res="$(find . -maxdepth 2 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+cmd fzf_jump2 ${{
+    res="$(fd -H . -maxdepth 3 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
     if [ -d "$res" ] ; then
         cmd="cd"
     elif [ -f "$res" ] ; then
@@ -138,7 +138,7 @@ cmd fzf_JUMP ${{
 }}
 
 cmd fzf_recur ${{
-    res="$(find . | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    res="$(fd  . | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
     if [ -d "$res" ] ; then
         cmd="cd"
     elif [ -f "$res" ] ; then
@@ -164,7 +164,7 @@ cmd chmod ${{
 }}
 
 
-cmd fzf_search ${{
+cmd fzf_rg ${{
     res="$( \
         RG_PREFIX="rg --column --line-number --no-heading --color=always \
             --smart-case "
@@ -257,11 +257,11 @@ cmd link %{{
 
 cmd blobdrop_gui %{{
     files="${fx//$'\n'/ }"
-    eval "blobdrop -f gui -tcb '$files'"
+    eval "blobdrop -f gui -tcb $files"
 }}
 cmd blobdrop_nogui %{{
     files="${fx//$'\n'/ }"
-    eval "blobdrop -tcb '$files'"
+    eval "blobdrop -tcb $files"
 }}
 
 
@@ -284,11 +284,12 @@ map R blobdrop_nogui
 map au unarchive
 map ae execute
 
-map f fzf_jump
-map F fzf_JUMP
-map <c-f> Filter
-map <a-f> fzf_JUMP
-map <c-s> fzf_search
+map f
+map F fzf_jump1
+map fs fzf_jump2
+map fd fzf_recur
+map fr fzf_rg
+map fl filter
 
 # Basic Functions
 map . set hidden!
