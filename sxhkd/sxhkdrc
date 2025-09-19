@@ -17,7 +17,7 @@ super + shift + p
     librewolf -P school
 
 # rofi menus
-super + @space 
+super + @space
 	rofi -show drun -m -1
 
 super + shift + @space

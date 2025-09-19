@@ -4,11 +4,10 @@
 
 configuration {
     modi: "window,drun,ssh,calc";
-    font: "Hack Nerd Font 7";
+    font: "Iosvmata 9";
     fixed-num-lines: 				true;
-    display-drun:"run";
+    display-drun:"";
     display-window: "";
-    display-pass: "pass";
     display-calc: "calc";
 }
 
@@ -22,30 +21,31 @@ window {
 
 textbox-prompt-colon {
     expand: 						false;
-    str: 							" | ";
-    margin:							4px 0px 0px 0px;
+    str: 							"";
+    margin:							0px 0px 0px 0px;
     text-color: 					@foreground;
 }
 
 
 #element.selected.normal {
     background-color: @background;
-    text-color: @selected-normal-background;
+    text-color: @foreground-alt;
 }
 
 horibox {
     orientation: horizontal;
-    border:             3px;
     children:   [ prompt, textbox-prompt-colon, entry, listview ];
 }
 
 prompt {
     expand:                         false;
     border:                         4px;
-    padding:                        0px 0px 0px 8px;
+    str: "asdsad";
+    padding:                        0px 0px 0px 0px;
 }
 
 entry {
+    placeholder: "";
     expand:                         false;
     padding:                        4px 0px 4px 0px;
     width:                          10em;
@@ -55,7 +55,7 @@ listview {
     layout:                         horizontal;
     lines:                          200;
     columns:						1;
-    fixed-height: 					20px;
+    fixed-height: 					3px;
     spacing: 						10px;
     scrollbar: 						false;
     padding: 						0px 0px 0px 0px;
