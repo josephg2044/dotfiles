@@ -13,7 +13,6 @@ application/rss+xml=rss.desktop
 video=video.desktop
 video/x-matroska=video.desktop
 x-scheme-handler/lbry=lbry.desktop
-browser.desktop
 x-scheme-handler/https=browser.desktop
 x-scheme-handler/chrome=browser.desktop
 text/html=browser.desktop

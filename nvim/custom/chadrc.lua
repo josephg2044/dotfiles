@@ -47,13 +47,13 @@ M.ui = {
             }
         }
     },
-    theme_toggle = { "yoru", "one_light" },
+    theme_toggle = { "yoru" },
     theme = "yoru", -- default theme
     transparency = false,
     cmp = {style = "atom"}
 }
 
-M.ui.extended_integrations = {"trouble", "alpha", "dap"}
+M.ui.extended_integrations = {"trouble", "dap"}
 
 -- chadrc
 M.plugins = "custom.plugins"
