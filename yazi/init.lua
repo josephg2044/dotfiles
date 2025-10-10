@@ -41,7 +41,7 @@ require("whoosh"):setup({
 
 require("simple-tag"):setup({
 	-- UI display mode (icon, text, hidden)
-	ui_mode = "icon", -- (Optional)
+	ui_mode = "text", -- (Optional)
 
 	-- Disable tag key hints (popup in bottom right corner)
 	hints_disabled = true, -- (Optional)

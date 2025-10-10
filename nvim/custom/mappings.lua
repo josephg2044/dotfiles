@@ -13,12 +13,6 @@ M.general = {
 		["<C-u>"] = { "<C-u>zz" },
 		["n"] = { "nzzzv" },
 		["N"] = { "Nzzzv" },
-		["<leader>cc"] = {
-			"<cmd>!g++ % -o main -g<CR>",
-		},
-		["<leader>cl"] = {
-			"<cmd>!echo $(latexmk -pdf main.tex) > compile.out; latexmk -c<CR>",
-		},
 		["<leader>ff"] = { "<cmd> Pick files <CR>", "Find files" },
 		["<leader>fr"] = { "<cmd> Pick grep_live <CR>", "Find rg" },
 		["<leader>fb"] = { "<cmd> Pick buffers <CR>", "Find buffers" },
@@ -32,48 +26,16 @@ M.general = {
 			end,
 			opts = { nowait = true },
 		},
-	},
-	i = {
-		["<Tab>"] = {
+		["<leader>o"] = {
 			function()
-				local luasnip = require("luasnip")
-				if luasnip.expand_or_jumpable() then
-					luasnip.expand_or_jump()
+				if vim.bo.filetype == "tex" then
+					vim.cmd("VimtexTocToggle")
 				else
-					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+					vim.cmd("Outline")
 				end
 			end,
-			opts = { silent = true },
-		},
-		["<S-Tab>"] = {
-			function()
-				require("luasnip").expand()
-			end,
-			opts = { silent = true },
-		},
-		["<C-K>"] = {
-			function()
-				require("luasnip").jump(1)
-			end,
-			opts = { noremap = true, silent = true },
-		},
-		["<C-J>"] = {
-			function()
-				require("luasnip").jump(-1)
-			end,
-			opts = { noremap = true, silent = true },
-		},
-		["<C-k>"] = {
-			function()
-				require("luasnip").change_choice(-1)
-			end,
-			opts = { noremap = true, silent = true },
-		},
-		["<C-j>"] = {
-			function()
-				require("luasnip").change_choice(1)
-			end,
-			opts = { noremap = true, silent = true },
+			"Toggle TOC (tex) / Outline (others)",
+			opts = { noremap = true, silent = true, nowait = true },
 		},
 	},
 	v = {
@@ -121,9 +83,76 @@ M.dap = {
 	},
 }
 
-M.refactor = {
-	plugin = true,
-	n = {},
+M.luasnip = {
+	i = {
+		["<Tab>"] = {
+			function()
+				local luasnip = require("luasnip")
+				if luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump()
+				else
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+				end
+			end,
+			opts = { silent = true },
+		},
+		["<S-Tab>"] = {
+			function()
+				local luasnip = require("luasnip")
+				if luasnip.locally_jumpable(-1) then
+					luasnip.jump(-1)
+				end
+			end,
+			opts = { silent = true },
+		},
+		["<C-h>"] = {
+			function()
+				local luasnip = require("luasnip")
+				if luasnip.choice_active() then
+					luasnip.change_choice(1)
+				end
+			end,
+			opts = { noremap = true, silent = true },
+		},
+		["<C-l>"] = {
+			function()
+				local luasnip = require("luasnip")
+				if luasnip.choice_active() then
+					luasnip.change_choice(-11)
+				end
+			end,
+			opts = { noremap = true, silent = true },
+		},
+	},
+}
+
+M.vimtex = {
+	n = {
+		["<leader>ll"] = {
+			"<cmd> VimtexCompile <CR>",
+		},
+		["<leader>lv"] = {
+			"<cmd> VimtexView <CR>",
+		},
+		["<leader>LL"] = {
+			"<cmd> VimtexCompileSS <CR>",
+		},
+	},
+}
+
+M.ufo = {
+	n = {
+		["zR"] = {
+			function()
+				require("ufo").openAllFolds()
+			end,
+		},
+		["zM"] = {
+			function()
+				require("ufo").closeAllFolds()
+			end,
+		},
+	},
 }
 
 -- more keybinds!
