@@ -170,3 +170,5 @@ alias push='git push origin'
 alias stat='git status'  # 'status' is protected name so using 'stat' instead
 alias tag='git tag'
 alias newtag='git tag -a'
+
+alias preamble='pdflatex -ini -jobname="preamble" "&pdflatex preamble.tex\dump"; rm -rf preamble.log preamble.pdf'

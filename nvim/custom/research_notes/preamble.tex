@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={black},
+    citecolor={black},
+    urlcolor={blue!80!black}
+}
+\usepackage{graphicx}
+\usepackage[shortlabels]{enumitem}
+\usepackage{emptypage}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
+\usepackage{physics}
+\usepackage{cancel}
+\usepackage{bm}
+
+\newcommand\N{\ensuremath{\mathbb{N}}}
+\newcommand\R{\ensuremath{\mathbb{R}}}
+\newcommand\Z{\ensuremath{\mathbb{Z}}}
+\renewcommand\O{\ensuremath{\emptyset}}
+\newcommand\Q{\ensuremath{\mathbb{Q}}}
+\newcommand\C{\ensuremath{\mathbb{C}}}
+\newcommand\U{\ensuremath{\mathbb{U}}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Hol}{Hol}
+\DeclareMathOperator{\Aut}{Aut}
+
+\newcommand\contra{\Rightarrow\!\Leftarrow}
+
+\newcommand\hr{
+    \noindent\rule[0.5ex]{\linewidth}{0.5pt}
+}
+
+\newcommand\hide[1]{}
+
+\usepackage{siunitx}
+\sisetup{locale = US}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{intersections, angles, quotes, calc, positioning}
+\usetikzlibrary{arrows.meta}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\tikzset{force/.style={thick, {Circle[length=2pt]}-stealth, shorten <=-1pt}}
+
+% theorems
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em, innertopmargin=5pt,
+innerbottommargin=6pt}
+
+\theoremstyle{definition}
+
+\makeatletter
+
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+bodyfont=\normalfont, mdframed={ nobreak } ]{thmgreenbox}
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+bodyfont=\normalfont, mdframed={ nobreak } ]{thmredbox}
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+bodyfont=\normalfont]{thmbluebox}
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+bodyfont=\normalfont]{thmblueline}
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+    bodyfont=\normalfont, numbered=no, mdframed={ rightline=false,
+topline=false, bottomline=false, }, qed=\qedsymbol ]{thmproofbox}
+\declaretheoremstyle[headfont=\bfseries\sffamily,
+    bodyfont=\normalfont, numbered=no, mdframed={ nobreak,
+rightline=false, topline=false, bottomline=false } ]{thmexplanationbox}
+\AtEndEnvironment{eg}{\null\hfill$\diamond$}%
+
+\declaretheorem[style=thmgreenbox, name=Definition]{definition}
+\declaretheorem[style=thmbluebox, numbered=no, name=Example]{example}
+\declaretheorem[style=thmbluebox, numbered=no, name=Exercise]{excercise}
+\declaretheorem[style=thmredbox, name=Proposition]{proposition}
+\declaretheorem[style=thmredbox, name=Theorem]{theorem}
+\declaretheorem[style=thmredbox, name=Lemma]{lemma}
+\declaretheorem[style=thmredbox, numbered=no, name=Corollary]{corollary}
+
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\declaretheorem[style=thmexplanationbox, name=Proof]{explanation}
+\renewenvironment{proof}[1][\proofname]{%
+\begin{replacementproof}}{%
+\end{replacementproof}}
+
+\makeatother
+
+\declaretheorem[style=thmblueline, numbered=no, name=Remark]{remark}
+\declaretheorem[style=thmblueline, numbered=no, name=Note]{note}
+\declaretheorem[style=thmproofbox, name=Solution, numbered=no]{solution}
+
+\newtheorem*{problem}{Problem}
+
+\newcommand{\exercise}[1]{
+    \def\@exercise{#1}
+    \subsection*{Exercise #1}
+}
+
+\newcommand{\subexercise}[1]{
+    \subsubsection*{Exercise \@exercise.#1}
+}
+
+\numberwithin{equation}{section}
+
+% pset
+\newcommand{\Name}{Joseph George}
+\newcommand{\Course}{Research Notes}
+\newcommand{\Assignment}{}
+\newcommand{\Date}{}
+
+% Compact title
+\makeatletter
+\def\@maketitle{
+    \hr\vspace{0.5em}
+    {\Large \textbf{\Assignment}\par}
+    {\large \textbf{\Course} \hfill \Date\par}
+    \vspace{0.25em}
+    {\normalsize \Name\par}
+    \vspace{0.5em}\hr
+}
+
+\renewcommand{\maketitle}{
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \centering
+        \vspace*{\fill}
+        \@maketitle
+        \vspace*{\fill}
+    \end{titlepage}
+}
+\makeatother

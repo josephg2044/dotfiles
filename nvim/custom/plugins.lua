@@ -16,8 +16,14 @@ local plugins = {
 	},
 
 	{
-		"windwp/nvim-autopairs",
-		enabled = false,
+		"altermo/ultimate-autopair.nvim",
+		event = { "InsertEnter", "CmdlineEnter" },
+		branch = "v0.6",
+		opts = {
+			space = {
+				enable = false,
+			},
+		},
 	},
 
 	{
@@ -30,7 +36,7 @@ local plugins = {
 
 	{
 		"ggandor/leap.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("leap").set_default_mappings()
 		end,
@@ -38,7 +44,7 @@ local plugins = {
 
 	{
 		"nvim-mini/mini.pick",
-		lazy = false,
+		event = "VeryLazy",
 		opts = {
 			options = {
 				content_from_bottom = true,
@@ -55,7 +61,7 @@ local plugins = {
 	{
 		"nvim-mini/mini.surround",
 		version = false,
-		lazy = false,
+		event = "VeryLazy",
 		opts = {
 			mappings = {
 				add = "gsa",
@@ -75,36 +81,20 @@ local plugins = {
 	{
 		"nvim-mini/mini.splitjoin",
 		version = false,
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("mini.splitjoin").setup()
 		end,
 	},
 
 	{
-		"nvim-mini/mini.pairs",
-		version = false,
-		lazy = false,
-		opts = {
-			modes = { insert = true, command = true, terminal = false },
-			skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
-			skip_ts = { "string" },
-			skip_unbalanced = true,
-			markdown = true,
-		},
-		config = function(_, opts)
-			require("mini.pairs").setup(opts)
-		end,
-	},
-
-	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
-		lazy = false,
+		event = { "VeryLazy" },
 	},
 
 	{
 		"nvim-mini/mini.ai",
-		lazy = false,
+		event = { "VeryLazy" },
 		opts = function()
 			local ai = require("mini.ai")
 			return {
@@ -135,6 +125,7 @@ local plugins = {
 
 	{
 		"lukas-reineke/indent-blankline.nvim",
+		event = { "VeryLazy" },
 		opts = function()
 			local conf = require("plugins.configs.others").blankline
 			conf.show_first_indent_level = true
@@ -145,38 +136,44 @@ local plugins = {
 	{
 		"hrsh7th/nvim-cmp",
 		enabled = false,
-		opts = function()
-			local conf = require("plugins.configs.cmp")
-			local cmp = require("cmp")
-			conf.view = { docs = { auto_open = false } }
-			conf.performance = { max_view_entries = 10 }
-			conf.mapping["<Tab>"] = nil
-			conf.mapping["<S-Tab>"] = nil
-			conf.mapping["<CR>"] = nil
-			conf.mapping["<C-Space>"] = cmp.mapping.confirm({ select = "true" })
-			conf.mapping["<C-j>"] = cmp.mapping.select_next_item()
-			conf.mapping["<C-k>"] = cmp.mapping.select_prev_item()
-			conf.mapping["<C-y>"] = function()
-				if cmp.visible_docs() then
-					cmp.close_docs()
-				else
-					cmp.open_docs()
-				end
-			end
-		end,
+		-- opts = function()
+		-- 	local conf = require("plugins.configs.cmp")
+		-- 	local cmp = require("cmp")
+		-- 	conf.view = { docs = { auto_open = false } }
+		-- 	conf.performance = { max_view_entries = 10 }
+		-- 	conf.mapping["<Tab>"] = nil
+		-- 	conf.mapping["<S-Tab>"] = nil
+		-- 	conf.mapping["<CR>"] = nil
+		-- 	conf.mapping["<C-Space>"] = cmp.mapping.confirm({ select = "true" })
+		-- 	conf.mapping["<C-j>"] = cmp.mapping.select_next_item()
+		-- 	conf.mapping["<C-k>"] = cmp.mapping.select_prev_item()
+		-- 	conf.mapping["<C-y>"] = function()
+		-- 		if cmp.visible_docs() then
+		-- 			cmp.close_docs()
+		-- 		else
+		-- 			cmp.open_docs()
+		-- 		end
+		-- 	end
+		-- end,
 	},
 
 	{
 		"L3MON4D3/LuaSnip",
-		opts = { history = true, updateevents = "TextChanged,TextChangedI" },
+		ft = "tex",
+		opts = {
+			history = true,
+			updateevents = "TextChanged,TextChangedI",
+			enable_autosnippets = true,
+			store_selection_keys = "<Tab>",
+		},
 		config = function(_, opts)
 			require("plugins.configs.others").luasnip(opts)
 		end,
 	},
 
 	{
-		"rebelot/colorful-menu.nvim",
-		lazy = false,
+		"xzbdmw/colorful-menu.nvim",
+		event = "InsertEnter",
 		config = function()
 			require("colorful-menu").setup()
 		end,
@@ -185,11 +182,12 @@ local plugins = {
 	{
 		"saghen/blink.cmp",
 		version = "1.*",
-		lazy = false,
+		event = "InsertEnter",
+		dependencies = { "xzbdmw/colorful-menu.nvim" },
 		opts = {
-			snippets = {
-				preset = "luasnip",
-			},
+			-- snippets = {
+			-- 	preset = "luasnip",
+			-- },
 
 			appearance = {
 				nerd_font_variant = "normal",
@@ -324,26 +322,38 @@ local plugins = {
 		end,
 	},
 
-	-- new plugins
-
-	{
-		"ThePrimeagen/refactoring.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-		},
-		lazy = false,
-		opts = {},
-	},
-
 	{
 		"lervag/vimtex",
-		lazy = false,
+		ft = { "tex" },
+		init = function()
+			vim.g.vimtex_quickfix_open_on_warning = 0
+			vim.g.vimtex_quickfix_ignore_filters = {
+				[[Underfull \\hbox]],
+				[[Overfull \\hbox]],
+				[[LaTeX Warning: .\+ float specifier changed to]],
+				[[LaTeX hooks Warning]],
+				[[Package siunitx Warning: Detected the "physics" package:]],
+				[[Package hyperref Warning: Token not allowed in a PDF string]],
+			}
+			vim.g.vimtex_view_method = "zathura"
+			vim.g.latex_view_general_viewer = "zathura"
+			vim.g.vimtex_compiler_progname = "nvr"
+			vim.g.smartindent = false
+			vim.g.autoindent = false
+			vim.g.vimtex_toc_config = {
+				split_pos = ":vert :botright",
+				split_width = 30,
+				show_help = 1,
+			}
+			vim.g.vimtex_delim_toggle_mod_list = {
+				{ "\\left", "\\right" },
+				{ "\\big", "\\big" },
+			}
+		end,
 	},
 
 	{
 		"nvim-orgmode/orgmode",
-		event = "VeryLazy",
 		ft = { "org" },
 		config = function()
 			require("orgmode").setup({
@@ -355,6 +365,7 @@ local plugins = {
 
 	{
 		"let-def/texpresso.vim",
+		ft = { "tex" },
 		event = "VeryLazy",
 		config = function()
 			require("texpresso").attach()
@@ -364,7 +375,6 @@ local plugins = {
 	{
 		"stevearc/conform.nvim",
 		event = "VeryLazy",
-		lazy = false,
 		config = function()
 			require("conform").setup({
 				log_level = vim.log.levels.DEBUG,
@@ -387,6 +397,7 @@ local plugins = {
 
 	{
 		"hat0uma/csvview.nvim",
+		ft = "csv",
 		opts = {
 			parser = { comments = { "#", "//" } },
 			keymaps = {
@@ -399,6 +410,42 @@ local plugins = {
 			},
 		},
 		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+	},
+	{
+		"hedyhli/outline.nvim",
+		event = "VeryLazy",
+		cmd = { "Outline", "OutlineOpen" },
+		dependencies = {
+			"epheien/outline-treesitter-provider.nvim",
+		},
+		opts = {
+			preview_window = {
+				live = true,
+			},
+
+			providers = {
+				priority = { "lsp", "markdown", "norg", "man" },
+			},
+
+			symbols = {
+				icon_fetcher = function(kind, bufnr, symbol)
+					return kind:sub(1, 1)
+				end,
+			},
+		},
+	},
+
+	{
+		"chentoast/marks.nvim",
+		event = "VeryLazy",
+		opts = {},
+	},
+
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+        ft = "markdown",
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+		opts = {},
 	},
 }
 return plugins
