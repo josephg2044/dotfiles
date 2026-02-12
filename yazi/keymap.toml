@@ -6,12 +6,6 @@
 [mgr]
 prepend_keymap = [
     {on   = "<Esc>", run  = "close", desc = "Cancel input"},
-    {on = "i", run = "plugin whoosh jump_by_key", desc = "Jump bookmark by key"},
-    {on = [ "I", "a" ], run = "plugin whoosh save", desc = "Add bookmark (hovered file/directory)"},
-    { on = [ "I", "A" ], run = "plugin whoosh save_cwd", desc = "Add bookmark (current directory)" },
-    { on = [ "I", "d" ], run = "plugin whoosh delete_by_key", desc = "Delete bookmark by key" },
-    { on = [ "I", "D" ], run = "plugin whoosh delete_by_fzf", desc = "Delete bookmarks by fzf (use TAB to select multiple)" },
-    { on = [ "I", "C" ], run = "plugin whoosh delete_all", desc = "Delete all user bookmarks" },
     { on  = "R", run = 'shell --  blobdrop -tcb "$@"' },
     # Tagging plugin
 

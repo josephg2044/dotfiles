@@ -38,7 +38,7 @@ simple-tag is a Yazi plugin that allows you to add tags to files and folders. Ea
 > Minimum supported version: Yazi v25.5.31.
 
 - [Yazi](https://github.com/sxyazi/yazi)
-- Tested on Linux
+- Tested on Linux and Windows
 
 ## Installation
 
@@ -74,7 +74,6 @@ ya pkg add boydaihungst/simple-tag
 
 - Filter Files by Tag(s) and Modes:
   In all of examples below, I didn't use fixed tag keys with `--keys`/`--key`/`--tag`/`--tags`
-
   - Mode = and (Default), match all of the selected tags:
 
     ![Recording 2025-03-29 at 20 56 47](https://github.com/user-attachments/assets/e7619681-7ab8-4e2c-b8ea-ea4aeb8c22db)
@@ -87,7 +86,6 @@ ya pkg add boydaihungst/simple-tag
   In all of examples below, I didn't use fixed tag keys with `--keys`/`--key`/`--tag`/`--tags`
 
   ![image](https://github.com/user-attachments/assets/6efabb8a-0022-4aa3-ba20-04127e3c58c1)
-
   - Replace selection:
 
     ![Recording 2025-03-29 at 23 30 56](https://github.com/user-attachments/assets/364c07a7-c1ef-4323-8e92-ccb795233fd7)
@@ -126,7 +124,7 @@ require("simple-tag"):setup({
   -- Disable tag key hints (popup in bottom right corner)
   hints_disabled = false, -- (Optional)
 
-  -- linemode order: adjusts icon/text position. Fo example, if you want icon to be on the mose left of linemode then set linemode_order larger than 1000.
+  -- linemode order: adjusts icon/text position. For example, if you want icon to be on the most left of linemode then set linemode_order larger than 1000.
   -- More info: https://github.com/sxyazi/yazi/blob/077faacc9a84bb5a06c5a8185a71405b0cb3dc8a/yazi-plugin/preset/components/linemode.lua#L4-L5
   linemode_order = 500, -- (Optional)
 
@@ -141,6 +139,7 @@ require("simple-tag"):setup({
 	  -- Set this same value with `theme.toml` > [mgr] > hovered > reversed
 	  -- Default theme use "reversed = true".
 	  -- More info: https://github.com/sxyazi/yazi/blob/077faacc9a84bb5a06c5a8185a71405b0cb3dc8a/yazi-config/preset/theme-dark.toml#L25
+	  -- Only need to set this if you use shipped/stable yazi <= v25.5.31 or nightly yazi installed before 11/12/2025
 	  reversed = true, -- (Optional)
 
 	  -- More colors: https://yazi-rs.github.io/docs/configuration/theme#types.color
@@ -176,27 +175,21 @@ Use one of the following methods:
 
 > [!IMPORTANT]
 >
-> For yazi nightly replace `name` with `url`
+> For yazi before v25.12.29 replace `url` with `name`
 
 ```toml
 [plugin]
 
   fetchers = [
-    { id = "simple-tag", name = "*", run = "simple-tag" },
-    { id = "simple-tag", name = "*/", run = "simple-tag" },
+    { id = "simple-tag", url = "*", run = "simple-tag" },
+    { id = "simple-tag", url = "*/", run = "simple-tag" },
   ]
 # or
   prepend_fetchers = [
-    { id = "simple-tag", name = "*", run = "simple-tag" },
-    { id = "simple-tag", name = "*/", run = "simple-tag" },
+    { id = "simple-tag", url = "*", run = "simple-tag" },
+    { id = "simple-tag", url = "*/", run = "simple-tag" },
   ]
 # or
-  append_fetchers = [
-    { id = "simple-tag", name = "*", run = "simple-tag" },
-    { id = "simple-tag", name = "*/", run = "simple-tag" },
-  ]
-
-# For yazi nightly, name is replaced with url
   append_fetchers = [
     { id = "simple-tag", url = "*", run = "simple-tag" },
     { id = "simple-tag", url = "*/", run = "simple-tag" },
@@ -312,8 +305,14 @@ Or you can use `keymap` to replace all other keys
 
     #  ─────────────────────── FILTER FILES/FOLDERS BY TAGS: ───────────────────────
     # Available filter modes:
-    # and → Filter files which contain all of selected tags (Default if mode isn't specified).
-    # or → Filter files which contain at least one of selected tags.
+    # and → Show files that contain all selected tags. (Default if mode isn't specified).
+    # or → Show files that contain at least one of the selected tags.
+
+    # nand → ("not and") Hide files that contain all selected tags. Inverse of the "and" mode.
+    # nor → ("not or") Hide files that contain at least one of the selected tags. Inverse of the "or" mode.
+    # not → Show only files that have no tags.
+
+    # NOTE: Not available in vfs mode (Remote Virtual Filesystem)
 
     # Filter files/folders by tags
 
@@ -341,12 +340,12 @@ Or you can use `keymap` to replace all other keys
 
     #  ─────────────────────── VISUAL SELECT FILES/FOLDERS BY TAGS: ───────────────────────
 
-    # Avaiable selection actions:
+    # Available selection actions:
     # replace → Replaces the current selection list with files/folders that have the selected tag.
     # unite → Combines the currently selected files/folders with those that have the selected tag.
     # intersect → Keeps only the files/folders that are present in both the current selection and the tagged items.
-    # subtract → Deselects files/folders that have the selected tag.
-    # exclude → Keeps only the files/folders that do not have the selected tag.
+    # subtract → Deselects files/folders that have the selected tag from the current selection.
+    # exclude → Combines the currently selected files/folders with the tagged items, then deselects any overlapping items between the current selection and the tagged items.
     # undo → Undos or redoes the last selection action.
 
     # which_key will popup to choose selection mode
@@ -358,7 +357,7 @@ Or you can use `keymap` to replace all other keys
 
     # Run action on files/folders by a tag.
     # A tag hint window will show up.
-    # Simply press any tag key to do the folowing action:
+    # Simply press any tag key to do the following action:
     { on = [ "t", "s", "r" ], run = "plugin simple-tag -- replace-select", desc = "replace-select" },
     { on = [ "t", "s", "u" ], run = "plugin simple-tag -- unite-select", desc = "unite-select" },
     { on = [ "t", "s", "i" ], run = "plugin simple-tag -- intersect-select", desc = "intersect-select" },
@@ -369,7 +368,7 @@ Or you can use `keymap` to replace all other keys
 
     # Run action on files/folders by tag(s) with value from input box.
     # A tag hint window will show up.
-    # Simply input tag key(s) to do the folowing action:
+    # Simply input tag key(s) to do the following action:
     { on = [ "t", "s", "R" ], run = "plugin simple-tag -- replace-select --input", desc = "replace-select --input" },
     { on = [ "t", "s", "U" ], run = "plugin simple-tag -- unite-select --input", desc = "unite-select --input" },
     { on = [ "t", "s", "I" ], run = "plugin simple-tag -- intersect-select --input", desc = "intersect-select --input" },
@@ -387,7 +386,7 @@ Or you can use `keymap` to replace all other keys
 ### Customizing the Theme for tag hints window
 
 To modify the tag hints window appearance, edit `.../yazi/theme.toml`:
-You can also use Falvors file instead.
+You can also use Flavors file instead.
 
 ```toml
 
