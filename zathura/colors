@@ -1,33 +1,27 @@
-
 set recolor "true"
 
-set completion-bg "#101213"
-set completion-fg "#edf2ff"
-set completion-group-bg "#121314"
-set completion-group-fg "#98c379"
-set completion-highlight-bg "#edf2ff"
-set completion-highlight-fg "#121314"
+set	default-bg	"#100F0F"
+set	default-fg	"#CECDC3"
+set	recolor-lightcolor "#100F0F"
+set	recolor-darkcolor "#CECDC3"
 
-set recolor-lightcolor "#121314"
-set recolor-darkcolor "#edf2ff"
-set default-bg "#101112"
+set	inputbar-bg	"#1C1B1A"
+set	inputbar-fg	"#CECDC3"
+set	statusbar-bg	"#1C1B1A"
+set	statusbar-fg	"#CECDC3"
 
-set inputbar-bg "#121314"
-set inputbar-fg "#edf2ff"
-set notification-bg "#121314"
-set notification-fg "#edf2ff"
-set notification-error-bg "#e06c75"
-set notification-error-fg "#edf2ff"
-set notification-warning-bg "#e06c75"
-set notification-warning-fg "#edf2ff"
-set statusbar-bg "#121314"
-set statusbar-fg "#edf2ff"
-set index-bg "#121314"
-set index-fg "#edf2ff"
-set index-active-bg "#edf2ff"
-set index-active-fg "#121314"
-set render-loading-bg "#121314"
-set render-loading-fg "#edf2ff"
+set	notification-bg		"#1C1B1A"
+set	notification-fg		"#CECDC3"
+set	notification-error-bg	"#D14D41"
+set	notification-error-fg	"#CECDC3"
+set	notification-warning-bg	"#DA702C"
+set	notification-warning-fg	"#CECDC3"
+
+
+set	completion-bg		 "#1C1B1A"
+set	completion-fg		 "#878580"
+set	completion-highlight-fg	 "#1C1B1A"
+set	completion-highlight-bg	 "#CECDC3"
 
 set window-title-home-tilde true
 set statusbar-basename true

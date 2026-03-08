@@ -42,6 +42,8 @@ Specifically, zsh-autopair does 5 things for you:
     - [Antigen](#antigen)
     - [zgen](#zgen)
     - [zplug](#zplug)
+    - [Hombrew](#homebrew)
+    - [Oh My Zsh](#oh-my-zsh)
 - [Configuration](#configuration)
     - [Adding/Removing pairs](#addingremoving-pairs)
 - [Troubleshooting & compatibility issues](#troubleshooting--compatibility-issues)
@@ -65,6 +67,14 @@ source ~/.zsh-autopair/autopair.zsh
 autopair-init
 ```
 
+### Hoembrew
+`brew install zsh-autopair`
+
+``` bash
+# Add to .zshrc
+source $HOMEBREW_PREFIX/share/zsh-autopair/autopair.zsh
+```
+
 ### Antigen
 `antigen bundle hlissner/zsh-autopair`
 
@@ -86,6 +96,33 @@ Load autopair _after compinit_, otherwise, the plugin won't work.
 zplug "hlissner/zsh-autopair", defer:2
 ```
 
+### Homebrew
+For Homebrew users, you can install it through the following command
+```shell
+brew install zsh-autopair
+```
+Then source it in your `.zshrc`
+```shell
+source $(brew --prefix)/share/zsh-autopair/autopair.zsh
+```
+
+### Oh My Zsh
+1. Clone this repository into `$ZSH_CUSTOM/plugins` (by default `~/.oh-my-zsh/custom/plugins`)
+
+    ```sh
+    git clone https://github.com/hlissner/zsh-autopair ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autopair
+    ```
+
+2. Add the plugin to the list of plugins for Oh My Zsh to load (inside `~/.zshrc`):
+
+    ```sh
+    plugins=(
+        # other plugins...
+        zsh-autopair
+    )
+    ```
+
+3. Start a new terminal session.
 
 ## Configuration
 zsh-autopair sets itself up. You can prevent this by setting
@@ -205,7 +242,7 @@ Disable space expansion to work around this: `unset 'AUTOPAIR_PAIRS[ ]'`
 [dotfiles]: https://github.com/hlissner/dotfiles
 [vimrc]: https://github.com/hlissner/.vim
 [emacs.d]: https://github.com/hlissner/doom-emacs
-[zshrc]: https://github.com/hlissner/dotfiles/tree/master/shell/%2Bzsh
+[zshrc]: https://github.com/hlissner/dotfiles/blob/master/config/zsh/.zshrc
 [zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/pattern.md
 [surround]: https://github.com/zsh-users/zsh/blob/master/Functions/Zle/surround
 [select-quoted]: https://github.com/zsh-users/zsh/blob/master/Functions/Zle/select-quoted

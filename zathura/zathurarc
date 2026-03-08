@@ -18,3 +18,7 @@ map J zoom out
 map i recolor
 map p print
 map g goto top
+map T exec "zathura $FILE"
+map M mark_evaluate
+map b bmark
+map B bjump

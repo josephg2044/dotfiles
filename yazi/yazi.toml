@@ -1,55 +1,44 @@
-# A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
-# If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
-
 [mgr]
 ratio          = [ 0, 2, 3 ]
-sort_by        = "alphabetical"
-sort_sensitive = false
-sort_reverse 	 = false
-sort_dir_first = true
-sort_translit  = false
-linemode       = "none"
-show_hidden    = false
-show_symlink   = true
-scrolloff      = 3
-mouse_events   = [ "click", "scroll" ]
 title_format   = "[y]: {cwd}"
 
 [preview]
-wrap            = "no"
-tab_size        = 2
 max_width       = 900
 max_height      = 1200
 cache_dir       = "~/.cache/yazi"
 image_delay     = 30
-image_filter    = "triangle"
 image_quality   = 90
-ueberzug_scale  = 1
 # ueberzug_offset = [ 0, 0, 0, 0 ]
 ueberzug_offset = [0.5, 0.5, -0.5, -0.5]
 
 [opener]
 edit = [
-	{ run = '${EDITOR:-vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
-]
-open = [
-	{ run = 'xdg-open "$1"',                desc = "Open", for = "linux" },
-]
-reveal = [
-	{ run = 'xdg-open "$(dirname "$1")"',           desc = "Reveal", for = "linux" },
-]
-extract = [
-	{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
+	{ run = "${EDITOR:-vi} %s", desc = "$EDITOR",      for = "unix", block = true },
 ]
 play = [
-	{ run = 'mpv --force-window "$@"', orphan = true, for = "unix" },
+	{ run = "xdg-open %s1",    desc = "Play", for = "linux", orphan = true },
+	{ run = "mediainfo %s1; echo 'Press enter to exit'; read _", block = true, desc = "Show media info", for = "unix" },
+	{ run = "mediainfo %s1 & pause", block = true, desc = "Show media info", for = "windows" },
+]
+open = [
+	{ run = "xdg-open %s1",    desc = "Open", for = "linux" },
+]
+reveal = [
+	{ run = "xdg-open %d1",         desc = "Reveal", for = "linux" },
+	{ run = "clear; exiftool %s1; echo 'Press enter to exit'; read _", desc = "Show EXIF", for = "unix", block = true },
+]
+extract = [
+	{ run = "ya pub extract --list %s", desc = "Extract here" },
+]
+download = [
+	{ run = "ya emit download --open %S", desc = "Download and open" },
+	{ run = "ya emit download %S",        desc = "Download" },
 ]
 
 [open]
 rules = [
 	# Folder
-	{ name = "*/", use = [ "edit", "open", "reveal" ] },
+	{ url = "*/", use = [ "edit", "open", "reveal" ] },
 	# Text
 	{ mime = "text/*", use = [ "edit", "reveal" ] },
 	# Image
@@ -63,28 +52,33 @@ rules = [
 	{ mime = "*/javascript", use = [ "edit", "reveal" ] },
 	# Empty file
 	{ mime = "inode/empty", use = [ "edit", "reveal" ] },
+	# Virtual file system
+	{ mime = "vfs/{absent,stale}", use = "download" },
 	# Fallback
-	{ name = "*", use = [ "open", "reveal" ] },
+	{ url = "*", use = [ "open", "reveal" ] },
 ]
 
 [tasks]
-micro_workers    = 10
-macro_workers    = 10
+file_workers     = 3
+plugin_workers   = 5
+fetch_workers    = 5
+preload_workers  = 2
+process_workers  = 5
 bizarre_retry    = 3
-# image_alloc      = 1073741824        # = 1024*1024*1024 = 1024MB
 image_alloc      = 536870912  # 512MB
-image_bound      = [ 5000, 5000 ]
+image_bound      = [ 10000, 10000 ]
 suppress_preload = false
 
 [plugin]
 fetchers = [
 	# Mimetype
-	{ id = "mime", name = "*", run = "mime", prio = "high" },
-    { id = "simple-tag", name = "*", run = "simple-tag" },
-    { id = "simple-tag", name = "*/", run = "simple-tag" },
+	{ id = "mime", url = "*/",         run = "mime.dir", prio = "high" },
+	{ id = "mime", url = "local://*",  run = "mime.local", prio = "high" },
+	{ id = "mime", url = "remote://*", run = "mime.remote", prio = "high" },
+
 ]
 spotters = [
-	{ name = "*/", run = "folder" },
+	{ url = "*/", run = "folder" },
 	# Code
 	{ mime = "text/*", run = "code" },
 	{ mime = "application/{mbox,javascript,wine-extension-ini}", run = "code" },
@@ -94,8 +88,12 @@ spotters = [
 	{ mime = "image/*", run = "image" },
 	# Video
 	{ mime = "video/*", run = "video" },
+	# Virtual file system
+	{ mime = "vfs/*", run = "vfs" },
+	# Error
+	{ mime = "null/*", run = "null" },
 	# Fallback
-	{ name = "*", run = "file" },
+	{ url = "*", run = "file" },
 ]
 preloaders = [
 	# Image
@@ -111,7 +109,7 @@ preloaders = [
 	{ mime = "application/ms-opentype", run = "font" },
 ]
 previewers = [
-	{ name = "*/", run = "folder" },
+	{ url = "*/", run = "folder" },
 	# Code
 	{ mime = "text/*", run = "code" },
 	{ mime = "application/{mbox,javascript,wine-extension-ini}", run = "code" },
@@ -128,20 +126,25 @@ previewers = [
 	# Archive
 	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", run = "archive" },
 	{ mime = "application/{debian*-package,redhat-package-manager,rpm,android.package-archive}", run = "archive" },
-	{ name = "*.{AppImage,appimage}", run = "archive" },
+	{ url = "*.{AppImage,appimage}", run = "archive" },
 	# Virtual Disk / Disk Image
 	{ mime = "application/{iso9660-image,qemu-disk,ms-wim,apple-diskimage}", run = "archive" },
 	{ mime = "application/virtualbox-{vhd,vhdx}", run = "archive" },
-	{ name = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}", run = "archive" },
+	{ url = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}", run = "archive" },
 	# Font
 	{ mime = "font/*", run = "font" },
 	{ mime = "application/ms-opentype", run = "font" },
 	# Empty file
 	{ mime = "inode/empty", run = "empty" },
+	# Virtual file system
+	{ mime = "vfs/*", run = "vfs" },
+	# Error
+	{ mime = "null/*", run = "null" },
 	# Fallback
-	{ name = "*", run = "file" },
+	{ url = "*", run = "file" },
 ]
-  prepend_preloaders = [
+
+prepend_preloaders = [
     { mime = "{audio,video,image}/*", run = "mediainfo" },
     { mime = "application/subrip", run = "mediainfo" },
     { mime = "application/postscript", run = "mediainfo" },
@@ -228,16 +231,16 @@ delete_origin	= "center"
 delete_offset	= [ 0, 0, 70, 20 ]
 
 # overwrite
-overwrite_title   = "Overwrite file?"
-overwrite_content = "Will overwrite the following file:"
-overwrite_origin  = "center"
-overwrite_offset  = [ 0, 0, 50, 15 ]
+overwrite_title  = "Overwrite file?"
+overwrite_body   = "Will overwrite the following file:"
+overwrite_origin = "center"
+overwrite_offset = [ 0, 0, 50, 15 ]
 
 # quit
-quit_title   = "Quit?"
-quit_content = "The following tasks are still running, are you sure you want to quit?"
-quit_origin  = "center"
-quit_offset  = [ 0, 0, 50, 15 ]
+quit_title  = "Quit?"
+quit_body   = "There are unfinished tasks, quit anyway?\n(Open task manager with default key 'w')"
+quit_origin = "center"
+quit_offset = [ 0, 0, 50, 15 ]
 
 [pick]
 open_title  = "Open with:"
@@ -249,13 +252,13 @@ sort_by      	 = "none"
 sort_sensitive = false
 sort_reverse 	 = false
 sort_translit  = false
-#
-# [[plugin.prepend_fetchers]]
-# id   = "git"
-# name = "*"
-# run  = "git"
-#
-# [[plugin.prepend_fetchers]]
-# id   = "git"
-# name = "*/"
-# run  = "git"
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*/"
+run = "git"

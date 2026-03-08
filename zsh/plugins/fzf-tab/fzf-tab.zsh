@@ -5,14 +5,18 @@
 [[ ! -o 'no_brace_expand' ]] || _ftb_opts+=('no_brace_expand')
 'builtin' 'setopt' 'no_aliases' 'no_sh_glob' 'brace_expand'
 
+# disable aliases
+typeset _ftb_aliases="$(builtin alias -Lm '[^+]*')"
+builtin unalias -m '[^+]*'
+
 # thanks Valodim/zsh-capture-completion
 -ftb-compadd() {
   # parse all options
   local -A apre hpre dscrs _oad _mesg
   local -a isfile _opts __ expl
-  zparseopts -E -a _opts P:=apre p:=hpre d:=dscrs X+:=expl O:=_oad A:=_oad D:=_oad f=isfile \
+  zparseopts -a _opts P:=apre p:=hpre d:=dscrs X+:=expl O:=_oad A:=_oad D:=_oad f=isfile \
              i: S: s: I: x:=_mesg r: R: W: F: M+: E: q e Q n U C \
-             J:=__ V:=__ a=__ l=__ k=__ o=__ 1=__ 2=__
+             J:=__ V:=__ a=__ l=__ k=__ o::=__ 1=__ 2=__
 
   # store $curcontext for further usage
   _ftb_curcontext=${curcontext#:}
@@ -21,7 +25,7 @@
   # or fzf-tab is disabled in the current context
   if (( $#_oad != 0 || ! IN_FZF_TAB )) \
     || { -ftb-zstyle -m disabled-on "any" } \
-    || ({ -ftb-zstyle -m disabled-on "files" } && [[ -n $isfile ]]); then
+    || { -ftb-zstyle -m disabled-on "files" && [[ -n $isfile ]] }; then
     builtin compadd "$@"
     return
   fi
@@ -47,14 +51,50 @@
   [[ -n $expl ]] && _ftb_groups+=$expl
 
   # store these values in _ftb_compcap
-  local -a keys=(apre hpre PREFIX SUFFIX IPREFIX ISUFFIX)
+  local -a _ftb_compcap_keys=(apre hpre PREFIX SUFFIX IPREFIX ISUFFIX)
   local key expanded __tmp_value=$'<\0>' # placeholder
-  for key in $keys; do
+  
+  # Shadow PREFIX locally so we can modify it for fzf-tab capture
+  # without permanently affecting the shell state for the final compadd.
+  local PREFIX="$PREFIX"
+  local PREFIX_ORIG="$PREFIX"
+
+  # Sanitize PREFIX locally before capture.
+  # We restrict this to approximate/correct contexts to avoid false positives.
+  # _approximate injects internal glob flags like (#a1) into PREFIX.
+  # Check "14.8.5 Approximate Matching" in Zsh docs (https://zsh.sourceforge.io/Doc/Release/Expansion.html).
+  if [[ $_ftb_curcontext == (*approximate*|*correct*) ]]; then
+    # 1. Strip (#a1) from start
+    PREFIX=${PREFIX/#\(\#a[0-9]##\)/}
+    # 2. Strip (#a1) after leading tilde (e.g. ~(#a1)/foo -> ~/foo)
+    PREFIX=${PREFIX/#\~\(\#a[0-9]##\)/~}
+
+    # If the prefix changed, we know this was a fuzzy match for which we stripped the glob.
+    if [[ $PREFIX_ORIG != $PREFIX ]]; then
+      # The sanitized prefix (e.g. "docn") won't strictly match the result (e.g. "docker"). 
+      # We must force -U (Unmatched) into fzf-tab's capture options so that *later*,
+      # when fzf-tab tries to insert the result, it uses -U to bypass checks.
+      # This aligns with standard Zsh behavior for complex completers (and how _approximate
+      # itself handles the 'original' group) to bypass strict prefix validation.
+      if [[ ${_opts[(I)-U]} -eq 0 ]]; then
+        _opts+=(-U)
+      fi
+    fi
+  fi
+
+  for key in $_ftb_compcap_keys; do
+    # (P)key fetches the value of the variable named by $key.
+    # Since we declared 'local PREFIX' above, this fetches the sanitized version of PREFIX.
     expanded=${(P)key}
     if [[ -n $expanded ]]; then
       __tmp_value+=$'\0'$key$'\0'$expanded
     fi
   done
+
+  # Restore original fuzzy prefix so the `builtin compadd` below succeeds.
+  # (Standard compadd needs the fuzzy glob to validate the candidates).
+  PREFIX="$PREFIX_ORIG"
+
   if [[ -n $expl ]]; then
     # store group index
     __tmp_value+=$'\0group\0'$_ftb_groups[(ie)$expl]
@@ -84,14 +124,7 @@
   fi
 
   # tell zsh that the match is successful
-  builtin compadd -U -qS '' -R -ftb-remove-space ''
-}
-
-# when insert multi results, a whitespace will be added to each result
-# remove left space of our fake result because I can't remove right space
-# FIXME: what if the left char is not whitespace: `echo $widgets[\t`
--ftb-remove-space() {
-  [[ $LBUFFER[-1] == ' ' ]] && LBUFFER[-1]=''
+  builtin compadd "$@"
 }
 
 -ftb-zstyle() {
@@ -99,7 +132,6 @@
 }
 
 -ftb-complete() {
-  local -a _ftb_compcap
   local -Ua _ftb_groups
   local choice choices _ftb_curcontext continuous_trigger print_query accept_line bs=$'\2' nul=$'\0'
   local ret=0
@@ -115,7 +147,7 @@
   -ftb-generate-complist # sets `_ftb_complist`
 
   -ftb-zstyle -s continuous-trigger continuous_trigger || {
-    [[ $OSTYPE == msys ]] && continuous_trigger=// || continuous_trigger=/
+    [[ $OSTYPE == cygwin ]] && continuous_trigger=// || continuous_trigger=/
   }
 
   case $#_ftb_complist in
@@ -127,6 +159,21 @@
       fi
       ;;
     *)
+      # Check for 'force' in compstate[list]:
+      # _approximate sets compstate[list] to "force" when showing corrections.
+      # If we don't check for this, fzf-tab sees an "unambiguous" prefix and exits early,
+      # which falls back to the standard Zsh menu.
+      if (( ! _ftb_continue_last )) \
+        && [[ $compstate[insert] == *"unambiguous" ]] \
+        && [[ -n $compstate[unambiguous] ]] \
+        && [[ "$compstate[unambiguous]" != "$compstate[quote]$IPREFIX$PREFIX$compstate[quote]" ]] \
+        && [[ $compstate[list] != *"force"* ]]; then
+        compstate[list]=
+        compstate[insert]=unambiguous
+        _ftb_finish=1
+        return 0
+      fi
+
       -ftb-generate-query      # sets `_ftb_query`
       -ftb-generate-header     # sets `_ftb_headers`
       -ftb-zstyle -s print-query print_query || print_query=alt-enter
@@ -136,7 +183,17 @@
       ret=$?
       # choices=(query_string expect_key returned_word)
 
-      # insert query string directly
+      # Handle the "print-query" action (e.g., Alt-Enter)
+      # or what the user manually typed in the fzf search bar, for which there is no match
+      # among the available options
+      #
+      # The next block allows the user to insert the raw text typed into the fzf prompt
+      # instead of selecting a generated match from the list.
+      #
+      # Logic:
+      # 1. Restore the original completion context (PREFIX, IPREFIX, etc.) from _ftb_compcap
+      #    so Zsh knows exactly which part of the command line to replace.
+      # 2. Use `builtin compadd` to insert the raw query string ($choices[1]) as the match.
       if [[ $choices[2] == $print_query ]] || [[ -n $choices[1] && $#choices == 1 ]] ; then
         local -A v=("${(@0)${_ftb_compcap[1]}}")
         local -a args=("${(@ps:\1:)v[args]}")
@@ -148,9 +205,10 @@
         compstate[list]=
         compstate[insert]=
         if (( $#choices[1] > 0 )); then
-            compstate[insert]='2'
+            compstate[insert]='1'
             [[ $RBUFFER == ' '* ]] || compstate[insert]+=' '
         fi
+        _ftb_finish=1
         return $ret
       fi
       choices[1]=()
@@ -171,23 +229,37 @@
   fi
   choices[1]=()
 
-  for choice in "$choices[@]"; do
-    local -A v=("${(@0)${_ftb_compcap[(r)${(b)choice}$bs*]#*$bs}}")
+  _ftb_choices=("${(@)choices}")
+
+  compstate[list]=
+  compstate[insert]=
+
+  return $ret
+}
+
+_fzf-tab-apply() {
+  local choice bs=$'\2'
+  for choice in "$_ftb_choices[@]"; do
+    local match=${_ftb_compcap[(r)${(b)choice}$bs*]}
+    if [[ -z $match ]]; then
+      local qchoice=${(q)choice}
+      match=${_ftb_compcap[(r)${(b)qchoice}$bs*]}
+    fi
+    [[ -z $match ]] && continue
+    local -A v=("${(@0)${match#*$bs}}")
     local -a args=("${(@ps:\1:)v[args]}")
     [[ -z $args[1] ]] && args=()  # don't pass an empty string
-    IPREFIX=$v[IPREFIX] PREFIX=$v[PREFIX] SUFFIX=$v[SUFFIX] ISUFFIX=$v[ISUFFIX]
+    IPREFIX=${v[IPREFIX]-} PREFIX=${v[PREFIX]-} SUFFIX=${v[SUFFIX]-} ISUFFIX=${v[ISUFFIX]-}
     builtin compadd "${args[@]:--Q}" -Q -- "$v[word]"
   done
 
   compstate[list]=
-  compstate[insert]=
-  if (( $#choices == 1 )); then
-    compstate[insert]='2'
+  if (( $#_ftb_choices == 1 )); then
+    compstate[insert]='1'
     [[ $RBUFFER == ' '* ]] || compstate[insert]+=' '
-  elif (( $#choices > 1 )); then
+  elif (( $#_ftb_choices > 1 )); then
     compstate[insert]='all'
   fi
-  return $ret
 }
 
 fzf-tab-debug() {
@@ -198,14 +270,19 @@ fzf-tab-debug() {
     exec {debug_fd}>&2 2>| $tmp
     local -a debug_indent; debug_indent=( '%'{3..20}'(e. .)' )
     local PROMPT4 PS4="${(j::)debug_indent}+%N:%i> "
-    setopt xtrace
-    : $ZSH_NAME $ZSH_VERSION
-    zle .fzf-tab-orig-$_ftb_orig_widget
-    unsetopt xtrace
+    functions -t -- -ftb-complete  _fzf-tab-apply fzf-tab-complete
+    {
+      echo $ZSH_NAME $ZSH_VERSION
+      echo fzf-tab: $(-ftb-version)
+      typeset -p FZF_DEFAULT_OPTS
+      echo $commands[fzf] $(fzf --version)
+    } >&2
+    zle fzf-tab-complete
     if (( debug_fd != -1 )); then
       zle -M "fzf-tab-debug: Trace output left in $tmp"
     fi
   } always {
+    functions +t -- -ftb-complete _fzf-tab-apply fzf-tab-complete
     (( debug_fd != -1 )) && exec 2>&$debug_fd {debug_fd}>&-
   }
 }
@@ -217,11 +294,18 @@ fzf-tab-complete() {
   # NOTE: MacOS Terminal doesn't support civis & cnorm
   echoti civis >/dev/tty 2>/dev/null
   while (( _ftb_continue )); do
+    local _ftb_choices=() _ftb_compcap=() _ftb_finish=0
     _ftb_continue=0
     local IN_FZF_TAB=1
     {
-      zle .fzf-tab-orig-$_ftb_orig_widget
-      ret=$?
+      zle .fzf-tab-orig-$_ftb_orig_widget || ret=$?
+      # The original completion widget (expand-or-complete or its wrappers)
+      # can return non-zero for ambiguous/list-only completions; apply choices
+      # when present. Also run apply on successful no-choice runs to clear list state
+      # inside the completion context (avoids duplicate warnings).
+      if (( ! _ftb_finish )) && { (( $#_ftb_choices )) || (( ! ret )); }; then
+        zle _fzf-tab-apply || ret=$?
+      fi
     } always {
       IN_FZF_TAB=0
     }
@@ -245,6 +329,9 @@ fzf-tab-dummy() { }
 zle -N fzf-tab-debug
 zle -N fzf-tab-complete
 zle -N fzf-tab-dummy
+# this is registered as a completion widget
+# so that we can have a clean completion list to only insert the results user selected
+zle -C _fzf-tab-apply complete-word _fzf-tab-apply
 
 disable-fzf-tab() {
   emulate -L zsh -o extended_glob
@@ -316,16 +403,39 @@ enable-fzf-tab() {
   functions[_ftb__main_complete]=$functions[_main_complete]
   function _main_complete() { -ftb-complete "$@" }
 
-  # TODO: This is not a full support, see #47
-  # _approximate will also hook compadd
-  # let it call -ftb-compadd instead of builtin compadd so that fzf-tab can capture result
-  # make sure _approximate has been loaded.
+  # -----------------------------------------------------------------------
+  # DYNAMIC PATCH FOR _approximate
+  # -----------------------------------------------------------------------
+  
+  # 1. Save original for disable-fzf-tab
   functions[_ftb__approximate]=$functions[_approximate]
+
+  # 2. Force load _approximate so we can see its source
+  autoload +X -Uz _approximate
+
+  # 3. Create the inner patched function
+  #    We read the source code of _approximate and replace 'builtin compadd'
+  #    with '-ftb-compadd'. The [[:space:]]## handles potential tabs/spaces.
+  functions[_ftb_approximate_inner]="${functions[_approximate]//builtin[[:space:]]##compadd/-ftb-compadd}"
+
+  # 4. Define the wrapper
   function _approximate() {
-    # if not called by fzf-tab, don't do anything with compadd
-    (( ! IN_FZF_TAB )) || unfunction compadd
-    _ftb__approximate
-    (( ! IN_FZF_TAB )) || functions[compadd]=$functions[-ftb-compadd]
+    # Force IN_FZF_TAB=1 to ensure -ftb-compadd does not bail out 
+    local IN_FZF_TAB=1
+
+    # Temporarily remove fzf-tab's global hook.
+    # This ensures that `if (( ! $+functions[compadd] ))` inside _approximate 
+    # evaluates to TRUE, forcing it to define its local wrapper.
+    unfunction compadd
+
+    {
+        # Call the patched source (which contains the local wrapper definition
+        # but calls -ftb-compadd instead of builtin)
+        _ftb_approximate_inner "$@"
+    } always {
+        # Restore fzf-tab's global hook. 
+        functions[compadd]=$functions[-ftb-compadd]
+    }
   }
 }
 
@@ -339,24 +449,17 @@ toggle-fzf-tab() {
 }
 
 build-fzf-tab-module() {
-  local use_bundle
-  local NPROC
-  if [[ ${OSTYPE} == darwin* ]]; then
-    [[ -n ${module_path[1]}/**/*.bundle(#qN) ]] && use_bundle=true
-    NPROC=$(sysctl -n hw.logicalcpu)
-  else
-    NPROC=$(nproc)
-  fi
-  pushd $FZF_TAB_HOME/modules
-  CPPFLAGS=-I/usr/local/include CFLAGS="-g -Wall -O2" LDFLAGS=-L/usr/local/lib ./configure --disable-gdbm --without-tcsetpgrp ${use_bundle:+DL_EXT=bundle}
-  make -j${NPROC}
-  local ret=$?
-  popd
-  if (( ${ret} != 0 )); then
-    print -P "%F{red}%BThe module building has failed. See the output above for details.%f%b" >&2
-  else
-    print -P "%F{green}%BThe module has been built successfully.%f%b"
-  fi
+  {
+    pushd -q $FZF_TAB_HOME/modules
+    if -ftb-build-module $@; then
+      print -P "%F{green}%BThe module has been built successfully. Please restart zsh to apply it.%f%b"
+    else
+      print -P -u2 "%F{red}%BThe module building has failed. See the output above for details.%f%b"
+      return 1
+    fi
+  } always {
+    popd -q
+  }
 }
 
 zmodload zsh/zutil
@@ -367,8 +470,6 @@ zmodload -F zsh/stat b:zstat
 0="${${(M)0:#/*}:-$PWD/$0}"
 FZF_TAB_HOME="${0:A:h}"
 
-source "$FZF_TAB_HOME"/lib/zsh-ls-colors/ls-colors.zsh fzf-tab-lscolors
-
 typeset -ga _ftb_group_colors=(
   $'\x1b[94m' $'\x1b[32m' $'\x1b[33m' $'\x1b[35m' $'\x1b[31m' $'\x1b[38;5;27m' $'\x1b[36m'
   $'\x1b[38;5;100m' $'\x1b[38;5;98m' $'\x1b[91m' $'\x1b[38;5;80m' $'\x1b[92m'
@@ -378,6 +479,13 @@ typeset -ga _ftb_group_colors=(
 # init
 () {
   emulate -L zsh -o extended_glob
+
+  # Ensure we don't keep a stale value around.
+  # If the module is loaded, the variable is valid; unsetting would lose it
+  # since zmodload won't reload an already-loaded module.
+  if ! zmodload -e aloxaf/fzftab; then
+    unset FZF_TAB_MODULE_VERSION 2>/dev/null
+  fi
 
   if (( ! $fpath[(I)$FZF_TAB_HOME/lib] )); then
     fpath+=($FZF_TAB_HOME/lib)
@@ -394,7 +502,7 @@ typeset -ga _ftb_group_colors=(
 
   if [[ -n $FZF_TAB_HOME/modules/Src/aloxaf/fzftab.(so|bundle)(#qN) ]]; then
     module_path+=("$FZF_TAB_HOME/modules/Src")
-    zmodload aloxaf/fzftab
+    zmodload aloxaf/fzftab # if this fails, we fall back to ls-colors.zsh below
 
     if [[ $FZF_TAB_MODULE_VERSION != "0.2.2" ]]; then
       zmodload -u aloxaf/fzftab
@@ -407,10 +515,17 @@ typeset -ga _ftb_group_colors=(
       fi
     fi
   fi
+
+  # Only needed when the module is not available (or failed to load).
+  [[ $FZF_TAB_MODULE_VERSION = "0.2.2" ]] || source "$FZF_TAB_HOME"/lib/zsh-ls-colors/ls-colors.zsh fzf-tab-lscolors
 }
 
 enable-fzf-tab
 zle -N toggle-fzf-tab
+
+# restore aliases
+eval "$_ftb_aliases"
+builtin unset _ftb_aliases
 
 # restore options
 (( ${#_ftb_opts} )) && setopt ${_ftb_opts[@]}

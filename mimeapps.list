@@ -23,6 +23,7 @@ application/xhtml+xml=browser.desktop
 application/x-extension-xhtml=browser.desktop
 application/x-extension-xht=browser.desktop
 x-scheme-handler/tetrio=tetrio-desktop.desktop
+x-scheme-handler/discord=vesktop.desktop
 
 [Added Associations]
 application/x-wine-extension-ini=nvim.desktop;

@@ -13,15 +13,14 @@ theme="$HOME/.config/rofi/applets/style.rasi"
 mesg="Uptime : `uptime -p | sed -e 's/up //g'`"
 
 list_col='1'
-list_row='5'
+list_row='4'
 
 # Options
 layout=`cat ${theme} | grep 'USE_ICON' | cut -d'=' -f2`
 option_1=""
 option_2=""
-option_3=""
-option_4=""
-option_5=""
+option_3=""
+option_4=""
 yes=''
 no=''
 
@@ -75,10 +74,8 @@ run_cmd() {
 	elif [[ "$1" == '--opt2' ]]; then
 		confirm_run 'i3lock -c 0c0e0f -k --radius 300 --ring-width 1 --ring-color=0c0e0f --inside-color=0c0e0f --line-uses-inside --keyhl-color=c3d1d1 --separator-color=c3d1d1 --insidever-color=0c0e0f --ringver-color=c3d1d1 --verif-color=0c0e0f --insidewrong-color=0c0e0f --ringwrong-color=c3d1d1 --wrong-color=0c0e0f --time-str=%I:%M:%S --date-str=%D --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --time-color=c3d1d1 --date-color=c3d1d1 --redraw-thread' 'systemctl suspend'
 	elif [[ "$1" == '--opt3' ]]; then
-		confirm_run 'i3lock -c 0c0e0f -k --radius 300 --ring-width 1 --ring-color=0c0e0f --inside-color=0c0e0f --line-uses-inside --keyhl-color=c3d1d1 --separator-color=c3d1d1 --insidever-color=0c0e0f --ringver-color=c3d1d1 --verif-color=0c0e0f --insidewrong-color=0c0e0f --ringwrong-color=c3d1d1 --wrong-color=0c0e0f --time-str=%I:%M:%S --date-str=%D --time-font=Iosevka --time-size 50 --date-font=Iosevka --date-size=25 --time-color=c3d1d1 --date-color=c3d1d1 --redraw-thread' 'systemctl hibernate'
-	elif [[ "$1" == '--opt4' ]]; then
 		confirm_run 'systemctl reboot'
-	elif [[ "$1" == '--opt5' ]]; then
+	elif [[ "$1" == '--opt4' ]]; then
 		confirm_run 'systemctl poweroff'
 	fi
 }
@@ -97,9 +94,6 @@ case ${chosen} in
         ;;
     $option_4)
 		run_cmd --opt4
-        ;;
-    $option_5)
-		run_cmd --opt5
         ;;
 esac
 
