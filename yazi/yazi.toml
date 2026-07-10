@@ -71,11 +71,9 @@ suppress_preload = false
 
 [plugin]
 fetchers = [
-	# Mimetype
-	{ id = "mime", url = "*/",         run = "mime.dir", prio = "high" },
-	{ id = "mime", url = "local://*",  run = "mime.local", prio = "high" },
-	{ id = "mime", url = "remote://*", run = "mime.remote", prio = "high" },
-
+	{ group = "mime", url = "*/",         run = "mime.dir",    prio = "high" },
+	{ group = "mime", url = "local://*",  run = "mime.local",  prio = "high" },
+	{ group = "mime", url = "remote://*", run = "mime.remote", prio = "high" },
 ]
 spotters = [
 	{ url = "*/", run = "folder" },
@@ -148,36 +146,29 @@ prepend_preloaders = [
     { mime = "{audio,video,image}/*", run = "mediainfo" },
     { mime = "application/subrip", run = "mediainfo" },
     { mime = "application/postscript", run = "mediainfo" },
-    { name = "*.csv", run = "duckdb" },  
-    { name = "*.tsv", run = "duckdb" },  
-    { name = "*.json", run = "duckdb" },  
-    { name = "*.parquet", run = "duckdb" },  
-    { name = "*.txt", run = "duckdb" },  
-    { name = "*.xlsx", run = "duckdb" },  
-    { name = "*.db", run = "duckdb" },
-    { name = "*.duckdb", run = "duckdb" },
+
     { mime = "application/openxmlformats-officedocument.*", run = "office" },
     { mime = "application/oasis.opendocument.*", run = "office" },
     { mime = "application/ms-*", run = "office" },
     { mime = "application/msword", run = "office" },
-    { name = "*.docx", run = "office" },
-  ]
-  prepend_previewers = [
-    { mime = "{audio,video,image}/*", run = "mediainfo"},
+    { url = "*.docx", run = "office" },
+]
+prepend_previewers = [
+    { mime = "{audio,video,image}/*", run = "mediainfo" },
     { mime = "application/subrip", run = "mediainfo" },
     { mime = "application/postscript", run = "mediainfo" },
-    { name = "*.csv", run = "duckdb", multi = false },  
-    { name = "*.tsv", run = "duckdb", multi = false },  
-    { name = "*.json", run = "duckdb", multi = false },  
-    { name = "*.parquet", run = "duckdb", multi = false },
-    { name = "*.txt", run = "duckdb", multi = false },  
-    { name = "*.xlsx", run = "duckdb", multi = false },
-    { name = "*.ipynb", run = "nbpreview" },
+    { url = "*.csv", run = "duckdb", multi = false },
+    { url = "*.tsv", run = "duckdb", multi = false },
+    { url = "*.json", run = "duckdb", multi = false },
+    { url = "*.parquet", run = "duckdb", multi = false },
+    { url = "*.txt", run = "duckdb", multi = false },
+    { url = "*.xlsx", run = "duckdb", multi = false },
+    { url = "*.ipynb", run = "nbpreview" },
     { mime = "application/openxmlformats-officedocument.*", run = "office" },
     { mime = "application/oasis.opendocument.*", run = "office" },
     { mime = "application/ms-*", run = "office" },
     { mime = "application/msword", run = "office" },
-    { name = "*.docx", run = "office" },
+    { url = "*.docx", run = "office" },
 ]
 
 
@@ -254,11 +245,11 @@ sort_reverse 	 = false
 sort_translit  = false
 
 [[plugin.prepend_fetchers]]
-id  = "git"
+group = "git"
 url = "*"
 run = "git"
 
 [[plugin.prepend_fetchers]]
-id  = "git"
+group = "git"
 url = "*/"
 run = "git"
