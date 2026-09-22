@@ -1,11 +1,12 @@
 #!/bin/bash
+
 notif () {
-    if $(amixer -D pulse get Capture | grep -q "off"); then
+    if wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q "\[MUTED\]"; then
         dunstify -a "mic-tog" -r 9993 -h int:value:"$volume" -I "/home/joseph/.local/share/dunst_icons/mic-off.svg" "${volume}" -t 1000
     else
         dunstify -a "mic-tog" -r 9993 -h int:value:"$volume" -I "/home/joseph/.local/share/dunst_icons/mic.svg" "${volume}" -t 1000
     fi
 }
 
-amixer -D pulse set Capture toggle
+wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 notif
