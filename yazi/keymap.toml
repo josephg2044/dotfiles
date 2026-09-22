@@ -1,7 +1,7 @@
 [mgr]
 prepend_keymap = [
     {on   = "<Esc>", run  = "close", desc = "Cancel input"},
-    { on  = "R", run = 'shell --  blobdrop -tcb "$@"' },
+{ on = "R", run = 'shell --orphan -- blobdrop -tcb %s' },
 ]
 
 
@@ -122,11 +122,10 @@ keymap = [
 { on = [ "g", "d", "r" ], run = "cd ~/documents/recipes/"},
 { on = [ "g", "d", "T" ], run = "cd ~/documents/texts/"},
 { on = [ "g", "d", "S" ], run = "cd ~/documents/school/"},
-{ on = [ "g", "d", "s", "c" ], run = "cd ~/documents/school/1_CHEM"},
-{ on = [ "g", "d", "s", "l" ], run = "cd ~/documents/school/2_LANG"},
-{ on = [ "g", "d", "s", "m" ], run = "cd ~/documents/school/3_CONCRETE"},
-{ on = [ "g", "d", "s", "a" ], run = "cd ~/documents/school/4_ML"},
-{ on = [ "g", "d", "s", "g" ], run = "cd ~/documents/school/5_GOV"},
+{ on = [ "g", "d", "s", "c" ], run = "cd ~/documents/school/eecs126"},
+{ on = [ "g", "d", "s", "l" ], run = "cd ~/documents/school/math110"},
+{ on = [ "g", "d", "s", "m" ], run = "cd ~/documents/school/mathh104"},
+{ on = [ "g", "d", "s", "a" ], run = "cd ~/documents/school/cs61a"},
 { on = [ "g", "d", "s", "s" ], run = "shell --block 'nvim /home/joseph/documents/school/hw.md'"},
 { on = [ "g", "d", "M" ], run = "cd ~/documents/math"},
 { on = [ "g", "d", "m", "c" ], run = "cd ~/documents/math/calculus/"},
@@ -169,7 +168,6 @@ keymap = [
 { on = [ "g", "c" ], run = "cd ~/.config"},
 { on = [ "g", "C" ], run = "cd ~/dotfiles"},
 { on = [ "g", "S" ], run = "cd ~/sync"},
-{ on = [ "g", "s", "n" ], run = "cd ~/sync/notes/school/", desc = "cd ~/sync/notes/school/" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive", desc = "Jump interactively" },
 	{ on = [ "g", "f" ],       run = "follow",           desc = "Follow hovered symlink" },
 

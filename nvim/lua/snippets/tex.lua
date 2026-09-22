@@ -109,11 +109,10 @@ return {
 	s({ trig = "dag", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\dag")),
 	s({ trig = "hat", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\hat")),
 	s({ trig = "tr", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\top")),
-	s({ trig = "subs", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\subset}")),
-	s({ trig = "subseq", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\subseteq}")),
+	s({ trig = "subs", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\subset")),
 	s({ trig = "in", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\in")),
-	s({ trig = "cap", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\cap}")),
-	s({ trig = "bcap", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\bigcap}")),
+	s({ trig = "cap", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\cap")),
+	s({ trig = "bcap", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\bigcap")),
 	s({ trig = "cup", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\cup}")),
 	s({ trig = "bcup", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("^{\\bcup}")),
 
@@ -128,10 +127,12 @@ return {
 		{ trig = "lim", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math },
 		fmta("\\lim_{<> \\to <>}", { i(1), i(2) })
 	),
-	s(
-		{ trig = "limsup", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math },
-		fmta("\\limsup_{<> \\to <>}", { i(1), i(2, "") })
-	),
+	-- s(
+	-- 	{ trig = "lmsup", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math },
+	-- 	fmta("\\limsup_{<> \\to <>}", { i(1), i(2, "") })
+	-- ),
+
+	s({ trig = "lmsup", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math }, t("\\limsup")),
 
 	s(
 		{ trig = "binom", snippetType = "autosnippet", wordTrig = true, condition = tex.in_math },
