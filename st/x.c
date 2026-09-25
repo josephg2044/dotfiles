@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <locale.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <time.h>
 #include <unistd.h>
@@ -16,10 +18,11 @@
 #include <X11/XKBlib.h>
 #include <X11/Xresource.h>
 
-static char *argv0;
+char *argv0;
 #include "arg.h"
 #include "st.h"
 #include "win.h"
+#include "graphics.h"
 #include "hb.h"
 
 /* types used in config.h */
@@ -31,9 +34,12 @@ typedef struct {
 } Shortcut;
 
 typedef struct {
-	uint b;
-	uint mask;
-	char *s;
+	uint mod;
+	uint button;
+	void (*func)(const Arg *);
+	const Arg arg;
+	uint  release;
+	int  altscrn;  /* 0: don't care, -1: not alt screen, 1: alt screen */
 } MouseShortcut;
 
 typedef struct {
@@ -45,18 +51,10 @@ typedef struct {
 	signed char appcursor; /* application cursor */
 } Key;
 
-/* Xresources preferences */
-enum resource_type {
-	STRING = 0,
-	INTEGER = 1,
-	FLOAT = 2
-};
-
-typedef struct {
-	char *name;
-	enum resource_type type;
-	void *dst;
-} ResourcePref;
+typedef enum {
+	PixelGeometry,
+	CellGeometry
+} Geometry;
 
 /* X modifiers */
 #define XK_ANY_MOD    UINT_MAX
@@ -68,10 +66,18 @@ static void clipcopy(const Arg *);
 static void clippaste(const Arg *);
 static void numlock(const Arg *);
 static void selpaste(const Arg *);
-static void changealpha(const Arg *);
 static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
+static void ttysend(const Arg *);
+void kscrollup(const Arg *);
+void kscrolldown(const Arg *);
+static void previewimage(const Arg *);
+static void showimageinfo(const Arg *);
+static void togglegrdebug(const Arg *);
+static void dumpgrstate(const Arg *);
+static void unloadimages(const Arg *);
+static void toggleimages(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -90,16 +96,13 @@ typedef XftDraw *Draw;
 typedef XftColor Color;
 typedef XftGlyphFontSpec GlyphFontSpec;
 
-typedef unsigned long int CARD32;
-
 /* Purely graphic info */
 typedef struct {
 	int tw, th; /* tty width and height */
 	int w, h; /* window width and height */
-        int hborderpx, vborderpx;
+	int hborderpx, vborderpx;
 	int ch; /* char height */
 	int cw; /* char width  */
-	int cyo; /* char y offset */
 	int mode; /* window state/mode flags */
 	int cursor; /* cursor style */
 } TermWindow;
@@ -110,9 +113,19 @@ typedef struct {
 	Window win;
 	Drawable buf;
 	GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
-     	Atom xembed, wmdeletewin, netwmname, netwmicon, netwmiconname, netwmpid;
-	XIM xim;
-	XIC xic;
+	Atom xembed, wmdeletewin, netwmname, netwmiconname, netwmpid;
+	Atom XdndTypeList, XdndSelection, XdndEnter, XdndPosition, XdndStatus,
+	     XdndLeave, XdndDrop, XdndFinished, XdndActionCopy, XdndActionMove,
+	     XdndActionLink, XdndActionAsk, XdndActionPrivate, XtextUriList,
+	     XtextPlain, XdndAware;
+	int64_t XdndSourceWin, XdndSourceVersion;
+	int32_t XdndSourceFormat;
+	struct {
+		XIM xim;
+		XIC xic;
+		XPoint spot;
+		XVaNestedList spotlist;
+	} ime;
 	Draw draw;
 	Visual *vis;
 	XSetWindowAttributes attrs;
@@ -155,14 +168,18 @@ typedef struct {
 } DC;
 
 static inline ushort sixd_to_16bit(int);
+static void xresetfontsettings(ushort mode, Font **font, int *frcflags);
 static int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
-static void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int, int);
+static void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int, int, int);
 static void xdrawglyph(Glyph, int, int);
+static void xdrawimages(Glyph, Line, int x1, int y1, int x2);
+static void xdrawoneimagecell(Glyph, int x, int y);
 static void xclear(int, int, int, int);
 static int xgeommasktogravity(int);
-static void ximopen(Display *);
+static int ximopen(Display *);
 static void ximinstantiate(Display *, XPointer, XPointer);
 static void ximdestroy(XIM, XPointer, XPointer);
+static int xicdestroy(XIC, XPointer, XPointer);
 static void xinit(int, int);
 static void cresize(int, int);
 static void xresize(int, int);
@@ -170,8 +187,6 @@ static void xhints(void);
 static int xloadcolor(int, const char *, Color *);
 static int xloadfont(Font *, FcPattern *);
 static void xloadfonts(const char *, double);
-static int xloadsparefont(FcPattern *, int);
-static void xloadsparefonts(void);
 static void xunloadfont(Font *);
 static void xunloadfonts(void);
 static void xsetenv(void);
@@ -184,13 +199,20 @@ static void visibility(XEvent *);
 static void unmap(XEvent *);
 static void kpress(XEvent *);
 static void cmessage(XEvent *);
+static void xdndenter(XEvent *);
+static void xdndpos(XEvent *);
+static void xdnddrop(XEvent *);
 static void resize(XEvent *);
 static void focus(XEvent *);
+static uint buttonmask(uint);
+static int mouseaction(XEvent *, uint);
 static void brelease(XEvent *);
 static void bpress(XEvent *);
 static void bmotion(XEvent *);
 static void propnotify(XEvent *);
 static void selnotify(XEvent *);
+static void xdndsel(XEvent *);
+static void xdndpastedata(char *);
 static void selclear_(XEvent *);
 static void selrequest(XEvent *);
 static void setsel(char *, Time);
@@ -233,6 +255,8 @@ static DC dc;
 static XWindow xw;
 static XSelection xsel;
 static TermWindow win;
+const char XdndVersion = 5;
+static unsigned int mouse_col = 0, mouse_row = 0;
 
 /* Font Ring Cache */
 enum {
@@ -256,7 +280,6 @@ static char *usedfont = NULL;
 static double usedfontsize = 0;
 static double defaultfontsize = 0;
 
-static char *opt_alpha = NULL;
 static char *opt_class = NULL;
 static char **opt_cmd  = NULL;
 static char *opt_embed = NULL;
@@ -265,9 +288,13 @@ static char *opt_io    = NULL;
 static char *opt_line  = NULL;
 static char *opt_name  = NULL;
 static char *opt_title = NULL;
+static int opt_alpha   = 0;
 
-static int oldbutton = 3; /* button event on startup: 3 = release */
+static uint buttons; /* bit field of pressed buttons */
 static int cursorblinks = 0;
+
+static Cursor cursor;
+static XColor xmousefg, xmousebg;
 
 void
 clipcopy(const Arg *dummy)
@@ -308,22 +335,6 @@ numlock(const Arg *dummy)
 }
 
 void
-changealpha(const Arg *arg)
-{
-     if(alpha > 1 && arg->f == 2 )
-      alpha = 1;
-    if((alpha > 0 && arg->f < 0) || (alpha < 1 && arg->f > 0))
-        alpha += arg->f;
-    if(alpha < 0)
-        alpha = 0;
-    if(alpha > 1)
-        alpha = 1;
-
-    xloadcols();
-    redraw();
-}
-
-void
 zoom(const Arg *arg)
 {
 	Arg larg;
@@ -337,7 +348,6 @@ zoomabs(const Arg *arg)
 {
 	xunloadfonts();
 	xloadfonts(usedfont, arg->f);
-	xloadsparefonts();
 	cresize(0, 0);
 	redraw();
 	xhints();
@@ -354,10 +364,78 @@ zoomreset(const Arg *arg)
 	}
 }
 
+void
+ttysend(const Arg *arg)
+{
+	ttywrite(arg->s, strlen(arg->s), 1);
+}
+
+void
+previewimage(const Arg *arg)
+{
+	Glyph g = getglyphat(mouse_col, mouse_row);
+	if (g.mode & ATTR_IMAGE) {
+		uint32_t image_id = tgetimgid(&g);
+		fprintf(stderr, "Clicked on placeholder %u/%u, x=%d, y=%d\n",
+			image_id, tgetimgplacementid(&g), tgetimgcol(&g),
+			tgetimgrow(&g));
+		gr_preview_image(image_id, arg->s);
+	}
+}
+
+void
+showimageinfo(const Arg *arg)
+{
+	Glyph g = getglyphat(mouse_col, mouse_row);
+	if (g.mode & ATTR_IMAGE) {
+		uint32_t image_id = tgetimgid(&g);
+		fprintf(stderr, "Clicked on placeholder %u/%u, x=%d, y=%d\n",
+			image_id, tgetimgplacementid(&g), tgetimgcol(&g),
+			tgetimgrow(&g));
+		char stcommand[256] = {0};
+		size_t len = snprintf(stcommand, sizeof(stcommand), "%s -e less", argv0);
+		if (len > sizeof(stcommand) - 1) {
+			fprintf(stderr, "Executable name too long: %s\n",
+				argv0);
+			return;
+		}
+		gr_show_image_info(image_id, tgetimgplacementid(&g),
+				   tgetimgcol(&g), tgetimgrow(&g),
+				   tgetisclassicplaceholder(&g),
+				   tgetimgdiacriticcount(&g), argv0);
+	}
+}
+
+void
+togglegrdebug(const Arg *arg)
+{
+	graphics_debug_mode = (graphics_debug_mode + 1) % 3;
+	redraw();
+}
+
+void
+dumpgrstate(const Arg *arg)
+{
+	gr_dump_state();
+}
+
+void
+unloadimages(const Arg *arg)
+{
+	gr_unload_images_to_reduce_ram();
+}
+
+void
+toggleimages(const Arg *arg)
+{
+	graphics_display_images = !graphics_display_images;
+	redraw();
+}
+
 int
 evcol(XEvent *e)
 {
-	int x = e->xbutton.x - borderpx;
+	int x = e->xbutton.x - win.hborderpx;
 	LIMIT(x, 0, win.tw - 1);
 	return x / win.cw;
 }
@@ -365,7 +443,7 @@ evcol(XEvent *e)
 int
 evrow(XEvent *e)
 {
-	int y = e->xbutton.y - borderpx;
+	int y = e->xbutton.y - win.vborderpx;
 	LIMIT(y, 0, win.th - 1);
 	return y / win.ch;
 }
@@ -374,7 +452,7 @@ void
 mousesel(XEvent *e, int done)
 {
 	int type, seltype = SEL_REGULAR;
-	uint state = e->xbutton.state & ~(Button1Mask | forceselmod);
+	uint state = e->xbutton.state & ~(Button1Mask | forcemousemod);
 
 	for (type = 1; type < LEN(selmasks); ++type) {
 		if (match(selmasks[type], state)) {
@@ -390,62 +468,68 @@ mousesel(XEvent *e, int done)
 void
 mousereport(XEvent *e)
 {
-	int len, x = evcol(e), y = evrow(e),
-	    button = e->xbutton.button, state = e->xbutton.state;
+	int len, btn, code;
+	int x = evcol(e), y = evrow(e);
+	int state = e->xbutton.state;
 	char buf[40];
 	static int ox, oy;
 
-	/* from urxvt */
-	if (e->xbutton.type == MotionNotify) {
+	if (e->type == MotionNotify) {
 		if (x == ox && y == oy)
 			return;
 		if (!IS_SET(MODE_MOUSEMOTION) && !IS_SET(MODE_MOUSEMANY))
 			return;
-		/* MOUSE_MOTION: no reporting if no button is pressed */
-		if (IS_SET(MODE_MOUSEMOTION) && oldbutton == 3)
+		/* MODE_MOUSEMOTION: no reporting if no button is pressed */
+		if (IS_SET(MODE_MOUSEMOTION) && buttons == 0)
 			return;
-
-		button = oldbutton + 32;
-		ox = x;
-		oy = y;
+		/* Set btn to lowest-numbered pressed button, or 12 if no
+		 * buttons are pressed. */
+		for (btn = 1; btn <= 11 && !(buttons & (1<<(btn-1))); btn++)
+			;
+		code = 32;
 	} else {
-		if (!IS_SET(MODE_MOUSESGR) && e->xbutton.type == ButtonRelease) {
-			button = 3;
-		} else {
-			button -= Button1;
-			if (button >= 3)
-                           if (button >= 7)
-				button += 128 - 7;
-			else if (button >= 3)
-				button += 64 - 3;
-		}
-		if (e->xbutton.type == ButtonPress) {
-			oldbutton = button;
-			ox = x;
-			oy = y;
-		} else if (e->xbutton.type == ButtonRelease) {
-			oldbutton = 3;
+		btn = e->xbutton.button;
+		/* Only buttons 1 through 11 can be encoded */
+		if (btn < 1 || btn > 11)
+			return;
+		if (e->type == ButtonRelease) {
 			/* MODE_MOUSEX10: no button release reporting */
 			if (IS_SET(MODE_MOUSEX10))
 				return;
-			if (button == 64 || button == 65)
+			/* Don't send release events for the scroll wheel */
+			if (btn == 4 || btn == 5)
 				return;
 		}
+		code = 0;
 	}
 
+	ox = x;
+	oy = y;
+
+	/* Encode btn into code. If no button is pressed for a motion event in
+	 * MODE_MOUSEMANY, then encode it as a release. */
+	if ((!IS_SET(MODE_MOUSESGR) && e->type == ButtonRelease) || btn == 12)
+		code += 3;
+	else if (btn >= 8)
+		code += 128 + btn - 8;
+	else if (btn >= 4)
+		code += 64 + btn - 4;
+	else
+		code += btn - 1;
+
 	if (!IS_SET(MODE_MOUSEX10)) {
-		button += ((state & ShiftMask  ) ? 4  : 0)
-			+ ((state & Mod4Mask   ) ? 8  : 0)
-			+ ((state & ControlMask) ? 16 : 0);
+		code += ((state & ShiftMask  ) ?  4 : 0)
+		      + ((state & Mod1Mask   ) ?  8 : 0) /* meta key: alt */
+		      + ((state & ControlMask) ? 16 : 0);
 	}
 
 	if (IS_SET(MODE_MOUSESGR)) {
 		len = snprintf(buf, sizeof(buf), "\033[<%d;%d;%d%c",
-				button, x+1, y+1,
-				e->xbutton.type == ButtonRelease ? 'm' : 'M');
+				code, x+1, y+1,
+				e->type == ButtonRelease ? 'm' : 'M');
 	} else if (x < 223 && y < 223) {
 		len = snprintf(buf, sizeof(buf), "\033[M%c%c%c",
-				32+button, 32+x+1, 32+y+1);
+				32+code, 32+x+1, 32+y+1);
 	} else {
 		return;
 	}
@@ -453,38 +537,61 @@ mousereport(XEvent *e)
 	ttywrite(buf, len, 0);
 }
 
+uint
+buttonmask(uint button)
+{
+	return button == Button1 ? Button1Mask
+	     : button == Button2 ? Button2Mask
+	     : button == Button3 ? Button3Mask
+	     : button == Button4 ? Button4Mask
+	     : button == Button5 ? Button5Mask
+	     : 0;
+}
+
+int
+mouseaction(XEvent *e, uint release)
+{
+	MouseShortcut *ms;
+
+	/* ignore Button<N>mask for Button<N> - it's set on release */
+	uint state = e->xbutton.state & ~buttonmask(e->xbutton.button);
+
+	mouse_col = evcol(e);
+	mouse_row = evrow(e);
+
+	for (ms = mshortcuts; ms < mshortcuts + LEN(mshortcuts); ms++) {
+		if (ms->release == release &&
+		    ms->button == e->xbutton.button &&
+		    (!ms->altscrn || (ms->altscrn == (tisaltscr() ? 1 : -1))) &&
+		    (match(ms->mod, state) ||  /* exact or forced */
+		     match(ms->mod, state & ~forcemousemod))) {
+			ms->func(&(ms->arg));
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 void
 bpress(XEvent *e)
 {
+	int btn = e->xbutton.button;
 	struct timespec now;
-	MouseShortcut *ms;
-	MouseKey *mk;
 	int snap;
 
-	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forceselmod)) {
+	if (1 <= btn && btn <= 11)
+		buttons |= 1 << (btn-1);
+
+	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 		mousereport(e);
 		return;
 	}
 
-	if (tisaltscr()) {
-		for (ms = mshortcuts; ms < mshortcuts + LEN(mshortcuts); ms++) {
-			if (e->xbutton.button == ms->b
-					&& match(ms->mask, e->xbutton.state)) {
-				ttywrite(ms->s, strlen(ms->s), 1);
-				return;
-			}
-		}
-	}
+	if (mouseaction(e, 0))
+		return;
 
-	for (mk = mkeys; mk < mkeys + LEN(mkeys); mk++) {
-		if (e->xbutton.button == mk->b
-				&& match(mk->mask, e->xbutton.state)) {
-			mk->func(&mk->arg);
-			return;
-		}
-	}
-
-	if (e->xbutton.button == Button1) {
+	if (btn == Button1) {
 		/*
 		 * If the user clicks below predefined timeouts specific
 		 * snapping behaviour is exposed.
@@ -536,6 +643,11 @@ selnotify(XEvent *e)
 
 	if (property == None)
 		return;
+
+	if (property == xw.XdndSelection) {
+		xdndsel(e);
+		return;
+	}
 
 	do {
 		if (XGetWindowProperty(xw.dpy, xw.win, property, ofs,
@@ -603,6 +715,95 @@ selnotify(XEvent *e)
 	 * next data chunk in the property.
 	 */
 	XDeleteProperty(xw.dpy, xw.win, (int)property);
+}
+
+void
+xdndsel(XEvent *e)
+{
+	char* data;
+	unsigned long result;
+
+	Atom actualType;
+	int32_t actualFormat;
+	unsigned long bytesAfter;
+	XEvent reply = { ClientMessage };
+
+	reply.xclient.window = xw.XdndSourceWin;
+	reply.xclient.format = 32;
+	reply.xclient.data.l[0] = (long) xw.win;
+	reply.xclient.data.l[2] = 0;
+	reply.xclient.data.l[3] = 0;
+
+	XGetWindowProperty((Display*) xw.dpy, e->xselection.requestor,
+			e->xselection.property, 0, LONG_MAX, False,
+			e->xselection.target, &actualType, &actualFormat, &result,
+			&bytesAfter, (unsigned char**) &data);
+
+	if (result == 0)
+		return;
+
+	if (data) {
+		xdndpastedata(data);
+		XFree(data);
+	}
+
+	if (xw.XdndSourceVersion >= 2) {
+		reply.xclient.message_type = xw.XdndFinished;
+		reply.xclient.data.l[1] = result;
+		reply.xclient.data.l[2] = xw.XdndActionCopy;
+
+		XSendEvent((Display*) xw.dpy, xw.XdndSourceWin, False, NoEventMask,
+			 	&reply);
+		XFlush((Display*) xw.dpy);
+	}
+}
+
+int
+xdndurldecode(char *src, char *dest)
+{
+	char c;
+	int i = 0;
+
+	while (*src) {
+		if (*src == '%' && HEX_TO_INT(src[1]) != -1 && HEX_TO_INT(src[2]) != -1) {
+			/* handle %xx escape sequences in url e.g. %20 == ' ' */
+			c = (char)((HEX_TO_INT(src[1]) << 4) | HEX_TO_INT(src[2]));
+			src += 3;
+		} else {
+			c = *src++;
+		}
+		if (strchr(xdndescchar, c) != NULL) {
+			*dest++ = '\\';
+			i++;
+		}
+		*dest++ = c;
+		i++;
+	}
+	*dest++ = ' ';
+	*dest = '\0';
+	return i + 1;
+}
+
+void
+xdndpastedata(char *data)
+{
+	char *pastedata, *t;
+	int i = 0;
+
+	pastedata = (char *)malloc(strlen(data) * 2 + 1);
+	*pastedata = '\0';
+
+	t = strtok(data, "\n\r");
+	while(t != NULL) {
+		/* remove 'file://' prefix if it exists */
+		if (strncmp(data, "file://", 7) == 0)
+			t += 7;
+		i += xdndurldecode(t, pastedata + i);
+		t = strtok(NULL, "\n\r");
+	}
+
+	xsetsel(pastedata);
+	selpaste(0);
 }
 
 void
@@ -687,6 +888,7 @@ setsel(char *str, Time t)
 	XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
 	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
 		selclear();
+	clipcopy(NULL);
 }
 
 void
@@ -698,20 +900,26 @@ xsetsel(char *str)
 void
 brelease(XEvent *e)
 {
-	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forceselmod)) {
+	int btn = e->xbutton.button;
+
+	if (1 <= btn && btn <= 11)
+		buttons &= ~(1 << (btn-1));
+
+	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 		mousereport(e);
 		return;
 	}
-        if (e->xbutton.button == Button3)
-		selpaste(NULL);
-	else if (e->xbutton.button == Button1)
+
+	if (mouseaction(e, 1))
+		return;
+	if (btn == Button1)
 		mousesel(e, 1);
 }
 
 void
 bmotion(XEvent *e)
 {
-	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forceselmod)) {
+	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 		mousereport(e);
 		return;
 	}
@@ -734,6 +942,9 @@ cresize(int width, int height)
 	col = MAX(1, col);
 	row = MAX(1, row);
 
+	win.hborderpx = (win.w - col * win.cw) * anysize_halign / 100;
+	win.vborderpx = (win.h - row * win.ch) * anysize_valign / 100;
+
 	tresize(col, row);
 	xresize(col, row);
 	ttyresize(win.tw, win.th);
@@ -752,7 +963,7 @@ xresize(int col, int row)
 	xclear(0, 0, win.w, win.h);
 
 	/* resize to new width */
-	xw.specbuf = xrealloc(xw.specbuf, col * sizeof(GlyphFontSpec));
+	xw.specbuf = xrealloc(xw.specbuf, col * sizeof(GlyphFontSpec) * 4);
 }
 
 ushort
@@ -808,19 +1019,23 @@ xloadcols(void)
 				die("could not allocate color %d\n", i);
 		}
 
-	/* set alpha value of bg color */
-	if (opt_alpha)
-		alpha = strtof(opt_alpha, NULL);
 	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
-	dc.col[defaultbg].color.red =
-		((unsigned short)(dc.col[defaultbg].color.red * alpha)) & 0xff00;
-	dc.col[defaultbg].color.green =
-		((unsigned short)(dc.col[defaultbg].color.green * alpha)) & 0xff00;
-	dc.col[defaultbg].color.blue =
-		((unsigned short)(dc.col[defaultbg].color.blue * alpha)) & 0xff00;
 	dc.col[defaultbg].pixel &= 0x00FFFFFF;
 	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
 	loaded = 1;
+}
+
+int
+xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+	if (!BETWEEN(x, 0, dc.collen - 1))
+		return 1;
+
+	*r = dc.col[x].color.red >> 8;
+	*g = dc.col[x].color.green >> 8;
+	*b = dc.col[x].color.blue >> 8;
+
+	return 0;
 }
 
 int
@@ -828,7 +1043,7 @@ xsetcolorname(int x, const char *name)
 {
 	Color ncolor;
 
-	if (!BETWEEN(x, 0, dc.collen))
+	if (!BETWEEN(x, 0, dc.collen - 1))
 		return 1;
 
 	if (!xloadcolor(x, name, &ncolor))
@@ -836,8 +1051,12 @@ xsetcolorname(int x, const char *name)
 
 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
 	dc.col[x] = ncolor;
-	if (x == defaultbg)
+
+	if (x == defaultbg) {
 		dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
+		dc.col[defaultbg].pixel &= 0x00FFFFFF;
+		dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+	}
 
 	return 0;
 }
@@ -854,17 +1073,10 @@ xclear(int x1, int y1, int x2, int y2)
 }
 
 void
-xclearwin(void)
-{
-	xclear(0, 0, win.w, win.h);
-}
-
-
-void
 xhints(void)
 {
-	XClassHint class = {opt_name ? opt_name : "st",
-	                    opt_class ? opt_class : "St"};
+	XClassHint class = {opt_name ? opt_name : termname,
+	                    opt_class ? opt_class : termname};
 	XWMHints wm = {.flags = InputHint, .input = 1};
 	XSizeHints *sizeh;
 
@@ -873,8 +1085,8 @@ xhints(void)
 	sizeh->flags = PSize | PResizeInc | PBaseSize | PMinSize;
 	sizeh->height = win.h;
 	sizeh->width = win.w;
-        sizeh->height_inc = 1;
-        sizeh->width_inc = 1;
+	sizeh->height_inc = 1;
+	sizeh->width_inc = 1;
 	sizeh->base_height = 2 * borderpx;
 	sizeh->base_width = 2 * borderpx;
 	sizeh->min_height = win.ch + 2 * borderpx;
@@ -993,7 +1205,7 @@ xloadfonts(const char *fontstr, double fontsize)
 	if (fontstr[0] == '-')
 		pattern = XftXlfdParse(fontstr, False, False);
 	else
-               pattern = FcNameParse((const FcChar8 *)fontstr);
+		pattern = FcNameParse((const FcChar8 *)fontstr);
 
 	if (!pattern)
 		die("can't open font %s\n", fontstr);
@@ -1018,7 +1230,8 @@ xloadfonts(const char *fontstr, double fontsize)
 			FcPatternAddDouble(pattern, FC_PIXEL_SIZE, 12);
 			usedfontsize = 12;
 		}
-		defaultfontsize = usedfontsize;
+		if (defaultfontsize <= 0)
+			defaultfontsize = usedfontsize;
 	}
 
 	if (xloadfont(&dc.font, pattern))
@@ -1028,14 +1241,13 @@ xloadfonts(const char *fontstr, double fontsize)
 		FcPatternGetDouble(dc.font.match->pattern,
 		                   FC_PIXEL_SIZE, 0, &fontval);
 		usedfontsize = fontval;
-		if (fontsize == 0)
+		if (defaultfontsize <= 0 && fontsize == 0)
 			defaultfontsize = fontval;
 	}
 
 	/* Setting character width and height. */
 	win.cw = ceilf(dc.font.width * cwscale);
 	win.ch = ceilf(dc.font.height * chscale);
-	win.cyo = ceilf(dc.font.height * (chscale - 1) / 2);
 
 	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
@@ -1053,101 +1265,6 @@ xloadfonts(const char *fontstr, double fontsize)
 		die("can't open font %s\n", fontstr);
 
 	FcPatternDestroy(pattern);
-}
-
-int
-xloadsparefont(FcPattern *pattern, int flags)
-{
-	FcPattern *match;
-	FcResult result;
-
-	match = FcFontMatch(NULL, pattern, &result);
-	if (!match) {
-		return 1;
-	}
-
-	if (!(frc[frclen].font = XftFontOpenPattern(xw.dpy, match))) {
-		FcPatternDestroy(match);
-		return 1;
-	}
-
-	frc[frclen].flags = flags;
-	/* Believe U+0000 glyph will present in each default font */
-	frc[frclen].unicodep = 0;
-	frclen++;
-
-	return 0;
-}
-
-void
-xloadsparefonts(void)
-{
-	FcPattern *pattern;
-	double sizeshift, fontval;
-	int fc;
-	char **fp;
-
-	if (frclen != 0)
-		die("can't embed spare fonts. cache isn't empty");
-
-	/* Calculate count of spare fonts */
-	fc = sizeof(font2) / sizeof(*font2);
-	if (fc == 0)
-		return;
-
-	/* Allocate memory for cache entries. */
-	if (frccap < 4 * fc) {
-		frccap += 4 * fc - frccap;
-		frc = xrealloc(frc, frccap * sizeof(Fontcache));
-	}
-
-	for (fp = font2; fp - font2 < fc; ++fp) {
-
-		if (**fp == '-')
-			pattern = XftXlfdParse(*fp, False, False);
-		else
-			pattern = FcNameParse((FcChar8 *)*fp);
-
-		if (!pattern)
-			die("can't open spare font %s\n", *fp);
-
-		if (defaultfontsize > 0) {
-			sizeshift = usedfontsize - defaultfontsize;
-			if (sizeshift != 0 &&
-					FcPatternGetDouble(pattern, FC_PIXEL_SIZE, 0, &fontval) ==
-					FcResultMatch) {
-				fontval += sizeshift;
-				FcPatternDel(pattern, FC_PIXEL_SIZE);
-				FcPatternDel(pattern, FC_SIZE);
-				FcPatternAddDouble(pattern, FC_PIXEL_SIZE, fontval);
-			}
-		}
-
-		FcPatternAddBool(pattern, FC_SCALABLE, 1);
-
-		FcConfigSubstitute(NULL, pattern, FcMatchPattern);
-		XftDefaultSubstitute(xw.dpy, xw.scr, pattern);
-
-		if (xloadsparefont(pattern, FRC_NORMAL))
-			die("can't open spare font %s\n", *fp);
-
-		FcPatternDel(pattern, FC_SLANT);
-		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
-		if (xloadsparefont(pattern, FRC_ITALIC))
-			die("can't open spare font %s\n", *fp);
-
-		FcPatternDel(pattern, FC_WEIGHT);
-		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-		if (xloadsparefont(pattern, FRC_ITALICBOLD))
-			die("can't open spare font %s\n", *fp);
-
-		FcPatternDel(pattern, FC_SLANT);
-		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
-		if (xloadsparefont(pattern, FRC_BOLD))
-			die("can't open spare font %s\n", *fp);
-
-		FcPatternDestroy(pattern);
-	}
 }
 
 void
@@ -1175,66 +1292,85 @@ xunloadfonts(void)
 	xunloadfont(&dc.ibfont);
 }
 
-void
+int
 ximopen(Display *dpy)
 {
-	XIMCallback destroy = { .client_data = NULL, .callback = ximdestroy };
+	XIMCallback imdestroy = { .client_data = NULL, .callback = ximdestroy };
+	XICCallback icdestroy = { .client_data = NULL, .callback = xicdestroy };
 
-	if ((xw.xim = XOpenIM(xw.dpy, NULL, NULL, NULL)) == NULL) {
-		XSetLocaleModifiers("@im=local");
-		if ((xw.xim = XOpenIM(xw.dpy, NULL, NULL, NULL)) == NULL) {
-			XSetLocaleModifiers("@im=");
-			if ((xw.xim = XOpenIM(xw.dpy, NULL, NULL, NULL)) == NULL)
-				die("XOpenIM failed. Could not open input device.\n");
-		}
+	xw.ime.xim = XOpenIM(xw.dpy, NULL, NULL, NULL);
+	if (xw.ime.xim == NULL)
+		return 0;
+
+	if (XSetIMValues(xw.ime.xim, XNDestroyCallback, &imdestroy, NULL))
+		fprintf(stderr, "XSetIMValues: "
+		                "Could not set XNDestroyCallback.\n");
+
+	xw.ime.spotlist = XVaCreateNestedList(0, XNSpotLocation, &xw.ime.spot,
+	                                      NULL);
+
+	if (xw.ime.xic == NULL) {
+		xw.ime.xic = XCreateIC(xw.ime.xim, XNInputStyle,
+		                       XIMPreeditNothing | XIMStatusNothing,
+		                       XNClientWindow, xw.win,
+		                       XNDestroyCallback, &icdestroy,
+		                       NULL);
 	}
-	if (XSetIMValues(xw.xim, XNDestroyCallback, &destroy, NULL) != NULL)
-		die("XSetIMValues failed. Could not set input method value.\n");
-	xw.xic = XCreateIC(xw.xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-				XNClientWindow, xw.win, XNFocusWindow, xw.win, NULL);
-	if (xw.xic == NULL)
-		die("XCreateIC failed. Could not obtain input method.\n");
+	if (xw.ime.xic == NULL)
+		fprintf(stderr, "XCreateIC: Could not create input context.\n");
+
+	return 1;
 }
 
 void
 ximinstantiate(Display *dpy, XPointer client, XPointer call)
 {
-	ximopen(dpy);
-	XUnregisterIMInstantiateCallback(xw.dpy, NULL, NULL, NULL,
-					ximinstantiate, NULL);
+	if (ximopen(dpy))
+		XUnregisterIMInstantiateCallback(xw.dpy, NULL, NULL, NULL,
+		                                 ximinstantiate, NULL);
 }
 
 void
 ximdestroy(XIM xim, XPointer client, XPointer call)
 {
-	xw.xim = NULL;
+	xw.ime.xim = NULL;
 	XRegisterIMInstantiateCallback(xw.dpy, NULL, NULL, NULL,
-					ximinstantiate, NULL);
+	                               ximinstantiate, NULL);
+	XFree(xw.ime.spotlist);
+}
+
+int
+xicdestroy(XIC xim, XPointer client, XPointer call)
+{
+	xw.ime.xic = NULL;
+	return 1;
 }
 
 void
-xinit(int cols, int rows)
+xinit(int w, int h)
 {
 	XGCValues gcvalues;
-	Cursor cursor;
-	Window parent;
+	Window parent, root;
 	pid_t thispid = getpid();
-	XColor xmousefg, xmousebg;
 	XWindowAttributes attr;
 	XVisualInfo vis;
 
+	if (!(xw.dpy = XOpenDisplay(NULL)))
+		die("can't open display\n");
 	xw.scr = XDefaultScreen(xw.dpy);
 
-	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0)))) {
-		parent = XRootWindow(xw.dpy, xw.scr);
-		xw.depth = 32;
+	root = XRootWindow(xw.dpy, xw.scr);
+	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
+		parent = root;
+
+	if (XMatchVisualInfo(xw.dpy, xw.scr, 32, TrueColor, &vis) != 0) {
+		xw.vis = vis.visual;
+		xw.depth = vis.depth;
 	} else {
 		XGetWindowAttributes(xw.dpy, parent, &attr);
+		xw.vis = attr.visual;
 		xw.depth = attr.depth;
 	}
-
-	XMatchVisualInfo(xw.dpy, xw.scr, xw.depth, TrueColor, &vis);
-	xw.vis = vis.visual;
 
 	/* font */
 	if (!FcInit())
@@ -1243,16 +1379,21 @@ xinit(int cols, int rows)
 	usedfont = (opt_font == NULL)? font : opt_font;
 	xloadfonts(usedfont, 0);
 
-	/* spare fonts */
-	xloadsparefonts();
-
 	/* colors */
 	xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
 	xloadcols();
 
 	/* adjust fixed window geometry */
-	win.w = 2 * win.hborderpx + cols * win.cw;
-	win.h = 2 * win.vborderpx + rows * win.ch;
+	switch (geometry) {
+	case CellGeometry:
+		win.w = 2 * borderpx + w * win.cw;
+		win.h = 2 * borderpx + h * win.ch;
+		break;
+	case PixelGeometry:
+		win.w = w;
+		win.h = h;
+		break;
+	}
 	if (xw.gm & XNegative)
 		xw.l += DisplayWidth(xw.dpy, xw.scr) - win.w - 2;
 	if (xw.gm & YNegative)
@@ -1271,22 +1412,29 @@ xinit(int cols, int rows)
 			win.w, win.h, 0, xw.depth, InputOutput,
 			xw.vis, CWBackPixel | CWBorderPixel | CWBitGravity
 			| CWEventMask | CWColormap, &xw.attrs);
+	if (parent != root)
+		XReparentWindow(xw.dpy, xw.win, parent, xw.l, xw.t);
 
 	memset(&gcvalues, 0, sizeof(gcvalues));
 	gcvalues.graphics_exposures = False;
-	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h, xw.depth);
-	dc.gc = XCreateGC(xw.dpy, xw.buf, GCGraphicsExposures, &gcvalues);
+	dc.gc = XCreateGC(xw.dpy, xw.win, GCGraphicsExposures,
+			&gcvalues);
+	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
+			xw.depth);
 	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
 	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
 
 	/* font spec buffer */
-	xw.specbuf = xmalloc(cols * sizeof(GlyphFontSpec));
+	xw.specbuf = xmalloc(cols * sizeof(GlyphFontSpec) * 4);
 
 	/* Xft rendering context */
 	xw.draw = XftDrawCreate(xw.dpy, xw.buf, xw.vis, xw.cmap);
 
 	/* input methods */
-	ximopen(xw.dpy);
+	if (!ximopen(xw.dpy)) {
+		XRegisterIMInstantiateCallback(xw.dpy, NULL, NULL, NULL,
+	                                       ximinstantiate, NULL);
+	}
 
 	/* white cursor, black outline */
 	cursor = XCreateFontCursor(xw.dpy, mouseshape);
@@ -1309,51 +1457,37 @@ xinit(int cols, int rows)
 	xw.xembed = XInternAtom(xw.dpy, "_XEMBED", False);
 	xw.wmdeletewin = XInternAtom(xw.dpy, "WM_DELETE_WINDOW", False);
 	xw.netwmname = XInternAtom(xw.dpy, "_NET_WM_NAME", False);
-        xw.netwmiconname = XInternAtom(xw.dpy, "_NET_WM_ICON_NAME", False);
+	xw.netwmiconname = XInternAtom(xw.dpy, "_NET_WM_ICON_NAME", False);
 	XSetWMProtocols(xw.dpy, xw.win, &xw.wmdeletewin, 1);
-
-	/* use a png-image to set _NET_WM_ICON */
-	FILE* file = fopen(ICON, "r");
-	if (file) {
-		/* inititialize variables */
-		const gdImagePtr icon_rgba = gdImageCreateFromPng(file);
-		fclose(file);
-		const int width = gdImageSX(icon_rgba);
-		const int height = gdImageSY(icon_rgba);
-		const int icon_n = width * height + 2;
-		CARD32 *icon_argb = g_new0(CARD32, icon_n);
-		/* set width and height of the icon */
-		int i = 0;
-		icon_argb[i++] = width;
-		icon_argb[i++] = height;
-		/* RGBA -> ARGB */
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				const int pixel_rgba = gdImageGetPixel(icon_rgba, x, y);
-				guint8* pixel_argb = (guint8*) &icon_argb[i++];
-				pixel_argb[0] = gdImageBlue(icon_rgba, pixel_rgba);
-				pixel_argb[1] = gdImageGreen(icon_rgba, pixel_rgba);
-				pixel_argb[2] = gdImageRed(icon_rgba, pixel_rgba);
-				/* scale alpha from 0-127 to 0-255 */
-				const int alpha = 127 - gdImageAlpha(icon_rgba, pixel_rgba);
-				pixel_argb[3] = alpha == 127 ? 255 : alpha * 2;
-			}
-		}
-		gdImageDestroy(icon_rgba);
-		/* set _NET_WM_ICON */
-		xw.netwmicon = XInternAtom(xw.dpy, "_NET_WM_ICON", False);
-		XChangeProperty(xw.dpy, xw.win, xw.netwmicon, XA_CARDINAL, 32,
-				PropModeReplace, (uchar *)icon_argb, icon_n);
-	}
 
 	xw.netwmpid = XInternAtom(xw.dpy, "_NET_WM_PID", False);
 	XChangeProperty(xw.dpy, xw.win, xw.netwmpid, XA_CARDINAL, 32,
 			PropModeReplace, (uchar *)&thispid, 1);
 
+	/* Xdnd setup */
+	xw.XdndTypeList = XInternAtom(xw.dpy, "XdndTypeList", 0);
+	xw.XdndSelection = XInternAtom(xw.dpy, "XdndSelection", 0);
+	xw.XdndEnter = XInternAtom(xw.dpy, "XdndEnter", 0);
+	xw.XdndPosition = XInternAtom(xw.dpy, "XdndPosition", 0);
+	xw.XdndStatus = XInternAtom(xw.dpy, "XdndStatus", 0);
+	xw.XdndLeave = XInternAtom(xw.dpy, "XdndLeave", 0);
+	xw.XdndDrop = XInternAtom(xw.dpy, "XdndDrop", 0);
+	xw.XdndFinished = XInternAtom(xw.dpy, "XdndFinished", 0);
+	xw.XdndActionCopy = XInternAtom(xw.dpy, "XdndActionCopy", 0);
+	xw.XdndActionMove = XInternAtom(xw.dpy, "XdndActionMove", 0);
+	xw.XdndActionLink = XInternAtom(xw.dpy, "XdndActionLink", 0);
+	xw.XdndActionAsk = XInternAtom(xw.dpy, "XdndActionAsk", 0);
+	xw.XdndActionPrivate = XInternAtom(xw.dpy, "XdndActionPrivate", 0);
+	xw.XtextUriList = XInternAtom((Display*) xw.dpy, "text/uri-list", 0);
+	xw.XtextPlain = XInternAtom((Display*) xw.dpy, "text/plain", 0);
+	xw.XdndAware = XInternAtom(xw.dpy, "XdndAware", 0);
+	XChangeProperty(xw.dpy, xw.win, xw.XdndAware, 4, 32, PropModeReplace,
+			&XdndVersion, 1);
+
 	win.mode = MODE_NUMLOCK;
 	resettitle();
-	XMapWindow(xw.dpy, xw.win);
 	xhints();
+	XMapWindow(xw.dpy, xw.win);
 	XSync(xw.dpy, False);
 
 	clock_gettime(CLOCK_MONOTONIC, &xsel.tclick1);
@@ -1364,13 +1498,32 @@ xinit(int cols, int rows)
 	if (xsel.xtarget == None)
 		xsel.xtarget = XA_STRING;
 
+	// Initialize the graphics (image display) module.
+	gr_init(xw.dpy, xw.vis, xw.cmap);
+
 	boxdraw_xinit(xw.dpy, xw.cmap, xw.draw, xw.vis);
+}
+
+void
+xresetfontsettings(ushort mode, Font **font, int *frcflags)
+{
+	*font = &dc.font;
+	if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
+		*font = &dc.ibfont;
+		*frcflags = FRC_ITALICBOLD;
+	} else if (mode & ATTR_ITALIC) {
+		*font = &dc.ifont;
+		*frcflags = FRC_ITALIC;
+	} else if (mode & ATTR_BOLD) {
+		*font = &dc.bfont;
+		*frcflags = FRC_BOLD;
+	}
 }
 
 int
 xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x, int y)
 {
-	float winx = borderpx + x * win.cw, winy = borderpx + y * win.ch, xp, yp;
+	float winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch, xp, yp;
 	ushort mode, prevmode = USHRT_MAX;
 	Font *font = &dc.font;
 	int frcflags = FRC_NORMAL;
@@ -1381,140 +1534,223 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 	FcPattern *fcpattern, *fontpattern;
 	FcFontSet *fcsets[] = { NULL };
 	FcCharSet *fccharset;
-	int i, f, numspecs = 0;
+	int i, f, length = 0, start = 0, numspecs = 0;
+	float cluster_xp = xp, cluster_yp = yp;
+	HbTransformData shaped = { 0 };
 
-	for (i = 0, xp = winx, yp = winy + font->ascent + win.cyo; i < len; ++i) {
-		/* Fetch rune and mode for current glyph. */
-		rune = glyphs[i].u;
-		mode = glyphs[i].mode;
+	/* Initial values. */
+	mode = prevmode = glyphs[0].mode & ~ATTR_WRAP;
+	xresetfontsettings(mode, &font, &frcflags);
+
+	for (i = 0, xp = winx, yp = winy + font->ascent; i < len; ++i) {
+		mode = glyphs[i].mode & ~ATTR_WRAP;
 
 		/* Skip dummy wide-character spacing. */
-		if (mode & ATTR_WDUMMY)
+		if (mode & ATTR_WDUMMY && i < (len - 1))
 			continue;
 
-		/* Determine font for glyph if different from previous glyph. */
-		if (prevmode != mode) {
-			prevmode = mode;
-			font = &dc.font;
-			frcflags = FRC_NORMAL;
-			runewidth = win.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
-			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
-				font = &dc.ibfont;
-				frcflags = FRC_ITALICBOLD;
-			} else if (mode & ATTR_ITALIC) {
-				font = &dc.ifont;
-				frcflags = FRC_ITALIC;
-			} else if (mode & ATTR_BOLD) {
-				font = &dc.bfont;
-				frcflags = FRC_BOLD;
-			}
-			yp = winy + font->ascent + win.cyo;
-		}
-
-		if (mode & ATTR_BOXDRAW) {
-			/* minor shoehorning: boxdraw uses only this ushort */
-			glyphidx = boxdrawindex(&glyphs[i]);
-		} else {
-			/* Lookup character index with default font. */
-			glyphidx = XftCharIndex(xw.dpy, font->match, rune);
-		}
-		if (glyphidx) {
-			specs[numspecs].font = font->match;
-			specs[numspecs].glyph = glyphidx;
-			specs[numspecs].x = (short)xp;
-			specs[numspecs].y = (short)yp;
-			xp += runewidth;
-			numspecs++;
-			continue;
-		}
-
-		/* Fallback on font cache, search the font cache for match. */
-		for (f = 0; f < frclen; f++) {
-			glyphidx = XftCharIndex(xw.dpy, frc[f].font, rune);
-			/* Everything correct. */
-			if (glyphidx && frc[f].flags == frcflags)
-				break;
-			/* We got a default font for a not found glyph. */
-			if (!glyphidx && frc[f].flags == frcflags
-					&& frc[f].unicodep == rune) {
-				break;
-			}
-		}
-
-		/* Nothing was found. Use fontconfig to find matching font. */
-		if (f >= frclen) {
-			if (!font->set)
-				font->set = FcFontSort(0, font->pattern,
-				                       1, 0, &fcres);
-			fcsets[0] = font->set;
-
-			/*
-			 * Nothing was found in the cache. Now use
-			 * some dozen of Fontconfig calls to get the
-			 * font for one single character.
-			 *
-			 * Xft and fontconfig are design failures.
-			 */
-			fcpattern = FcPatternDuplicate(font->pattern);
-			fccharset = FcCharSetCreate();
-
-			FcCharSetAddChar(fccharset, rune);
-			FcPatternAddCharSet(fcpattern, FC_CHARSET,
-					fccharset);
-			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
-
-			FcConfigSubstitute(0, fcpattern,
-					FcMatchPattern);
-			FcDefaultSubstitute(fcpattern);
-
-			fontpattern = FcFontSetMatch(0, fcsets, 1,
-					fcpattern, &fcres);
-
-			/* Allocate memory for the new cache entry. */
-			if (frclen >= frccap) {
-				frccap += 16;
-				frc = xrealloc(frc, frccap * sizeof(Fontcache));
+		if (
+			prevmode != mode
+			|| ATTRCMP(glyphs[start], glyphs[i])
+			|| selected(x + i, y) != selected(x + start, y)
+			|| i == (len - 1)
+		) {
+			/* Handle 1-character wide segments and end of line */
+			length = i - start;
+			if (i == start) {
+				length = 1;
+			} else if (i == (len - 1)) {
+				length = (i - start + 1);
 			}
 
-			frc[frclen].font = XftFontOpenPattern(xw.dpy,
-					fontpattern);
-			if (!frc[frclen].font)
-				die("XftFontOpenPattern failed seeking fallback font: %s\n",
-					strerror(errno));
-			frc[frclen].flags = frcflags;
-			frc[frclen].unicodep = rune;
+			/* Shape the segment. */
+			hbtransform(&shaped, font->match, glyphs, start, length);
+			runewidth = win.cw * ((glyphs[start].mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			cluster_xp = xp; cluster_yp = yp;
+			for (int code_idx = 0; code_idx < shaped.count; code_idx++) {
+				int idx = shaped.glyphs[code_idx].cluster;
 
-			glyphidx = XftCharIndex(xw.dpy, frc[frclen].font, rune);
+				if (glyphs[start + idx].mode & ATTR_WDUMMY)
+					continue;
 
-			f = frclen;
-			frclen++;
+				/* Draw spaces for image placeholders (images
+				 * will be drawn separately). */
+				if (glyphs[start + idx].mode & ATTR_IMAGE)
+					continue;
 
-			FcPatternDestroy(fcpattern);
-			FcCharSetDestroy(fccharset);
+				/* Advance the drawing cursor if we've moved to a new cluster */
+				if (code_idx > 0 && idx != shaped.glyphs[code_idx - 1].cluster) {
+					xp += runewidth;
+					cluster_xp = xp;
+					cluster_yp = yp;
+					runewidth = win.cw * ((glyphs[start + idx].mode & ATTR_WIDE) ? 2.0f : 1.0f);
+				}
+
+				if (glyphs[start + idx].mode & ATTR_BOXDRAW) {
+					/* minor shoehorning: boxdraw uses only this ushort */
+					specs[numspecs].font = font->match;
+					specs[numspecs].glyph = boxdrawindex(&glyphs[start + idx]);
+					specs[numspecs].x = xp;
+					specs[numspecs].y = yp;
+					numspecs++;
+				} else if (shaped.glyphs[code_idx].codepoint != 0) {
+					/* If symbol is found, put it into the specs. */
+					specs[numspecs].font = font->match;
+					specs[numspecs].glyph = shaped.glyphs[code_idx].codepoint;
+					specs[numspecs].x = cluster_xp + (short)(shaped.positions[code_idx].x_offset / 64.);
+					specs[numspecs].y = cluster_yp - (short)(shaped.positions[code_idx].y_offset / 64.);
+					cluster_xp += shaped.positions[code_idx].x_advance / 64.;
+					cluster_yp += shaped.positions[code_idx].y_advance / 64.;
+					numspecs++;
+				} else {
+					/* If it's not found, try to fetch it through the font cache. */
+					rune = glyphs[start + idx].u;
+					for (f = 0; f < frclen; f++) {
+						glyphidx = XftCharIndex(xw.dpy, frc[f].font, rune);
+						/* Everything correct. */
+						if (glyphidx && frc[f].flags == frcflags)
+							break;
+						/* We got a default font for a not found glyph. */
+						if (!glyphidx && frc[f].flags == frcflags
+								&& frc[f].unicodep == rune) {
+							break;
+						}
+					}
+
+					/* Nothing was found. Use fontconfig to find matching font. */
+					if (f >= frclen) {
+						if (!font->set)
+							font->set = FcFontSort(0, font->pattern, 1, 0, &fcres);
+						fcsets[0] = font->set;
+
+						/*
+						 * Nothing was found in the cache. Now use
+						 * some dozen of Fontconfig calls to get the
+						 * font for one single character.
+						 *
+						 * Xft and fontconfig are design failures.
+						 */
+						fcpattern = FcPatternDuplicate(font->pattern);
+						fccharset = FcCharSetCreate();
+
+						FcCharSetAddChar(fccharset, rune);
+						FcPatternAddCharSet(fcpattern, FC_CHARSET,
+								fccharset);
+						FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
+
+						FcConfigSubstitute(0, fcpattern,
+								FcMatchPattern);
+						FcDefaultSubstitute(fcpattern);
+
+						fontpattern = FcFontSetMatch(0, fcsets, 1,
+								fcpattern, &fcres);
+
+						/* Allocate memory for the new cache entry. */
+						if (frclen >= frccap) {
+							frccap += 16;
+							frc = xrealloc(frc, frccap * sizeof(Fontcache));
+						}
+
+						frc[frclen].font = XftFontOpenPattern(xw.dpy,
+								fontpattern);
+						if (!frc[frclen].font)
+							die("XftFontOpenPattern failed seeking fallback font: %s\n",
+								strerror(errno));
+						frc[frclen].flags = frcflags;
+						frc[frclen].unicodep = rune;
+
+						glyphidx = XftCharIndex(xw.dpy, frc[frclen].font, rune);
+
+						f = frclen;
+						frclen++;
+
+						FcPatternDestroy(fcpattern);
+						FcCharSetDestroy(fccharset);
+					}
+
+					specs[numspecs].font = frc[f].font;
+					specs[numspecs].glyph = glyphidx;
+					specs[numspecs].x = (short)xp;
+					specs[numspecs].y = (short)yp;
+					numspecs++;
+				}
+			}
+
+			/* Cleanup and get ready for next segment. */
+			hbcleanup(&shaped);
+			start = i;
+
+			/* Determine font for glyph if different from previous glyph. */
+			if (prevmode != mode) {
+				prevmode = mode;
+				xresetfontsettings(mode, &font, &frcflags);
+				yp = winy + font->ascent;
+			}
 		}
-
-		specs[numspecs].font = frc[f].font;
-		specs[numspecs].glyph = glyphidx;
-		specs[numspecs].x = (short)xp;
-		specs[numspecs].y = (short)yp;
-		xp += runewidth;
-		numspecs++;
 	}
 
-	/* Harfbuzz transformation for ligatures. */
-	hbtransform(specs, glyphs, len, x, y);
-
+	hbcleanup(&shaped);
 	return numspecs;
 }
 
-void
-xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, int dmode)
+/* Draws a horizontal dashed line of length `w` starting at `(x, y)`. `wavelen`
+ * is the length of the dash plus the length of the gap. `fraction` is the
+ * fraction of the dash length compared to `wavelen`. */
+static void
+xdrawunderdashed(Draw draw, Color *color, int x, int y, int w,
+		 int wavelen, float fraction, int thick)
 {
-	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
-	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
+	int dashw = MAX(1, fraction * wavelen);
+	for (int i = x - x % wavelen; i < x + w; i += wavelen) {
+		int startx = MAX(i, x);
+		int endx = MIN(i + dashw, x + w);
+		if (startx < endx)
+			XftDrawRect(xw.draw, color, startx, y, endx - startx,
+				    thick);
+	}
+}
+
+/* Draws an undercurl. `h` is the total height, including line thickness. */
+static void
+xdrawundercurl(Draw draw, Color *color, int x, int y, int w, int h, int thick)
+{
+	XGCValues gcvals = {.foreground = color->pixel,
+			    .line_width = thick,
+			    .line_style = LineSolid,
+			    .cap_style = CapRound};
+	GC gc = XCreateGC(xw.dpy, XftDrawDrawable(xw.draw),
+			  GCForeground | GCLineWidth | GCLineStyle | GCCapStyle,
+			  &gcvals);
+
+	XRectangle clip = {.x = x, .y = y, .width = w, .height = h};
+	XSetClipRectangles(xw.dpy, gc, 0, 0, &clip, 1, Unsorted);
+
+	int yoffset = thick / 2;
+	int segh = MAX(1, h - thick);
+	/* Make sure every segment is at a 45 degree angle, otherwise it doesn't
+	 * look good without antialiasing. */
+	int segw = segh;
+	int wavelen = MAX(1, segw * 2);
+
+	for (int i = x - (x % wavelen); i < x + w; i += wavelen) {
+		XPoint points[3] = {{.x = i, .y = y + yoffset},
+				    {.x = i + segw, .y = y + yoffset + segh},
+				    {.x = i + wavelen, .y = y + yoffset}};
+		XDrawLines(xw.dpy, XftDrawDrawable(xw.draw), gc, points, 3,
+			   CoordModeOrigin);
+	}
+
+	XFreeGC(xw.dpy, gc);
+}
+
+void
+xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, int charlen, int dmode)
+{
+	int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
 	    width = charlen * win.cw;
 	Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
 	XRenderColor colfg, colbg;
+	XRectangle r;
 
 	/* Fallback on color display for attributes not supported by the font */
 	if (base.mode & ATTR_ITALIC && base.mode & ATTR_BOLD) {
@@ -1594,44 +1830,105 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	if (base.mode & ATTR_INVISIBLE)
 		fg = bg;
 
+	/* Intelligent cleaning up of the borders. */
 	if (dmode & DRAW_BG) {
-		/* Intelligent cleaning up of the borders. */
 		if (x == 0) {
-                        xclear(0, (y == 0)? 0 : winy, borderpx,
-					winy + win.ch +
-                                        ((winy + win.ch >= borderpx + win.th)? win.h : 0));
+			xclear(0, (y == 0)? 0 : winy, win.hborderpx,
+			       winy + win.ch +
+			       ((winy + win.ch >= win.vborderpx + win.th)? win.h : 0));
 		}
-	        if (winx + width >= borderpx + win.tw) {
+		if (winx + width >= win.hborderpx + win.tw) {
 			xclear(winx + width, (y == 0)? 0 : winy, win.w,
-                                ((winy + win.ch >= borderpx + win.th)? win.h : (winy + win.ch)));
+			       ((winy + win.ch >= win.vborderpx + win.th)? win.h : (winy + win.ch)));
 		}
 		if (y == 0)
-                  	xclear(winx, 0, winx + width, borderpx);
-          	if (winy + win.ch >= borderpx + win.th)
+			xclear(winx, 0, winx + width, win.vborderpx);
+		if (winy + win.ch >= win.vborderpx + win.th)
 			xclear(winx, winy + win.ch, winx + width, win.h);
 
-		/* Fill the background */
+		/* Clean up the region we want to draw to. */
 		XftDrawRect(xw.draw, bg, winx, winy, width, win.ch);
 	}
 
-	if (dmode & DRAW_FG) {
-		if (base.mode & ATTR_BOXDRAW) {
-			drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
+	if (!(dmode & DRAW_FG))
+		return;
+
+	/* Set the clip region only for the underline. */
+	r.x = 0;
+	r.y = 0;
+	r.height = win.ch;
+	r.width = width;
+	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
+
+	/* Decoration color. */
+	Color decor;
+	uint32_t decorcolor = tgetdecorcolor(&base);
+	if (decorcolor == DECOR_DEFAULT_COLOR) {
+		decor = *fg;
+	} else if (IS_TRUECOL(decorcolor)) {
+		colfg.alpha = 0xffff;
+		colfg.red = TRUERED(decorcolor);
+		colfg.green = TRUEGREEN(decorcolor);
+		colfg.blue = TRUEBLUE(decorcolor);
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &decor);
+	} else {
+		decor = dc.col[decorcolor];
+	}
+	decor.color.alpha = 0xffff;
+	decor.pixel |= 0xff << 24;
+
+	/* Float thickness, used as a base to compute other values. */
+	float fthick = dc.font.height / 18.0;
+	/* Integer thickness in pixels. Must not be 0. */
+	int thick = MAX(1, roundf(fthick));
+	/* The default gap between the baseline and a single underline. */
+	int gap = roundf(fthick * 2);
+	/* The total thickness of a double underline. */
+	int doubleh = thick * 2 + ceilf(fthick * 0.5);
+	/* The total thickness of an undercurl. */
+	int curlh = thick * 2 + roundf(fthick * 0.75);
+
+	/* Render the underline before the glyphs. */
+	if (base.mode & ATTR_UNDERLINE) {
+		uint32_t style = tgetdecorstyle(&base);
+		int liney = winy + dc.font.ascent + gap;
+		/* Adjust liney to guarantee that a single underline fits. */
+		liney -= MAX(0, liney + thick - (winy + win.ch));
+		if (style == UNDERLINE_DOUBLE) {
+			liney -= MAX(0, liney + doubleh - (winy + win.ch));
+			XftDrawRect(xw.draw, &decor, winx, liney, width, thick);
+			XftDrawRect(xw.draw, &decor, winx,
+				    liney + doubleh - thick, width, thick);
+		} else if (style == UNDERLINE_DOTTED) {
+			xdrawunderdashed(xw.draw, &decor, winx, liney, width,
+					 thick * 2, 0.5, thick);
+		} else if (style == UNDERLINE_DASHED) {
+			int wavelen = MAX(2, win.cw * 0.9);
+			xdrawunderdashed(xw.draw, &decor, winx, liney, width,
+					 wavelen, 0.65, thick);
+		} else if (style == UNDERLINE_CURLY) {
+			liney -= MAX(0, liney + curlh - (winy + win.ch));
+			xdrawundercurl(xw.draw, &decor, winx, liney, width,
+				       curlh, thick);
 		} else {
-			/* Render the glyphs. */
-			XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
+			XftDrawRect(xw.draw, &decor, winx, liney, width, thick);
 		}
+	}
 
-		/* Render underline and strikethrough. */
-		if (base.mode & ATTR_UNDERLINE) {
-			XftDrawRect(xw.draw, fg, winx, winy + win.cyo + dc.font.ascent + 1,
-					width, 1);
-		}
+	/* Reset clip to none. */
+	XftDrawSetClip(xw.draw, 0);
 
-		if (base.mode & ATTR_STRUCK) {
-			XftDrawRect(xw.draw, fg, winx, winy + win.cyo + 2 * dc.font.ascent / 3,
-					width, 1);
-		}
+	if (base.mode & ATTR_BOXDRAW) {
+		drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
+	} else {
+		/* Render the glyphs. */
+		XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
+	}
+
+	/* Render strikethrough. Alway use the fg color. */
+	if (base.mode & ATTR_STRUCK) {
+		XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3,
+			    width, thick);
 	}
 }
 
@@ -1639,16 +1936,22 @@ void
 xdrawglyph(Glyph g, int x, int y)
 {
 	int numspecs;
-	XftGlyphFontSpec spec;
+	XftGlyphFontSpec *specs = xw.specbuf;
 
-	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
-	xdrawglyphfontspecs(&spec, g, numspecs, x, y, DRAW_BG | DRAW_FG);
+	numspecs = xmakeglyphfontspecs(specs, &g, 1, x, y);
+	xdrawglyphfontspecs(specs, g, numspecs, x, y, (g.mode & ATTR_WIDE) ? 2 : 1, DRAW_BG | DRAW_FG);
+	if (g.mode & ATTR_IMAGE) {
+		gr_start_drawing(xw.buf, win.cw, win.ch);
+		xdrawoneimagecell(g, x, y);
+		gr_finish_drawing(xw.buf);
+	}
 }
 
 void
 xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int len)
 {
 	Color drawcol;
+	XRenderColor colbg;
 
 	/* remove the old cursor */
 	if (selected(ox, oy))
@@ -1656,9 +1959,16 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int le
 
 	/* Redraw the line where cursor was previously.
 	 * It will restore the ligatures broken by the cursor. */
+	gr_start_drawing(xw.buf, win.cw, win.ch);
 	xdrawline(line, 0, oy, len);
+	gr_finish_drawing(xw.buf);
 
-        if (IS_SET(MODE_HIDE) || !IS_SET(MODE_FOCUSED)) return;
+	if (IS_SET(MODE_HIDE))
+		return;
+
+	// If it's an image, just draw a ballot box for simplicity.
+	if (g.mode & ATTR_IMAGE)
+		g.u = 0x2610;
 
 	/*
 	 * Select the right color for the right mode.
@@ -1679,67 +1989,212 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int le
 		if (selected(cx, cy)) {
 			g.fg = defaultfg;
 			g.bg = defaultrcs;
-		} else {
-			g.fg = defaultbg;
-			g.bg = defaultcs;
+		} else if (!(og.mode & ATTR_REVERSE)) {
+			unsigned long col = g.bg;
+			g.bg = g.fg;
+			g.fg = col;
 		}
-		drawcol = dc.col[g.bg];
+
+		if (IS_TRUECOL(g.bg)) {
+			colbg.alpha = 0xffff;
+			colbg.red = TRUERED(g.bg);
+			colbg.green = TRUEGREEN(g.bg);
+			colbg.blue = TRUEBLUE(g.bg);
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &drawcol);
+		} else {
+			drawcol = dc.col[g.bg];
+		}
 	}
 
 	/* draw the new one */
 	if (IS_SET(MODE_FOCUSED)) {
 		switch (win.cursor) {
-		case 0: /* Blinking block */
-		case 1: /* Blinking block (default) */
+		default:
+		case 0: /* blinking block */
+		case 1: /* blinking block (default) */
 			if (IS_SET(MODE_BLINK))
 				break;
 			/* FALLTHROUGH */
-		case 2: /* Steady block */
+		case 2: /* steady block */
 			xdrawglyph(g, cx, cy);
 			break;
-		case 3: /* Blinking underline */
+		case 3: /* blinking underline */
 			if (IS_SET(MODE_BLINK))
 				break;
 			/* FALLTHROUGH */
-		case 4: /* Steady underline */
+		case 4: /* steady underline */
 			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + (cy + 1) * win.ch - \
+					win.hborderpx + cx * win.cw,
+					win.vborderpx + (cy + 1) * win.ch - \
 						cursorthickness,
 					win.cw, cursorthickness);
 			break;
-		case 5: /* Blinking bar */
+		case 5: /* blinking bar */
 			if (IS_SET(MODE_BLINK))
 				break;
 			/* FALLTHROUGH */
-		case 6: /* Steady bar */
+		case 6: /* steady bar */
 			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + cy * win.ch,
+					win.hborderpx + cx * win.cw,
+					win.vborderpx + cy * win.ch,
 					cursorthickness, win.ch);
 			break;
-		case 7: /* Blinking st cursor */
+		case 7: /* blinking st cursor */
 			if (IS_SET(MODE_BLINK))
 				break;
-        }
+			/* FALLTHROUGH */
+		case 8: /* steady st cursor */
+			g.u = stcursor;
+			xdrawglyph(g, cx, cy);
+			break;
+		}
 	} else {
-		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
+/*		XftDrawRect(xw.draw, &drawcol,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + cy * win.ch,
 				win.cw - 1, 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + cy * win.ch,
 				1, win.ch - 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + (cx + 1) * win.cw - 1,
-				borderpx + cy * win.ch,
+				win.hborderpx + (cx + 1) * win.cw - 1,
+				win.vborderpx + cy * win.ch,
 				1, win.ch - 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + (cy + 1) * win.ch - 1,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + (cy + 1) * win.ch - 1,
 				win.cw, 1);
+*/
 	}
+}
+
+/* Draw (or queue for drawing) image cells between columns x1 and x2 assuming
+ * that they have the same attributes (and thus the same lower 24 bits of the
+ * image ID and the same placement ID). */
+void
+xdrawimages(Glyph base, Line line, int x1, int y1, int x2) {
+	int y_pix = win.vborderpx + y1 * win.ch;
+	uint32_t image_id_24bits = base.fg & 0xFFFFFF;
+	uint32_t placement_id = tgetimgplacementid(&base);
+	// Columns and rows are 1-based, 0 means unspecified.
+	int last_col = 0;
+	int last_row = 0;
+	int last_start_col = 0;
+	int last_start_x = x1;
+	// The most significant byte is also 1-base, subtract 1 before use.
+	uint32_t last_id_4thbyteplus1 = 0;
+	// We may need to inherit row/column/4th byte from the previous cell.
+	Glyph *prev = &line[x1 - 1];
+	if (x1 > 0 && (prev->mode & ATTR_IMAGE) &&
+	    (prev->fg & 0xFFFFFF) == image_id_24bits &&
+	    prev->decor == base.decor) {
+		last_row = tgetimgrow(prev);
+		last_col = tgetimgcol(prev);
+		last_id_4thbyteplus1 = tgetimgid4thbyteplus1(prev);
+		last_start_col = last_col + 1;
+	}
+	for (int x = x1; x < x2; ++x) {
+		Glyph *g = &line[x];
+		uint32_t cur_row = tgetimgrow(g);
+		uint32_t cur_col = tgetimgcol(g);
+		uint32_t cur_id_4thbyteplus1 = tgetimgid4thbyteplus1(g);
+		uint32_t num_diacritics = tgetimgdiacriticcount(g);
+		// If the row is not specified, assume it's the same as the row
+		// of the previous cell. Note that `cur_row` may contain a
+		// value imputed earlier, which will be preserved if `last_row`
+		// is zero (i.e. we don't know the row of the previous cell).
+		if (last_row && (num_diacritics == 0 || !cur_row))
+			cur_row = last_row;
+		// If the column is not specified and the row is the same as the
+		// row of the previous cell, then assume that the column is the
+		// next one.
+		if (last_col && (num_diacritics <= 1 || !cur_col) &&
+		    cur_row == last_row)
+			cur_col = last_col + 1;
+		// If the additional id byte is not specified and the
+		// coordinates are consecutive, assume the byte is also the
+		// same.
+		if (last_id_4thbyteplus1 &&
+		    (num_diacritics <= 2 || !cur_id_4thbyteplus1) &&
+		    cur_row == last_row && cur_col == last_col + 1)
+			cur_id_4thbyteplus1 = last_id_4thbyteplus1;
+		// If we couldn't infer row and column, start from the top left
+		// corner.
+		if (cur_row == 0)
+			cur_row = 1;
+		if (cur_col == 0)
+			cur_col = 1;
+		// If this cell breaks a contiguous stripe of image cells, draw
+		// that line and start a new one.
+		if (cur_col != last_col + 1 || cur_row != last_row ||
+		    cur_id_4thbyteplus1 != last_id_4thbyteplus1) {
+			uint32_t image_id = image_id_24bits;
+			if (last_id_4thbyteplus1)
+				image_id |= (last_id_4thbyteplus1 - 1) << 24;
+			if (last_row != 0) {
+				int x_pix =
+					win.hborderpx + last_start_x * win.cw;
+				gr_append_imagerect(
+					xw.buf, image_id, placement_id,
+					last_start_col - 1, last_col,
+					last_row - 1, last_row, last_start_x,
+					y1, x_pix, y_pix, win.cw, win.ch,
+					base.mode & ATTR_REVERSE);
+			}
+			last_start_col = cur_col;
+			last_start_x = x;
+		}
+		last_row = cur_row;
+		last_col = cur_col;
+		last_id_4thbyteplus1 = cur_id_4thbyteplus1;
+		// Populate the missing glyph data to enable inheritance between
+		// runs and support the naive implementation of tgetimgid.
+		if (!tgetimgrow(g))
+			tsetimgrow(g, cur_row);
+		// We cannot save this information if there are > 511 cols.
+		if (!tgetimgcol(g) && (cur_col & ~0x1ff) == 0)
+			tsetimgcol(g, cur_col);
+		if (!tgetimgid4thbyteplus1(g))
+			tsetimg4thbyteplus1(g, cur_id_4thbyteplus1);
+	}
+	uint32_t image_id = image_id_24bits;
+	if (last_id_4thbyteplus1)
+		image_id |= (last_id_4thbyteplus1 - 1) << 24;
+	// Draw the last contiguous stripe.
+	if (last_row != 0) {
+		int x_pix = win.hborderpx + last_start_x * win.cw;
+		gr_append_imagerect(xw.buf, image_id, placement_id,
+				    last_start_col - 1, last_col, last_row - 1,
+				    last_row, last_start_x, y1, x_pix, y_pix,
+				    win.cw, win.ch, base.mode & ATTR_REVERSE);
+	}
+}
+
+/* Draw just one image cell without inheriting attributes from the left. */
+void xdrawoneimagecell(Glyph g, int x, int y) {
+	if (!(g.mode & ATTR_IMAGE))
+		return;
+	int x_pix = win.hborderpx + x * win.cw;
+	int y_pix = win.vborderpx + y * win.ch;
+	uint32_t row = tgetimgrow(&g) - 1;
+	uint32_t col = tgetimgcol(&g) - 1;
+	uint32_t placement_id = tgetimgplacementid(&g);
+	uint32_t image_id = tgetimgid(&g);
+	gr_append_imagerect(xw.buf, image_id, placement_id, col, col + 1, row,
+			    row + 1, x, y, x_pix, y_pix, win.cw, win.ch,
+			    g.mode & ATTR_REVERSE);
+}
+
+/* Prepare for image drawing. */
+void xstartimagedraw(int *dirty, int rows) {
+	gr_start_drawing(xw.buf, win.cw, win.ch);
+	gr_mark_dirty_animations(dirty, rows);
+}
+
+/* Draw all queued image cells. */
+void xfinishimagedraw() {
+	gr_finish_drawing(xw.buf);
 }
 
 void
@@ -1757,7 +2212,10 @@ xseticontitle(char *p)
 	XTextProperty prop;
 	DEFAULT(p, opt_title);
 
-        if (Xutf8TextListToTextProperty(xw.dpy, &p, 1, XUTF8StringStyle,
+	if (p[0] == '\0')
+		p = opt_title;
+
+	if (Xutf8TextListToTextProperty(xw.dpy, &p, 1, XUTF8StringStyle,
 	                                &prop) != Success)
 		return;
 	XSetWMIconName(xw.dpy, xw.win, &prop);
@@ -1771,7 +2229,10 @@ xsettitle(char *p)
 	XTextProperty prop;
 	DEFAULT(p, opt_title);
 
-        if (Xutf8TextListToTextProperty(xw.dpy, &p, 1, XUTF8StringStyle,
+	if (p[0] == '\0')
+		p = opt_title;
+
+	if (Xutf8TextListToTextProperty(xw.dpy, &p, 1, XUTF8StringStyle,
 	                                &prop) != Success)
 		return;
 	XSetWMName(xw.dpy, xw.win, &prop);
@@ -1788,28 +2249,26 @@ xstartdraw(void)
 void
 xdrawline(Line line, int x1, int y1, int x2)
 {
-	int i, x, ox, numspecs, numspecs_cached;
+	int i, x, ox, numspecs;
 	Glyph base, new;
 	XftGlyphFontSpec *specs;
 
-	numspecs_cached = xmakeglyphfontspecs(xw.specbuf, &line[x1], x2 - x1, x1, y1);
-
-	/* Draw line in 2 passes: background and foreground. This way wide glyphs
-	   won't get truncated (#223) */
+	/* Draw line in 2 passes: background and foreground. This way wide
+	 * glyphs won't get truncated (#223) */
 	for (int dmode = DRAW_BG; dmode <= DRAW_FG; dmode <<= 1) {
 		specs = xw.specbuf;
-		numspecs = numspecs_cached;
 		i = ox = 0;
-		for (x = x1; x < x2 && i < numspecs; x++) {
+		for (x = x1; x < x2; x++) {
 			new = line[x];
 			if (new.mode == ATTR_WDUMMY)
 				continue;
 			if (selected(x, y1))
 				new.mode ^= ATTR_REVERSE;
 			if (i > 0 && ATTRCMP(base, new)) {
-				xdrawglyphfontspecs(specs, base, i, ox, y1, dmode);
-				specs += i;
-				numspecs -= i;
+				numspecs = xmakeglyphfontspecs(specs, &line[ox], x - ox, ox, y1);
+				xdrawglyphfontspecs(specs, base, numspecs, ox, y1, x - ox, dmode);
+				if (base.mode & ATTR_IMAGE && dmode == DRAW_FG)
+					xdrawimages(base, line, ox, y1, x);
 				i = 0;
 			}
 			if (i == 0) {
@@ -1818,8 +2277,12 @@ xdrawline(Line line, int x1, int y1, int x2)
 			}
 			i++;
 		}
-		if (i > 0)
-			xdrawglyphfontspecs(specs, base, i, ox, y1, dmode);
+		if (i > 0) {
+			numspecs = xmakeglyphfontspecs(specs, &line[ox], x2 - ox, ox, y1);
+			xdrawglyphfontspecs(specs, base, numspecs, ox, y1, x2 - ox, dmode);
+		}
+		if (i > 0 && base.mode & ATTR_IMAGE && dmode == DRAW_FG)
+			xdrawimages(base, line, ox, y1, x);
 	}
 }
 
@@ -1836,11 +2299,13 @@ xfinishdraw(void)
 void
 xximspot(int x, int y)
 {
-	XPoint spot = { borderpx + x * win.cw, borderpx + (y + 1) * win.ch };
-	XVaNestedList attr = XVaCreateNestedList(0, XNSpotLocation, &spot, NULL);
+	if (xw.ime.xic == NULL)
+		return;
 
-	XSetICValues(xw.xic, XNPreeditAttributes, attr, NULL);
-	XFree(attr);
+	xw.ime.spot.x = borderpx + x * win.cw;
+	xw.ime.spot.y = borderpx + (y + 1) * win.ch;
+
+	XSetICValues(xw.ime.xic, XNPreeditAttributes, xw.ime.spotlist, NULL);
 }
 
 void
@@ -1875,6 +2340,12 @@ xsetmode(int set, unsigned int flags)
 {
 	int mode = win.mode;
 	MODBIT(win.mode, set, flags);
+        if (flags & MODE_MOUSE) {
+                if (win.mode & MODE_MOUSE)
+                        XUndefineCursor(xw.dpy, xw.win);
+                else
+                        XDefineCursor(xw.dpy, xw.win, cursor);
+        }
 	if ((win.mode & MODE_REVERSE) != (mode & MODE_REVERSE))
 		redraw();
 }
@@ -1882,7 +2353,6 @@ xsetmode(int set, unsigned int flags)
 int
 xsetcursor(int cursor)
 {
-	DEFAULT(cursor, 1);
 	if (!BETWEEN(cursor, 0, 8)) /* 7-8: st extensions */
 		return 1;
 	win.cursor = cursor;
@@ -1920,13 +2390,15 @@ focus(XEvent *ev)
 		return;
 
 	if (ev->type == FocusIn) {
-		XSetICFocus(xw.xic);
+		if (xw.ime.xic)
+			XSetICFocus(xw.ime.xic);
 		win.mode |= MODE_FOCUSED;
 		xseturgency(0);
 		if (IS_SET(MODE_FOCUS))
 			ttywrite("\033[I", 3, 0);
 	} else {
-		XUnsetICFocus(xw.xic);
+		if (xw.ime.xic)
+			XUnsetICFocus(xw.ime.xic);
 		win.mode &= ~MODE_FOCUSED;
 		if (IS_SET(MODE_FOCUS))
 			ttywrite("\033[O", 3, 0);
@@ -1980,8 +2452,8 @@ void
 kpress(XEvent *ev)
 {
 	XKeyEvent *e = &ev->xkey;
-	KeySym ksym;
-	char buf[32], *customkey;
+	KeySym ksym = NoSymbol;
+	char buf[64], *customkey;
 	int len;
 	Rune c;
 	Status status;
@@ -1990,7 +2462,13 @@ kpress(XEvent *ev)
 	if (IS_SET(MODE_KBDLOCK))
 		return;
 
-	len = XmbLookupString(xw.xic, e, buf, sizeof buf, &ksym, &status);
+	if (xw.ime.xic) {
+		len = XmbLookupString(xw.ime.xic, e, buf, sizeof buf, &ksym, &status);
+		if (status == XBufferOverflow)
+			return;
+	} else {
+		len = XLookupString(e, buf, sizeof buf, &ksym, NULL);
+	}
 	/* 1. shortcuts */
 	for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
 		if (ksym == bp->keysym && match(bp->mod, e->state)) {
@@ -2039,7 +2517,134 @@ cmessage(XEvent *e)
 		}
 	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
 		ttyhangup();
+		gr_deinit();
 		exit(0);
+	} else if (e->xclient.message_type == xw.XdndEnter) {
+		xw.XdndSourceWin = e->xclient.data.l[0];
+		xw.XdndSourceVersion = e->xclient.data.l[1] >> 24;
+		xw.XdndSourceFormat = None;
+		if (xw.XdndSourceVersion > 5)
+			return;
+		xdndenter(e);
+	} else if (e->xclient.message_type == xw.XdndPosition
+			&& xw.XdndSourceVersion <= 5) {
+		xdndpos(e);
+	} else if (e->xclient.message_type == xw.XdndDrop
+			&& xw.XdndSourceVersion <= 5) {
+		xdnddrop(e);
+	}
+}
+
+void
+xdndenter(XEvent *e)
+{
+	unsigned long count;
+	Atom* formats;
+	Atom real_formats[6];
+	Bool list;
+	Atom actualType;
+	int32_t actualFormat;
+	unsigned long bytesAfter;
+	unsigned long i;
+
+	list = e->xclient.data.l[1] & 1;
+
+	if (list) {
+		XGetWindowProperty((Display*) xw.dpy,
+			xw.XdndSourceWin,
+			xw.XdndTypeList,
+			0,
+			LONG_MAX,
+			False,
+			4,
+			&actualType,
+			&actualFormat,
+			&count,
+			&bytesAfter,
+			(unsigned char**) &formats);
+	} else {
+		count = 0;
+
+		if (e->xclient.data.l[2] != None)
+			real_formats[count++] = e->xclient.data.l[2];
+		if (e->xclient.data.l[3] != None)
+			real_formats[count++] = e->xclient.data.l[3];
+		if (e->xclient.data.l[4] != None)
+			real_formats[count++] = e->xclient.data.l[4];
+
+		formats = real_formats;
+	}
+
+	for (i = 0; i < count; i++) {
+		if (formats[i] == xw.XtextUriList || formats[i] == xw.XtextPlain) {
+			xw.XdndSourceFormat = formats[i];
+			break;
+		}
+	}
+
+	if (list)
+		XFree(formats);
+}
+
+void
+xdndpos(XEvent *e)
+{
+	const int32_t xabs = (e->xclient.data.l[2] >> 16) & 0xffff;
+	const int32_t yabs = (e->xclient.data.l[2]) & 0xffff;
+	Window dummy;
+	int32_t xpos, ypos;
+	XEvent reply = { ClientMessage };
+
+	reply.xclient.window = xw.XdndSourceWin;
+	reply.xclient.format = 32;
+	reply.xclient.data.l[0] = (long) xw.win;
+	reply.xclient.data.l[2] = 0;
+	reply.xclient.data.l[3] = 0;
+
+	XTranslateCoordinates((Display*) xw.dpy,
+		XDefaultRootWindow((Display*) xw.dpy),
+		(Window) xw.win,
+		xabs, yabs,
+		&xpos, &ypos,
+		&dummy);
+
+	reply.xclient.message_type = xw.XdndStatus;
+
+	if (xw.XdndSourceFormat) {
+		reply.xclient.data.l[1] = 1;
+		if (xw.XdndSourceVersion >= 2)
+			reply.xclient.data.l[4] = xw.XdndActionCopy;
+	}
+
+	XSendEvent((Display*) xw.dpy, xw.XdndSourceWin, False, NoEventMask,
+			&reply);
+	XFlush((Display*) xw.dpy);
+}
+
+void
+xdnddrop(XEvent *e)
+{
+	Time time = CurrentTime;
+	XEvent reply = { ClientMessage };
+
+	reply.xclient.window = xw.XdndSourceWin;
+	reply.xclient.format = 32;
+	reply.xclient.data.l[0] = (long) xw.win;
+	reply.xclient.data.l[2] = 0;
+	reply.xclient.data.l[3] = 0;
+
+	if (xw.XdndSourceFormat) {
+		if (xw.XdndSourceVersion >= 1)
+			time = e->xclient.data.l[2];
+
+		XConvertSelection((Display*) xw.dpy, xw.XdndSelection,
+				xw.XdndSourceFormat, xw.XdndSelection, (Window) xw.win, time);
+	} else if (xw.XdndSourceVersion >= 2) {
+		reply.xclient.message_type = xw.XdndFinished;
+
+		XSendEvent((Display*) xw.dpy, xw.XdndSourceWin,
+				False, NoEventMask, &reply);
+		XFlush((Display*) xw.dpy);
 	}
 }
 
@@ -2051,6 +2656,9 @@ resize(XEvent *e)
 
 	cresize(e->xconfigure.width, e->xconfigure.height);
 }
+
+int tinsync(uint);
+int ttyread_pending();
 
 void
 run(void)
@@ -2086,8 +2694,15 @@ run(void)
 		FD_SET(ttyfd, &rfd);
 		FD_SET(xfd, &rfd);
 
-		if (XPending(xw.dpy))
+		if (XPending(xw.dpy) || ttyread_pending())
 			timeout = 0;  /* existing events might not set xfd */
+
+		/* Decrease the timeout if there are active animations. */
+		if (graphics_next_redraw_delay != INT_MAX &&
+		    IS_SET(MODE_VISIBLE))
+			timeout = timeout < 0 ? graphics_next_redraw_delay
+					      : MIN(timeout,
+						    graphics_next_redraw_delay);
 
 		seltv.tv_sec = timeout / 1E3;
 		seltv.tv_nsec = 1E6 * (timeout - 1E3 * seltv.tv_sec);
@@ -2100,7 +2715,8 @@ run(void)
 		}
 		clock_gettime(CLOCK_MONOTONIC, &now);
 
-		if (FD_ISSET(ttyfd, &rfd))
+		int ttyin = FD_ISSET(ttyfd, &rfd) || ttyread_pending();
+		if (ttyin)
 			ttyread();
 
 		xev = 0;
@@ -2118,13 +2734,13 @@ run(void)
 		 * triggers drawing, we first wait a bit to ensure we got
 		 * everything, and if nothing new arrives - we draw.
 		 * We start with trying to wait minlatency ms. If more content
-		 * arrives sooner, we retry with shorter and shorter preiods,
+		 * arrives sooner, we retry with shorter and shorter periods,
 		 * and eventually draw even without idle after maxlatency ms.
 		 * Typically this results in low latency while interacting,
 		 * maximum latency intervals during `cat huge.txt`, and perfect
 		 * sync with periodic updates from animations/key-repeats/etc.
 		 */
-		if (FD_ISSET(ttyfd, &rfd) || xev) {
+		if (ttyin || xev) {
 			if (!drawing) {
 				trigger = now;
 				if (IS_SET(MODE_BLINK)) {
@@ -2137,6 +2753,18 @@ run(void)
 			          / maxlatency * minlatency;
 			if (timeout > 0)
 				continue;  /* we have time, try to find idle */
+		}
+
+		if (tinsync(su_timeout)) {
+			/*
+			 * on synchronized-update draw-suspension: don't reset
+			 * drawing so that we draw ASAP once we can (just after
+			 * ESU). it won't be too soon because we already can
+			 * draw now but we skip. we set timeout > 0 to draw on
+			 * SU-timeout even without new content.
+			 */
+			timeout = minlatency;
+			continue;
 		}
 
 		/* idle detected or maxlatency exhausted -> draw */
@@ -2158,6 +2786,7 @@ run(void)
 		drawing = 0;
 	}
 }
+
 
 #define XRESOURCE_LOAD_META(NAME)					\
 	if(!XrmGetResource(xrdb, "st." NAME, "st." NAME, &type, &ret))	\
@@ -2221,7 +2850,7 @@ xrdb_load(void)
 
 		XRESOURCE_LOAD_STRING("foreground", colorname[defaultfg]);
 		XRESOURCE_LOAD_STRING("background", colorname[defaultbg]);
-		XRESOURCE_LOAD_STRING("cursorfg", colorname[defaultcs])
+		XRESOURCE_LOAD_STRING("cursorColor", colorname[defaultcs])
 		else {
 		  // this looks confusing because we are chaining off of the if
 		  // in the macro. probably we should be wrapping everything blocks
@@ -2237,27 +2866,15 @@ xrdb_load(void)
 		XRESOURCE_LOAD_STRING("font", font);
 		XRESOURCE_LOAD_STRING("termname", termname);
 
-		/* XRESOURCE_LOAD_INTEGER("xfps", xfps); */
-		/* XRESOURCE_LOAD_INTEGER("actionfps", actionfps); */
 		XRESOURCE_LOAD_INTEGER("blinktimeout", blinktimeout);
 		XRESOURCE_LOAD_INTEGER("bellvolume", bellvolume);
 		XRESOURCE_LOAD_INTEGER("borderpx", borderpx);
-		/* XRESOURCE_LOAD_INTEGER("borderless", borderless); */
-		XRESOURCE_LOAD_INTEGER("cursorshape", cursorshape);
-
-		/* cursorblinkstate = 1; // in case if cursor shape was changed from a blinking one to a non-blinking */
-		/* XRESOURCE_LOAD_INTEGER("cursorthickness", cursorthickness); */
-		/* XRESOURCE_LOAD_INTEGER("cursorblinkstyle", cursorblinkstyle); */
-		/* XRESOURCE_LOAD_INTEGER("cursorblinkontype", cursorblinkontype); */
-
-		/* todo: https://github.com/gnotclub/xst/commit/1e82647b0e04077e975679a4b4cf1eb02b04e6bc */
-		/* XRESOURCE_LOAD_INTEGER("mouseScrollLines", mousescrolllines); */
+		XRESOURCE_LOAD_INTEGER("cursorstyle", cursorstyle);
 
 		XRESOURCE_LOAD_FLOAT("cwscale", cwscale);
 		XRESOURCE_LOAD_FLOAT("chscale", chscale);
-
-		/* XRESOURCE_LOAD_CHAR("prompt_char", prompt_char); */
-
+        if (!opt_alpha)
+            XRESOURCE_LOAD_FLOAT("alpha", alpha);
 	}
 	XFlush(dpy);
 }
@@ -2283,70 +2900,12 @@ reload(int sig)
 	signal(SIGUSR1, reload);
 }
 
-int
-resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
-{
-	char **sdst = dst;
-	int *idst = dst;
-	float *fdst = dst;
-
-	char fullname[256];
-	char fullclass[256];
-	char *type;
-	XrmValue ret;
-
-	snprintf(fullname, sizeof(fullname), "%s.%s",
-			opt_name ? opt_name : "st", name);
-	snprintf(fullclass, sizeof(fullclass), "%s.%s",
-			opt_class ? opt_class : "St", name);
-	fullname[sizeof(fullname) - 1] = fullclass[sizeof(fullclass) - 1] = '\0';
-
-	XrmGetResource(db, fullname, fullclass, &type, &ret);
-	if (ret.addr == NULL || strncmp("String", type, 64))
-		return 1;
-
-	switch (rtype) {
-	case STRING:
-		*sdst = ret.addr;
-		break;
-	case INTEGER:
-		*idst = strtoul(ret.addr, NULL, 10);
-		break;
-	case FLOAT:
-		*fdst = strtof(ret.addr, NULL);
-		break;
-	}
-	return 0;
-}
-
-void
-config_init(void)
-{
-	char *resm;
-	XrmDatabase db;
-	ResourcePref *p;
-
-	XrmInitialize();
-	resm = XResourceManagerString(xw.dpy);
-	if (!resm)
-		return;
-
-	db = XrmGetStringDatabase(resm);
-	for (p = resources; p < resources + LEN(resources); p++)
-		resource_load(db, p->name, p->type, p->dst);
-}
 
 void
 usage(void)
 {
-	die("usage: %s [-aiv] [-c class] [-f font] [-g geometry]"
-	    " [-n name] [-o file]\n"
-	    "          [-T title] [-t title] [-w windowid]"
-	    " [[-e] command [args ...]]\n"
-	    "       %s [-aiv] [-c class] [-f font] [-g geometry]"
-	    " [-n name] [-o file]\n"
-	    "          [-T title] [-t title] [-w windowid] -l line"
-	    " [stty_args ...]\n", argv0, argv0);
+	die("usage: %s [-c class] [-n name] [-f font] [-A alpha] [-G geometry]\n"
+	    "            [-o file] [-T title] [-t title] [-w windowid] [[-e] command [args ...]]\n\n", argv0, argv0);
 }
 
 int
@@ -2354,15 +2913,17 @@ main(int argc, char *argv[])
 {
 	xw.l = xw.t = 0;
 	xw.isfixed = False;
-	xsetcursor(cursorshape);
+	xsetcursor(cursorstyle);
 
 	ARGBEGIN {
 	case 'a':
 		allowaltscreen = 0;
 		break;
 	case 'A':
-		opt_alpha = EARGF(usage());
-		break;
+        opt_alpha = 1;
+        alpha = strtof(EARGF(usage()), NULL);
+        LIMIT(alpha, 0.0, 1.0);
+        break;
 	case 'c':
 		opt_class = EARGF(usage());
 		break;
@@ -2376,6 +2937,12 @@ main(int argc, char *argv[])
 	case 'g':
 		xw.gm = XParseGeometry(EARGF(usage()),
 				&xw.l, &xw.t, &cols, &rows);
+		geometry = CellGeometry;
+		break;
+	case 'G':
+		xw.gm = XParseGeometry(EARGF(usage()),
+				&xw.l, &xw.t, &width, &height);
+		geometry = PixelGeometry;
 		break;
 	case 'i':
 		xw.isfixed = 1;
@@ -2412,18 +2979,21 @@ run:
 
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
-        xrdb_load();
+	xrdb_load();
 	signal(SIGUSR1, reload);
-
-	if(!(xw.dpy = XOpenDisplay(NULL)))
-		die("Can't open display\n");
-
-	config_init();
+    switch (geometry) {
+	case CellGeometry:
+		xinit(cols, rows);
+		break;
+	case PixelGeometry:
+		xinit(width, height);
+		cols = (win.w - 2 * borderpx) / win.cw;
+		rows = (win.h - 2 * borderpx) / win.ch;
+		break;
+	}
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
-	signal(SIGUSR1, reload);
 	tnew(cols, rows);
-	xinit(cols, rows);
 	xsetenv();
 	selinit();
 	run();
