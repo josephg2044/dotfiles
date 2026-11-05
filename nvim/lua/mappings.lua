@@ -19,21 +19,25 @@ map({ "n", "x" }, "<leader>fm", function()
 	require("conform").format({ lsp_fallback = true })
 end, { desc = "general format file" })
 
+map("n", "<leader>ca", function()
+	vim.lsp.buf.code_action({ apply = true })
+end, { desc = "Apply code action automatically" })
+
 map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
 
 -- tabufline
 map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
 
 map("n", "<tab>", function()
-    require("core.tabufline").next()
+	require("core.tabufline").next()
 end, { desc = "buffer goto next" })
 
 map("n", "<S-tab>", function()
-    require("core.tabufline").prev()
+	require("core.tabufline").prev()
 end, { desc = "buffer goto prev" })
 
 map("n", "<leader>x", function()
-    require("core.tabufline").close_buffer()
+	require("core.tabufline").close_buffer()
 end, { desc = "buffer close" })
 
 -- nvimtree

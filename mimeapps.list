@@ -25,6 +25,7 @@ application/x-extension-xht=browser.desktop
 x-scheme-handler/tetrio=tetrio-desktop.desktop
 x-scheme-handler/discord=vesktop.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/codex=chatgpt.desktop
 
 [Added Associations]
 application/x-wine-extension-ini=nvim.desktop;
