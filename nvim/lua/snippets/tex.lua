@@ -65,6 +65,17 @@ return {
 		fmta("$<>$", { d(1, get_visual) })
 	),
 
+	s(
+		{ trig = "bb", snippetType = "autosnippet", condition = line_begin, dscr = "equation env (star choice)" },
+		fmta(
+			[[\[
+    <>
+\]
+]],
+			{ d(1, get_visual) }
+		)
+	),
+
 	-- sections
 	s({ trig = "sn", snippetType = "autosnippet", condition = line_begin }, fmta("\\section{<>}", { i(1) })),
 	s({ trig = "ssn", snippetType = "autosnippet", condition = line_begin }, fmta("\\subsection{<>}", { i(1) })),
