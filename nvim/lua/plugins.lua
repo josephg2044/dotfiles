@@ -191,6 +191,13 @@ return {
 				-- Use new vim.lsp.config API for Neovim 0.11+
 				vim.lsp.config("*", { capabilities = M.capabilities, on_init = M.on_init })
 				vim.lsp.config("lua_ls", { settings = lua_lsp_settings })
+				vim.lsp.config.badness = {
+					cmd = { "badness", "lsp" },
+					filetypes = { "tex", "plaintex", "bib" },
+					root_markers = { "badness.toml", ".git" },
+					init_options = { lineWidth = 80, indentWidth = 4, mathWrap = "preserve" },
+				}
+				vim.lsp.enable("badness")
 
 				local servers = {
 					"lua_ls",
@@ -201,6 +208,8 @@ return {
 					"ty",
 					"cmake",
 					"texlab",
+					"badness",
+					-- "tinymist"
 				}
 
 				vim.lsp.enable(servers)
@@ -390,7 +399,6 @@ return {
 				typescript = { "prettier" },
 				html = { "prettier" },
 				css = { "prettier" },
-				tex = { "tex-fmt" },
 			},
 			default_format_opts = {
 				lsp_format = "fallback",
@@ -523,11 +531,16 @@ return {
 			}
 			vim.g.vimtex_delim_toggle_mod_list = {
 				{ "\\left", "\\right" },
-				{ "\\big", "\\big" },
+				{ "\\bigl", "\\bigr" },
 			}
 		end,
 	},
 
+	-- {
+	-- 	"kaarmu/typst.vim",
+	-- 	ft = "typst",
+	-- 	lazy = false,
+	-- },
 	{
 		"hat0uma/csvview.nvim",
 		ft = "csv",
@@ -605,5 +618,17 @@ return {
 	{
 		"dimtion/guttermarks.nvim",
 		event = { "BufReadPost", "BufNewFile", "BufWritePre", "FileType" },
+	},
+	{
+		"abdelwahab-7/nvim-jupyter",
+		lazy = false, -- Must be false so BufReadCmd can intercept .ipynb files on open
+		dependencies = {
+			"3rd/image.nvim", -- Optional for inline images
+		},
+		config = function()
+			require("nvim_jupyter").setup({
+				-- Add your custom options here
+			})
+		end,
 	},
 }
